@@ -21,7 +21,7 @@ To build the image, run `docker build -t reuse-api .`
 
 Running the check is fairly simple:
 
-```
+```text
 $ docker run -it reuse-api https://git.fsfe.org/reuse/tool
 https://git.fsfe.org/reuse/tool is a valid git repository
 Cloning into '/project'...
@@ -47,3 +47,7 @@ Congratulations! Your project is REUSE compliant :-)
 ```
 
 The exit codes of this command can be evaluated in a later stage, so that a web service could decide which badge to display.
+
+## License
+
+GNU GPL 3.0 or any later version (GPL-3.0-or-later)
