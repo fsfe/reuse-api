@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2019 Free Software Foundation Europe e.V.
 
 GIT=$1
 OPTIONS=$2
