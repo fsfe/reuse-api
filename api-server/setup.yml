@@ -1,0 +1,78 @@
+---
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2019 Free Software Foundation Europe e.V.
+
+- name: Setup instance to delegate REUSE checks to
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Upgrade all packages to the latest version
+      apt:
+        name: "*"
+        state: latest
+      tags:
+      - upgrade
+
+    - name: Install dependencies
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - docker.io
+        - git
+
+    - name: Start and enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create reuse user
+      user:
+        name: reuse
+        shell: /bin/rbash
+        groups: docker
+
+    - name: Set authorized_keys for reuse user
+      authorized_key:
+        user: reuse
+        state: present
+        key: "{{ item }}"
+        key_options: 'command="reuse-lint-repo ${SSH_ORIGINAL_COMMAND#* }",no-port-forwarding,no-X11-forwarding,no-pty'
+      with_file:
+        - files/reuse_ed25519.pub
+
+    - name: Build reuse-api Docker image
+      raw: |
+        git clone https://git.fsfe.org/reuse/api.git reuse-api
+        docker build --no-cache -t reuse-api reuse-api/
+        rm -rf reuse-api/
+        docker rmi $(docker images | grep "<none>" | awk "{print \$3}")
+      tags:
+      - docker
+      - upgrade
+
+    - name: Create reuse bin directory
+      file:
+        path: /home/reuse/bin
+        state: directory
+        owner: reuse
+        group: reuse
+
+    - name: Deploy wrapper script
+      copy:
+        src: files/reuse-lint-repo
+        dest: /home/reuse/bin/reuse-lint-repo
+        owner: reuse
+        group: reuse
+        mode: "0755"
+      tags: script
+
+    - name: Set PATH
+      copy:
+        content: 'PATH="/home/reuse/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"'
+        dest: /etc/environment

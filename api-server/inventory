@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright © 2019 Free Software Foundation Europe e.V.
+
+[reuse_api_servers]
+52.59.164.134   ansible_user=ubuntu
