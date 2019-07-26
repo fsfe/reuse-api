@@ -22,7 +22,7 @@ To build the image, run `docker build -t reuse-api .`
 Running the check is fairly simple:
 
 ```text
-$ docker run -it reuse-api https://git.fsfe.org/reuse/tool
+$ docker run --rm reuse-api https://git.fsfe.org/reuse/tool
 https://git.fsfe.org/reuse/tool is a valid git repository
 Cloning into '/project'...
 remote: Counting objects: 3191, done.
