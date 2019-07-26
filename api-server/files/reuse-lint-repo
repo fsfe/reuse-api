@@ -16,7 +16,6 @@ if [ -z ${ENV} ]; then
   status=$?
 else
   echo "REUSE_OPT=$ENV" > $TMP
-  cat $TMP
   docker run --env-file $TMP --rm reuse-api "${REPO}"
   status=$?
 fi
