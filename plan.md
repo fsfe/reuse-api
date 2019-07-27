@@ -10,13 +10,12 @@ a more simple connection with other services.
 The features are listed by priority:
 
 * Show the status of the latest linting process under `/<user>/<repo>/`
-  Offer a
-* badge under `/<user>/<repo>/badge.svg` indicating the REUSE compliance
-  status
+* Offer a badge under `/<user>/<repo>/badge.svg` indicating the REUSE
+  compliance status
 * Offer a JSON endpoint which shows the REUSE status under
-* `/<user>/<repo>/status.json` Show the full output of the latest
-  linting
-* process under `/<user>/<repo>/`
+  `/<user>/<repo>/status.json`
+* Show the full output of the latest linting process under
+  `/<user>/<repo>/`
 
 Note: Since we do not only want to handle GitHub, the URLS above also
 have to contain the source forge name/URL. Perhaps we can make some
