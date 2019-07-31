@@ -3,13 +3,9 @@
   Copyright © 2019 Free Software Foundation Europe e.V.
 -->
 
-# REUSE API
+# REUSE API Docker service
 
-These are the first elements for an API people can use to check their repo's REUSE compliance.
-
-The idea is that users provide their repo's Git address and optional parameters (e.g. future submodule options), and we do all the cloning, linting, and provision of icons.
-
-Having an API would also be important for inclusion in other services like shields.io or source forges.
+The Docker image performs a reuse lint for a Git repository. The idea is that a container based on this image is spun up for each check.
 
 ## Installation
 
@@ -47,7 +43,3 @@ Congratulations! Your project is REUSE compliant :-)
 ```
 
 The exit codes of this command can be evaluated in a later stage, so that a web service could decide which badge to display.
-
-## License
-
-GNU GPL 3.0 or any later version (GPL-3.0-or-later)
