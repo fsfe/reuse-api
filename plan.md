@@ -49,7 +49,7 @@ In order to start a REUSE check, this service could send an SSH command
 to our server and monitor its output and exit code.
 
 ```
-$ ssh -i ~/.ssh/reuse_ed25519 reuse@52.59.164.134 reuse-lint-repo https://git.fsfe.org/reuse/tool
+$ ssh -i ~/.ssh/reuse_ed25519 reuse@wrk1.api.reuse.software reuse-lint-repo https://git.fsfe.org/reuse/tool
 Cloning into '/project'...
 
 Running REUSE check:
