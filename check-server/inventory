@@ -2,4 +2,4 @@
 # Copyright © 2019 Free Software Foundation Europe e.V.
 
 [reuse_api_servers]
-52.59.164.134   ansible_user=ubuntu
+wrk1.api.reuse.software   ansible_user=ubuntu
