@@ -2,15 +2,19 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""A web server that handles REUSE badges."""
 
 import json
 import os
 import signal
 import sys
+import logging
 
 from flask import Flask, abort, jsonify, request
 
 from .scheduler import Scheduler
+
+_LOGGER = logging.getLogger(__name__)
 
 __author__ = "Carmen Bianca Bakker"
 __email__ = "carmenbianca@fsfe.org"
@@ -29,7 +33,9 @@ def create_app(test_config=None):
     #     # load the test config if passed in
     #     app.config.from_mapping(test_config)
 
-    # TODO: Enable debug logging here somewhere?
+    # TODO: Make this configurable
+    logging.basicConfig(format="%(name)s - %(levelname)s - %(message)s")
+    _LOGGER.setLevel(logging.DEBUG)
 
     # ensure the instance folder exists
     try:

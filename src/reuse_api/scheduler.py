@@ -27,9 +27,14 @@ class Scheduler:
         self._running = False
 
     def add_task(self, url):
-        self._queue.put_nowait(url)
-        _LOGGER.debug(f"adding '{url}' to queue'")
-        _LOGGER.debug("size of queue is  {}".format(self._queue.qsize()))
+        if self._running:
+            _LOGGER.debug("adding '%s' to queue", url)
+            _LOGGER.debug("size of queue is %d", self._queue.qsize())
+            self._queue.put_nowait(url)
+        else:
+            _LOGGER.warning(
+                "cannot add task to queue when scheduler is not running"
+            )
 
     def run(self):
         self._running = True
@@ -37,6 +42,8 @@ class Scheduler:
             runner.start()
 
     def join(self):
+        _LOGGER.debug("finishing the queue")
+        self._queue.join()
         _LOGGER.debug("stopping all threads")
         self._running = False
         for runner in self._runners:
@@ -62,27 +69,33 @@ class Runner(Thread):
             except Empty:
                 continue
 
-            _LOGGER.debug(f"linting '{url}'")
+            _LOGGER.debug("linting '%s'", url)
             # FIXME!!!!!
             # This step needs to be ABSOLUTELY SECURE!
-            result = subprocess.run(
-                [
-                    "ssh",
-                    "-i",
-                    "~/.ssh/reuse_ed25519",
-                    "reuse@wrk1.api.reuse.software",
-                    "reuse-lint-repo",
-                    url,
-                ],
-                capture_output=True,
-                # TODO: Verify whether this timeout is reasonable.
-                timeout=900,
-            )
-            _LOGGER.debug(
-                "finished linting '{url}'. return code is {rcode}".format(
-                    url=url, rcode=result.returncode
+            try:
+                result = subprocess.run(
+                    [
+                        "ssh",
+                        "-i",
+                        "~/.ssh/reuse_ed25519",
+                        "reuse@wrk1.api.reuse.software",
+                        "reuse-lint-repo",
+                        url,
+                    ],
+                    capture_output=True,
+                    # TODO: Verify whether this timeout is reasonable.
+                    timeout=900,
                 )
-            )
+            except subprocess.TimeoutExpired:
+                _LOGGER.warning("linting of '%s' timed out", url)
+            else:
+                _LOGGER.debug(
+                    "finished linting '%s' return code is %d",
+                    url,
+                    result.returncode,
+                )
+            finally:
+                self._queue.task_done()
 
     def join(self, *args, **kwargs):
         self.stop()
