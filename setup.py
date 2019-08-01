@@ -6,7 +6,7 @@
 
 from setuptools import setup
 
-requirements = ["Flask"]
+requirements = ["Flask", "click"]
 
 test_requirements = ["pytest"]
 

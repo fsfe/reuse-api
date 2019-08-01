@@ -5,13 +5,16 @@
 """A web server that handles REUSE badges."""
 
 import json
+import logging
 import os
 import signal
+import sqlite3
+import subprocess
 import sys
-import logging
 
-from flask import Flask, abort, jsonify, request
+from flask import Flask, abort, current_app, g, jsonify, request
 
+from .db import get_db, init_app_db
 from .scheduler import Scheduler
 
 _LOGGER = logging.getLogger(__name__)
@@ -22,20 +25,55 @@ __license__ = "GPL-3.0-or-later"
 __version__ = "0.1.0"
 
 
+class NotARepository(Exception):
+    pass
+
+
+def latest_hash(url):
+    # FIXME!!!!: Verify that something is an URL first?
+    result = subprocess.run(
+        ["git", "ls-remote", url, "HEAD"], capture_output=True
+    )
+
+    if result.returncode != 0:
+        raise NotARepository()
+    output = result.stdout.decode("utf-8")
+    return output.split()[0]
+
+
+def current_hash(url):
+    with current_app.app_context():
+        db = get_db()
+        cur = db.execute("SELECT hash FROM projects WHERE url=?", (url,))
+        return cur.fetchone()[0]
+
+
+def url_exists(url):
+    with current_app.app_context():
+        db = get_db()
+        cur = db.execute("SELECT 1 FROM projects WHERE url=?", (url,))
+        return bool(cur.fetchone())
+
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
-    # if test_config is None:
-    #     # load the instance config, if it exists, when not testing
-    #     app.config.from_pyfile('config.py', silent=True)
-    # else:
-    #     # load the test config if passed in
-    #     app.config.from_mapping(test_config)
-
     # TODO: Make this configurable
     logging.basicConfig(format="%(name)s - %(levelname)s - %(message)s")
     _LOGGER.setLevel(logging.DEBUG)
+
+    app.config.from_mapping(
+        # SECRET_KEY='dev',
+        DATABASE=os.path.join(app.instance_path, "database.sqlite")
+    )
+
+    if test_config is None:
+        # load the instance config, if it exists, when not testing
+        app.config.from_pyfile("config.py", silent=True)
+    else:
+        # load the test config if passed in
+        app.config.from_mapping(test_config)
 
     # ensure the instance folder exists
     try:
@@ -44,7 +82,11 @@ def create_app(test_config=None):
         pass
 
     scheduler = Scheduler()
+    # FIXME: This is ideally only run when the app is fully "started", but I
+    # can't find documentation for this.
     scheduler.run()
+
+    init_app_db(app)
 
     def _handle_exit(sig, frame):
         """This thing makes sure that the program cleanly exits."""
@@ -59,9 +101,22 @@ def create_app(test_config=None):
         if url is None:
             abort(400, "The query parameter 'url' is not specified")
 
-        # TODO: The logic below is obviously not correct.
-        scheduler.add_task(url)
+        try:
+            latest = latest_hash(url)
+        except NotARepository:
+            abort(400, "Not a Git repository")
+        current = current_hash(url)
+        exists = url_exists(url)
 
+        # Create a bland entry.
+        if not exists:
+            pass
+
+        # Make the database entry up-to-date.
+        if not exists or current != latest:
+            scheduler.add_task(url)
+
+        # Return the current entry in the database.
         return jsonify({"url": url})
 
     # TODO: Also create an app.route for the badge itself.
