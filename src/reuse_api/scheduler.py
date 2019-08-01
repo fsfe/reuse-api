@@ -7,8 +7,37 @@ import subprocess
 import time
 from queue import Empty, Queue
 from threading import Thread
+from typing import NamedTuple
+
+from flask import current_app
+
+from .db import get_db
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class Task(NamedTuple):
+    url: str
+    hash: str
+
+
+def update_task(task, return_code, output):
+    if return_code == 0:
+        status = 1
+    else:
+        status = 0
+    last_access = time.time()
+
+    db = get_db()
+    cur = db.cursor()
+    cur.execute(
+        "UPDATE projects "
+        "SET hash=?, status=?, lint_code=?, lint_output=?, last_access=? "
+        "WHERE url=?",
+        (task.hash, status, return_code, output, last_access, task.url),
+    )
+
+    db.commit()
 
 
 class Scheduler:
@@ -21,16 +50,17 @@ class Scheduler:
     runners, and to provide some convenience functions to manage them both.
     """
 
-    def __init__(self):
+    def __init__(self, app):
+        self._app = app
         self._queue = Queue()
-        self._runners = [Runner(self._queue) for _ in range(6)]
+        self._runners = [Runner(self._queue, self._app) for _ in range(6)]
         self._running = False
 
-    def add_task(self, url):
+    def add_task(self, task):
         if self._running:
-            _LOGGER.debug("adding '%s' to queue", url)
+            _LOGGER.debug("adding '%s' to queue", task.url)
             _LOGGER.debug("size of queue is %d", self._queue.qsize())
-            self._queue.put_nowait(url)
+            self._queue.put_nowait(task)
         else:
             _LOGGER.warning(
                 "cannot add task to queue when scheduler is not running"
@@ -54,8 +84,9 @@ class Scheduler:
 
 
 class Runner(Thread):
-    def __init__(self, queue):
+    def __init__(self, queue, app):
         self._queue = queue
+        self._app = app
         self._running = False
         super().__init__()
 
@@ -65,11 +96,11 @@ class Runner(Thread):
             try:
                 # The timeout allows the thread to check whether it is still
                 # supposed to be running every X seconds.
-                url = self._queue.get(timeout=5)
+                task = self._queue.get(timeout=5)
             except Empty:
                 continue
 
-            _LOGGER.debug("linting '%s'", url)
+            _LOGGER.debug("linting '%s'", task.url)
             # FIXME!!!!!
             # This step needs to be ABSOLUTELY SECURE!
             try:
@@ -80,20 +111,26 @@ class Runner(Thread):
                         "~/.ssh/reuse_ed25519",
                         "reuse@wrk1.api.reuse.software",
                         "reuse-lint-repo",
-                        url,
+                        # FIXME: By the time this runs, the HEAD of the repo may
+                        # have changed.
+                        task.url,
                     ],
                     capture_output=True,
                     # TODO: Verify whether this timeout is reasonable.
                     timeout=900,
                 )
             except subprocess.TimeoutExpired:
-                _LOGGER.warning("linting of '%s' timed out", url)
+                _LOGGER.warning("linting of '%s' timed out", task.url)
             else:
                 _LOGGER.debug(
                     "finished linting '%s' return code is %d",
-                    url,
+                    task.url,
                     result.returncode,
                 )
+                with self._app.app_context():
+                    update_task(
+                        task, result.returncode, result.stdout.decode("utf-8")
+                    )
             finally:
                 self._queue.task_done()
 
