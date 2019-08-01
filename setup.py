@@ -6,9 +6,7 @@
 
 from setuptools import setup
 
-requirements = [
-    # TODO
-]
+requirements = ["Flask"]
 
 test_requirements = ["pytest"]
 
