@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import logging
+import re
 import subprocess
 import time
 from queue import Empty, Queue
@@ -12,11 +13,20 @@ from typing import NamedTuple
 from .db import get_db
 
 _LOGGER = logging.getLogger(__name__)
+_HASH_PATTERN = re.compile(r"commit (.*):")
 
 
 class Task(NamedTuple):
     url: str
     hash: str
+
+
+def hash_from_output(output):
+    line = output.strip().split("\n")[0]
+    match = _HASH_PATTERN.search(line)
+    if match is not None:
+        return match.groups()[0]
+    return None
 
 
 def update_task(task, return_code, output):
@@ -25,6 +35,9 @@ def update_task(task, return_code, output):
     else:
         status = 0
     last_access = time.time()
+    new_hash = hash_from_output(output)
+    if new_hash is not None:
+        task.hash = new_hash
 
     db = get_db()
     cur = db.cursor()
@@ -109,8 +122,6 @@ class Runner(Thread):
                         "~/.ssh/reuse_ed25519",
                         "reuse@wrk1.api.reuse.software",
                         "reuse-lint-repo",
-                        # FIXME: By the time this runs, the HEAD of the repo may
-                        # have changed.
                         task.url,
                     ],
                     capture_output=True,
