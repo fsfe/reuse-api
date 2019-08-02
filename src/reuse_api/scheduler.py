@@ -9,8 +9,6 @@ from queue import Empty, Queue
 from threading import Thread
 from typing import NamedTuple
 
-from flask import current_app
-
 from .db import get_db
 
 _LOGGER = logging.getLogger(__name__)
