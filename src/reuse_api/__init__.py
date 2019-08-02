@@ -13,7 +13,7 @@ import subprocess
 import sys
 from typing import NamedTuple
 
-from flask import Flask, abort, current_app, g, jsonify, request
+from flask import Flask, abort, current_app, g, jsonify, request, send_file
 
 from .db import get_db, init_app_db
 from .scheduler import Scheduler, Task
@@ -50,6 +50,28 @@ def select_all(url):
     return Row(*row)
 
 
+def schedule_if_new_or_later(url, app, scheduler):
+    try:
+        latest = latest_hash(url)
+    except NotARepository:
+        abort(400, "Not a Git repository")
+    with app.app_context():
+        current = current_hash(url)
+        exists = url_exists(url)
+
+    # Create a bland entry.
+    if not exists:
+        _LOGGER.debug("creating new database entry for '%s'", url)
+        with app.app_context():
+            create_new(url, latest)
+
+    # Make the database entry up-to-date.
+    if not exists or current != latest:
+        scheduler.add_task(Task(url, latest))
+    else:
+        _LOGGER.debug("'%s' is still up-to-date", url)
+
+
 def create_new(url, hash):
     db = get_db()
     cur = db.cursor()
@@ -61,9 +83,12 @@ def create_new(url, hash):
 
 def latest_hash(url):
     # FIXME!!!!: Verify that something is an URL first?
-    result = subprocess.run(
-        ["git", "ls-remote", url, "HEAD"], capture_output=True
-    )
+    try:
+        result = subprocess.run(
+            ["git", "ls-remote", url, "HEAD"], capture_output=True, timeout=5
+        )
+    except subprocess.TimeoutExpired:
+        raise NotARepository()
 
     if result.returncode != 0:
         raise NotARepository()
@@ -91,7 +116,11 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
     # TODO: Make this configurable
-    logging.basicConfig(format="%(name)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        format="[%(asctime)s] %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%S",
+    )
+
     _LOGGER.setLevel(logging.DEBUG)
 
     app.config.from_mapping(
@@ -127,30 +156,12 @@ def create_app(test_config=None):
     signal.signal(signal.SIGINT, _handle_exit)
 
     @app.route("/api/project", methods=["GET"])
-    def hello():
+    def api_project():
         url = request.args.get("url")
         if url is None:
             abort(400, "The query parameter 'url' is not specified")
 
-        try:
-            latest = latest_hash(url)
-        except NotARepository:
-            abort(400, "Not a Git repository")
-        with app.app_context():
-            current = current_hash(url)
-            exists = url_exists(url)
-
-        # Create a bland entry.
-        if not exists:
-            _LOGGER.debug("creating new database entry for '%s'", url)
-            with app.app_context():
-                create_new(url, latest)
-
-        # Make the database entry up-to-date.
-        if not exists or current != latest:
-            scheduler.add_task(Task(url, latest))
-        else:
-            _LOGGER.debug("'%s' is still up-to-date", url)
+        schedule_if_new_or_later(url, app, scheduler)
 
         # Return the current entry in the database.
         row = select_all(url)
@@ -165,6 +176,24 @@ def create_app(test_config=None):
             }
         )
 
-    # TODO: Also create an app.route for the badge itself.
+    @app.route("/badge", methods=["GET"])
+    def badge():
+        url = request.args.get("url")
+        if url is None:
+            abort(400, "The query parameter 'url' is not specified")
+
+        schedule_if_new_or_later(url, app, scheduler)
+
+        row = select_all(url)
+        status = row.status
+
+        if status == -1:
+            image = "checking.svg"
+        if status == 0:
+            image = "non-compliant.svg"
+        if status == 1:
+            image = "compliant.svg"
+
+        return send_file(image, mimetype="image/svg+xml")
 
     return app
