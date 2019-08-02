@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright © 2019 Free Software Foundation Europe e.V.
 
-REPO=$1
-ENV=$2
-TMP=$(mktemp)
+REPO="${1}"
+ENV="${2}"
+TMP="$(mktemp)"
 
 if [ -z ${REPO} ]; then
   echo "No repo URL provided"
@@ -15,7 +15,7 @@ if [ -z ${ENV} ]; then
   docker run --rm reuse-api "${REPO}"
   status=$?
 else
-  echo "REUSE_OPT=$ENV" > $TMP
+  echo "REUSE_OPT=${ENV}" > $TMP
   docker run --env-file $TMP --rm reuse-api "${REPO}"
   status=$?
 fi

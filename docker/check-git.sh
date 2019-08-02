@@ -3,12 +3,12 @@
 # Copyright © 2019 Free Software Foundation Europe e.V.
 
 # Git repo
-GIT=$1
+GIT="${1}"
 # All further options from ENV variable, provided to docker
-OPTIONS="$REUSE_OPT"
+OPTIONS="${REUSE_OPT}"
 
 # Test if remote repository is valid
-if ! git ls-remote "${GIT}" > /dev/null; then
+if ! timeout 5 git ls-remote "${GIT}" > /dev/null; then
   echo "${GIT} is not a valid git repository"
   exit 42
 fi
@@ -17,5 +17,5 @@ fi
 git clone --depth 1 "${GIT}" /project
 
 # Running reuse lint with optional parameters
-printf "\nRunning REUSE check:\n\n"
+printf "\nChecking REUSE compliance for commit $(git rev-parse HEAD):\n\n"
 reuse lint "${OPTIONS}"
