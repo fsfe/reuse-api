@@ -64,23 +64,11 @@ test: ## run tests quickly
 coverage: ## check code coverage quickly
 	py.test --cov-report term-missing --cov=src/reuse_api
 
-.PHONY: tox
-tox: ## run all tests against multiple versions of Python
-	tox
-
 .PHONY: dist
 dist: clean-build clean-pyc ## builds source and wheel package
 	python setup.py sdist
 	python setup.py bdist_wheel
 	ls -l dist
-
-.PHONY: test-release
-test-release: dist  ## package and upload to testpypi
-	twine upload --sign -r testpypi dist/*
-
-.PHONY: release
-release: dist  ## package and upload a release
-	twine upload --sign -r pypi dist/*
 
 .PHONY: install-requirements
 install-requirements:  ## install requirements
@@ -96,5 +84,4 @@ install: uninstall install-requirements ## install reuse
 
 .PHONY: develop
 develop: uninstall install-requirements  ## install source directory
-	pre-commit install
 	python setup.py develop

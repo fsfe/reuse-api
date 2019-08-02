@@ -5,7 +5,6 @@
 include README.md
 include CHANGELOG.md
 include Makefile
-include tox.ini
 include requirements.txt
 
 recursive-include LICENSES *
