@@ -59,6 +59,17 @@ def select_all(url):
     return Row(*row)
 
 
+def abort_if_wrong_url(url):
+    if url is None:
+        abort(400, "The query parameter 'url' is not specified")
+    if not (
+        url.startswith("git://")
+        or url.startswith("http://")
+        or url.startswith("https://")
+    ):
+        abort(400, "Not a Git repository")
+
+
 def schedule_if_new_or_later(url, app, scheduler):
     try:
         latest = latest_hash(url)
@@ -168,8 +179,7 @@ def create_app(test_config=None):
     @app.route("/api/project", methods=["GET"])
     def api_project():
         url = request.args.get("url")
-        if url is None:
-            abort(400, "The query parameter 'url' is not specified")
+        abort_if_wrong_url(url)
 
         schedule_if_new_or_later(url, app, scheduler)
 
@@ -190,8 +200,7 @@ def create_app(test_config=None):
     @app.route("/badge", methods=["GET"])
     def badge(url=None):
         url = request.args.get("url")
-        if url is None:
-            abort(400, "The query parameter 'url' is not specified")
+        abort_if_wrong_url(url)
 
         schedule_if_new_or_later(url, app, scheduler)
 
