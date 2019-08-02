@@ -39,7 +39,6 @@ if __name__ == "__main__":
         package_dir={"": "src"},
         packages=["reuse_api"],
         include_package_data=True,
-        entry_points={"console_scripts": ["reuse_api = reuse_api._main:main"]},
         install_requires=requirements,
         tests_require=test_requirements,
         classifiers=[
