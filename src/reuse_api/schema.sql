@@ -6,5 +6,5 @@ CREATE TABLE projects (
     status INTEGER,
     lint_code INTEGER,
     lint_output TEXT,
-    last_access INTEGER
+    last_access REAL
 );
