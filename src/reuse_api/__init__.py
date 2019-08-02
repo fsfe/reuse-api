@@ -13,7 +13,16 @@ import subprocess
 import sys
 from typing import NamedTuple
 
-from flask import Flask, abort, current_app, g, jsonify, request, send_file
+from flask import (
+    Flask,
+    abort,
+    current_app,
+    g,
+    jsonify,
+    request,
+    send_file,
+    url_for,
+)
 
 from .db import get_db, init_app_db
 from .scheduler import Scheduler, Task
@@ -125,7 +134,8 @@ def create_app(test_config=None):
 
     app.config.from_mapping(
         # SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, "database.sqlite")
+        DATABASE=os.path.join(app.instance_path, "database.sqlite"),
+        # TODO: SERVERNAME
     )
 
     if test_config is None:
@@ -173,11 +183,12 @@ def create_app(test_config=None):
                 "lint_code": row.lint_code,
                 "lint_output": row.lint_output,
                 "last_access": row.last_access,
+                "badge": url_for("badge", url=row.url, _external=True),
             }
         )
 
     @app.route("/badge", methods=["GET"])
-    def badge():
+    def badge(url=None):
         url = request.args.get("url")
         if url is None:
             abort(400, "The query parameter 'url' is not specified")
@@ -194,6 +205,7 @@ def create_app(test_config=None):
         if status == 1:
             image = "compliant.svg"
 
+        _LOGGER.debug("sending badge for '%s'", row.url)
         return send_file(image, mimetype="image/svg+xml")
 
     return app
