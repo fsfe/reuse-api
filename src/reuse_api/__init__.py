@@ -12,6 +12,7 @@ import sqlite3
 import subprocess
 import sys
 from typing import NamedTuple
+from urllib.parse import urlparse
 
 from flask import (
     Flask,
@@ -62,12 +63,14 @@ def select_all(url):
 def abort_if_wrong_url(url):
     if url is None:
         abort(400, "The query parameter 'url' is not specified")
-    if not (
-        url.startswith("git://")
-        or url.startswith("http://")
-        or url.startswith("https://")
-    ):
-        abort(400, "Not a Git repository")
+    try:
+        result = urlparse(url)
+    except ValueError:
+        abort(400, "Not a valid URL")
+    if not all([result.scheme, result.netloc]):
+        abort(400, "Not a valid URL")
+    if not result.scheme in ["git", "http", "https"]:
+        abort(400, "Scheme not supported")
 
 
 def schedule_if_new_or_later(url, app, scheduler):
@@ -102,7 +105,6 @@ def create_new(url, hash):
 
 
 def latest_hash(url):
-    # FIXME!!!!: Verify that something is an URL first?
     try:
         result = subprocess.run(
             ["git", "ls-remote", url, "HEAD"], capture_output=True, timeout=5
