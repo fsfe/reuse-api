@@ -4,6 +4,7 @@
 
 """A web server that handles REUSE badges."""
 
+import atexit
 import json
 import logging
 import os
@@ -172,12 +173,7 @@ def create_app(test_config=None):
 
     init_app_db(app)
 
-    def _handle_exit(sig, frame):
-        """This thing makes sure that the program cleanly exits."""
-        scheduler.join()
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, _handle_exit)
+    atexit.register(scheduler.join)
 
     @app.route("/api/project", methods=["GET"])
     def api_project():
