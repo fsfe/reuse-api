@@ -124,7 +124,8 @@ class Runner(Thread):
                         "reuse-lint-repo",
                         task.url,
                     ],
-                    capture_output=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                     # TODO: Verify whether this timeout is reasonable.
                     timeout=900,
                 )

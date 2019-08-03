@@ -108,7 +108,10 @@ def create_new(url, hash):
 def latest_hash(url):
     try:
         result = subprocess.run(
-            ["git", "ls-remote", url, "HEAD"], capture_output=True, timeout=5
+            ["git", "ls-remote", url, "HEAD"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=5,
         )
     except subprocess.TimeoutExpired:
         raise NotARepository()
