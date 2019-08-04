@@ -36,8 +36,8 @@ def update_task(task, return_code, output):
         status = 0
     last_access = time.time()
     new_hash = hash_from_output(output)
-    if new_hash is not None:
-        task.hash = new_hash
+    if new_hash is None:
+        new_hash = task.hash
 
     db = get_db()
     cur = db.cursor()
@@ -45,7 +45,7 @@ def update_task(task, return_code, output):
         "UPDATE projects "
         "SET hash=?, status=?, lint_code=?, lint_output=?, last_access=? "
         "WHERE url=?",
-        (task.hash, status, return_code, output, last_access, task.url),
+        (new_hash, status, return_code, output, last_access, task.url),
     )
 
     db.commit()
