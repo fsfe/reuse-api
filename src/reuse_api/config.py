@@ -5,7 +5,8 @@
 """Configuration for the REUSE API service"""
 
 
-# Filename of the SQLite database caching the verification results
-DATABASE = "database.sqlite"
+# Configuration for the repository storage
+SQLALCHEMY_DATABASE_URI = f"sqlite:///{instance_path}/database.sqlite"
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # TODO: SERVERNAME

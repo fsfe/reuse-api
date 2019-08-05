@@ -6,7 +6,7 @@
 
 from setuptools import setup
 
-requirements = ["Flask", "click", "webargs"]
+requirements = ["Flask", "Flask-SQLAlchemy", "webargs"]
 
 test_requirements = ["pytest"]
 

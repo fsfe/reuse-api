@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 Flask==1.1.1
-click==7.0
+Flask-SQLAlchemy==2.4.0
 webargs==5.4.0
 
 pylint==2.3.1
