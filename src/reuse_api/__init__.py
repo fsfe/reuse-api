@@ -4,6 +4,7 @@
 
 """A web server that handles REUSE badges."""
 
+import atexit
 import json
 import logging
 import os
@@ -12,7 +13,6 @@ import sqlite3
 import subprocess
 import sys
 from typing import NamedTuple
-from urllib.parse import urlparse
 
 from flask import (
     Flask,
@@ -24,7 +24,11 @@ from flask import (
     send_file,
     url_for,
 )
+from webargs.fields import Url
+from webargs.flaskparser import use_kwargs
+from werkzeug.exceptions import HTTPException
 
+from . import config
 from .db import get_db, init_app_db
 from .scheduler import Scheduler, Task
 
@@ -58,19 +62,6 @@ def select_all(url):
         # FIXME: Some kind of exception
         raise Exception()
     return Row(*row)
-
-
-def abort_if_wrong_url(url):
-    if url is None:
-        abort(400, "The query parameter 'url' is not specified")
-    try:
-        result = urlparse(url)
-    except ValueError:
-        abort(400, "Not a valid URL")
-    if not all([result.scheme, result.netloc]):
-        abort(400, "Not a valid URL")
-    if not result.scheme in ["git", "http", "https"]:
-        abort(400, "Scheme not supported")
 
 
 def schedule_if_new_or_later(url, app, scheduler):
@@ -107,7 +98,10 @@ def create_new(url, hash):
 def latest_hash(url):
     try:
         result = subprocess.run(
-            ["git", "ls-remote", url, "HEAD"], capture_output=True, timeout=5
+            ["git", "ls-remote", url, "HEAD"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=5,
         )
     except subprocess.TimeoutExpired:
         raise NotARepository()
@@ -133,9 +127,11 @@ def url_exists(url):
     return bool(cur.fetchone())
 
 
-def create_app(test_config=None):
+def create_app():
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__)
+
+    app.config.from_object(config)
 
     # TODO: Make this configurable
     logging.basicConfig(
@@ -146,18 +142,6 @@ def create_app(test_config=None):
     _LOGGER.setLevel(logging.DEBUG)
 
     os.environ["GIT_TERMINAL_PROMPT"] = "0"
-    app.config.from_mapping(
-        # SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, "database.sqlite"),
-        # TODO: SERVERNAME
-    )
-
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
 
     # ensure the instance folder exists
     try:
@@ -172,18 +156,30 @@ def create_app(test_config=None):
 
     init_app_db(app)
 
-    def _handle_exit(sig, frame):
-        """This thing makes sure that the program cleanly exits."""
-        scheduler.join()
-        sys.exit(1)
+    atexit.register(scheduler.join)
 
-    signal.signal(signal.SIGINT, _handle_exit)
+    repository_params = {
+        "url": Url(
+            schemes=("git", "http", "https"),
+            required=True,
+            error_messages={
+                "required": "Missing 'url' parameter",
+                "invalid": "Invalid url for git repository",
+            },
+        )
+    }
+
+    # Always return error messages in JSON format
+    @app.errorhandler(HTTPException)
+    def handle_error(err):
+        if hasattr(err, "data") and "messages" in err.data:  # webargs error
+            return jsonify({"error": err.data["messages"]}), err.code
+        else:
+            return jsonify({"error": err.description}), err.code
 
     @app.route("/api/project", methods=["GET"])
-    def api_project():
-        url = request.args.get("url")
-        abort_if_wrong_url(url)
-
+    @use_kwargs(repository_params)
+    def api_project(url):
         schedule_if_new_or_later(url, app, scheduler)
 
         # Return the current entry in the database.
@@ -201,10 +197,8 @@ def create_app(test_config=None):
         )
 
     @app.route("/badge", methods=["GET"])
+    @use_kwargs(repository_params)
     def badge(url=None):
-        url = request.args.get("url")
-        abort_if_wrong_url(url)
-
         schedule_if_new_or_later(url, app, scheduler)
 
         row = select_all(url)
