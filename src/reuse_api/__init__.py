@@ -5,31 +5,17 @@
 """A web server that handles REUSE badges."""
 
 import atexit
-import json
+import builtins
 import logging
 import os
-import signal
-import sqlite3
 import subprocess
-import sys
-from typing import NamedTuple
 
-from flask import (
-    Flask,
-    abort,
-    current_app,
-    g,
-    jsonify,
-    request,
-    send_file,
-    url_for,
-)
+from flask import Flask, abort, jsonify, request, send_file, url_for
 from webargs.fields import Url
 from webargs.flaskparser import use_kwargs
 from werkzeug.exceptions import HTTPException
 
-from . import config
-from .db import get_db, init_app_db
+from .models import Repository, init_models
 from .scheduler import Scheduler, Task
 
 _LOGGER = logging.getLogger(__name__)
@@ -44,55 +30,28 @@ class NotARepository(Exception):
     pass
 
 
-class Row(NamedTuple):
-    url: str
-    hash: str
-    status: int
-    lint_code: int
-    lint_output: str
-    last_access: int
-
-
-def select_all(url):
-    db = get_db()
-    cur = db.cursor()
-    cur.execute("SELECT * FROM projects WHERE url=?", (url,))
-    row = cur.fetchone()
-    if row is None:
-        # FIXME: Some kind of exception
-        raise Exception()
-    return Row(*row)
-
-
-def schedule_if_new_or_later(url, app, scheduler):
+def schedule_if_new_or_later(url, scheduler):
     try:
         latest = latest_hash(url)
     except NotARepository:
         abort(400, "Not a Git repository")
-    with app.app_context():
-        current = current_hash(url)
-        exists = url_exists(url)
+    repository = Repository.find(url)
 
-    # Create a bland entry.
-    if not exists:
+    if repository is None:
+        # Create a new entry.
         _LOGGER.debug("creating new database entry for '%s'", url)
-        with app.app_context():
-            create_new(url, latest)
-
-    # Make the database entry up-to-date.
-    if not exists or current != latest:
+        repository = Repository.create(url=url, hash=latest)
         scheduler.add_task(Task(url, latest))
+
+    elif repository.hash != latest:
+        # Make the database entry up-to-date.
+        _LOGGER.debug("'%s' is outdated", url)
+        scheduler.add_task(Task(url, latest))
+
     else:
         _LOGGER.debug("'%s' is still up-to-date", url)
 
-
-def create_new(url, hash):
-    db = get_db()
-    cur = db.cursor()
-    cur.execute(
-        "INSERT INTO projects VALUES (?, ?, -1, NULL, NULL, NULL)", (url, hash)
-    )
-    db.commit()
+    return repository
 
 
 def latest_hash(url):
@@ -112,26 +71,13 @@ def latest_hash(url):
     return output.split()[0]
 
 
-def current_hash(url):
-    db = get_db()
-    cur = db.execute("SELECT hash FROM projects WHERE url=?", (url,))
-    result = cur.fetchone()
-    if result is None:
-        return None
-    return result[0]
-
-
-def url_exists(url):
-    db = get_db()
-    cur = db.execute("SELECT 1 FROM projects WHERE url=?", (url,))
-    return bool(cur.fetchone())
-
-
 def create_app():
     # create and configure the app
     app = Flask(__name__)
 
-    app.config.from_object(config)
+    # Make instance_path available to config.py and load configuration
+    builtins.instance_path = app.instance_path
+    app.config.from_pyfile("config.py")
 
     # TODO: Make this configurable
     logging.basicConfig(
@@ -149,12 +95,12 @@ def create_app():
     except OSError:
         pass
 
+    init_models(app)
+
     scheduler = Scheduler(app)
     # FIXME: This is ideally only run when the app is fully "started", but I
     # can't find documentation for this.
     scheduler.run()
-
-    init_app_db(app)
 
     atexit.register(scheduler.join)
 
@@ -180,10 +126,9 @@ def create_app():
     @app.route("/api/project", methods=["GET"])
     @use_kwargs(repository_params)
     def api_project(url):
-        schedule_if_new_or_later(url, app, scheduler)
+        row = schedule_if_new_or_later(url, scheduler)
 
         # Return the current entry in the database.
-        row = select_all(url)
         return jsonify(
             {
                 "url": row.url,
@@ -199,19 +144,9 @@ def create_app():
     @app.route("/badge", methods=["GET"])
     @use_kwargs(repository_params)
     def badge(url):
-        schedule_if_new_or_later(url, app, scheduler)
-
-        row = select_all(url)
-        status = row.status
-
-        if status == -1:
-            image = "checking.svg"
-        if status == 0:
-            image = "non-compliant.svg"
-        if status == 1:
-            image = "compliant.svg"
+        row = schedule_if_new_or_later(url, scheduler)
 
         _LOGGER.debug("sending badge for '%s'", row.url)
-        return send_file(image, mimetype="image/svg+xml")
+        return send_file(f"{row.status}.svg", mimetype="image/svg+xml")
 
     return app

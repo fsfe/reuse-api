@@ -5,12 +5,11 @@
 import logging
 import re
 import subprocess
-import time
 from queue import Empty, Queue
 from threading import Thread
 from typing import NamedTuple
 
-from .db import get_db
+from .models import Repository
 
 _LOGGER = logging.getLogger(__name__)
 _HASH_PATTERN = re.compile(r"commit (.*):")
@@ -31,24 +30,19 @@ def hash_from_output(output):
 
 def update_task(task, return_code, output):
     if return_code == 0:
-        status = 1
+        status = "compliant"
     else:
-        status = 0
-    last_access = time.time()
+        status = "non-compliant"
     new_hash = hash_from_output(output)
     if new_hash is None:
         new_hash = task.hash
 
-    db = get_db()
-    cur = db.cursor()
-    cur.execute(
-        "UPDATE projects "
-        "SET hash=?, status=?, lint_code=?, lint_output=?, last_access=? "
-        "WHERE url=?",
-        (new_hash, status, return_code, output, last_access, task.url),
+    Repository.find(task.url).update(
+            hash=new_hash,
+            status=status,
+            lint_code=return_code,
+            lint_output=output,
     )
-
-    db.commit()
 
 
 class Scheduler:
