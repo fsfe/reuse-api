@@ -136,7 +136,7 @@ def create_app():
                 "status": row.status,
                 "lint_code": row.lint_code,
                 "lint_output": row.lint_output,
-                "last_access": row.last_access,
+                "last_access": row.last_access.isoformat(),
                 "badge": url_for("badge", url=row.url, _external=True),
             }
         )
