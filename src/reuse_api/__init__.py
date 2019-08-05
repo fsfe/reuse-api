@@ -198,7 +198,7 @@ def create_app():
 
     @app.route("/badge", methods=["GET"])
     @use_kwargs(repository_params)
-    def badge(url=None):
+    def badge(url):
         schedule_if_new_or_later(url, app, scheduler)
 
         row = select_all(url)
