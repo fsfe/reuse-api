@@ -6,7 +6,12 @@
 
 from setuptools import setup
 
-requirements = ["Flask", "Flask-SQLAlchemy", "webargs"]
+requirements = [
+    "Flask==1.1.1",
+    "Flask-SQLAlchemy==2.4.0",
+    "gunicorn==19.9.0",
+    "webargs==5.4.0",
+]
 
 test_requirements = ["pytest"]
 
@@ -39,6 +44,7 @@ if __name__ == "__main__":
         package_dir={"": "src"},
         packages=["reuse_api"],
         include_package_data=True,
+        zip_safe=False,
         install_requires=requirements,
         tests_require=test_requirements,
         classifiers=[

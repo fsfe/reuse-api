@@ -15,6 +15,7 @@ from webargs.fields import Url
 from webargs.flaskparser import use_kwargs
 from werkzeug.exceptions import HTTPException
 
+from . import config
 from .models import Repository, init_models
 from .scheduler import Scheduler, Task
 
@@ -74,10 +75,7 @@ def latest_hash(url):
 def create_app():
     # create and configure the app
     app = Flask(__name__)
-
-    # Make instance_path available to config.py and load configuration
-    builtins.instance_path = app.instance_path
-    app.config.from_pyfile("config.py")
+    app.config.from_object(config)
 
     # TODO: Make this configurable
     logging.basicConfig(
@@ -88,12 +86,6 @@ def create_app():
     _LOGGER.setLevel(logging.DEBUG)
 
     os.environ["GIT_TERMINAL_PROMPT"] = "0"
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
 
     init_models(app)
 
@@ -136,7 +128,9 @@ def create_app():
                 "status": row.status,
                 "lint_code": row.lint_code,
                 "lint_output": row.lint_output,
-                "last_access": row.last_access.isoformat(),
+                "last_access": row.last_access.isoformat()
+                if row.last_access
+                else None,
                 "badge": url_for("badge", url=row.url, _external=True),
             }
         )
