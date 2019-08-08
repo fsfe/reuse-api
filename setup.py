@@ -6,6 +6,7 @@
 
 from setuptools import setup
 
+
 requirements = [
     "Flask==1.1.1",
     "Flask-SQLAlchemy==2.4.0",

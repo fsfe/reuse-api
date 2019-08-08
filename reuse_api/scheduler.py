@@ -11,6 +11,7 @@ from typing import NamedTuple
 
 from .models import Repository
 
+
 _LOGGER = logging.getLogger(__name__)
 _HASH_PATTERN = re.compile(r"commit (.*):")
 

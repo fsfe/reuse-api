@@ -19,6 +19,7 @@ from . import config
 from .models import Repository, init_models
 from .scheduler import Scheduler, Task
 
+
 _LOGGER = logging.getLogger(__name__)
 
 __author__ = "Carmen Bianca Bakker"
