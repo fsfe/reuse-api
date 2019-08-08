@@ -38,10 +38,7 @@ def update_task(task, return_code, output):
         new_hash = task.hash
 
     Repository.find(task.url).update(
-            hash=new_hash,
-            status=status,
-            lint_code=return_code,
-            lint_output=output,
+        hash=new_hash, status=status, lint_code=return_code, lint_output=output
     )
 
 
