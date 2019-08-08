@@ -8,7 +8,7 @@ include Makefile
 include requirements.txt
 
 recursive-include LICENSES *
-recursive-include src *
+recursive-include reuse_api *
 recursive-include tests *
 
 recursive-exclude * __pycache__

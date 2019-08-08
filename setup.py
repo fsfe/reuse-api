@@ -41,7 +41,6 @@ if __name__ == "__main__":
         description="A badge API for REUSE",
         long_description=readme_md() + "\n\n" + changelog_md(),
         long_description_content_type="text/markdown",
-        package_dir={"": "src"},
         packages=["reuse_api"],
         include_package_data=True,
         zip_safe=False,

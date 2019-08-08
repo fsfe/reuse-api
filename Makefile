@@ -37,7 +37,7 @@ clean-test: ## remove test and coverage artifacts
 
 .PHONY: lint
 lint: ## check with pylint
-	pylint src/reuse_api tests/*.py
+	pylint reuse_api tests/*.py
 
 .PHONY: blackcheck
 blackcheck: ## check with black
@@ -62,7 +62,7 @@ test: ## run tests quickly
 
 .PHONY: coverage
 coverage: ## check code coverage quickly
-	py.test --cov-report term-missing --cov=src/reuse_api
+	py.test --cov-report term-missing --cov=reuse_api
 
 .PHONY: dist
 dist: clean-build clean-pyc ## builds source and wheel package
