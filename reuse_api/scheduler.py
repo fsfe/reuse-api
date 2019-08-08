@@ -2,19 +2,17 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import logging
 import re
 import subprocess
 from queue import Empty, Queue
 from threading import Thread
 from typing import NamedTuple
 
-from flask import abort
+from flask import abort, current_app
 
 from .models import Repository
 
 
-_LOGGER = logging.getLogger(__name__)
 _HASH_PATTERN = re.compile(r"commit (.*):")
 
 
@@ -36,17 +34,17 @@ def schedule_if_new_or_later(url, scheduler):
 
     if repository is None:
         # Create a new entry.
-        _LOGGER.debug("creating new database entry for '%s'", url)
+        current_app.logger.debug("creating new database entry for '%s'", url)
         repository = Repository.create(url=url, hash=latest)
         scheduler.add_task(Task(url, latest))
 
     elif repository.hash != latest:
         # Make the database entry up-to-date.
-        _LOGGER.debug("'%s' is outdated", url)
+        current_app.logger.debug("'%s' is outdated", url)
         scheduler.add_task(Task(url, latest))
 
     else:
-        _LOGGER.debug("'%s' is still up-to-date", url)
+        current_app.logger.debug("'%s' is still up-to-date", url)
 
     return repository
 
@@ -108,11 +106,13 @@ class Scheduler:
 
     def add_task(self, task):
         if self._running:
-            _LOGGER.debug("adding '%s' to queue", task.url)
-            _LOGGER.debug("size of queue is %d", self._queue.qsize())
+            current_app.logger.debug("adding '%s' to queue", task.url)
+            current_app.logger.debug(
+                "size of queue is %d", self._queue.qsize()
+            )
             self._queue.put_nowait(task)
         else:
-            _LOGGER.warning(
+            current_app.logger.warning(
                 "cannot add task to queue when scheduler is not running"
             )
 
@@ -122,15 +122,15 @@ class Scheduler:
             runner.start()
 
     def join(self):
-        _LOGGER.debug("finishing the queue")
+        current_app.logger.debug("finishing the queue")
         self._queue.join()
-        _LOGGER.debug("stopping all threads")
+        current_app.logger.debug("stopping all threads")
         self._running = False
         for runner in self._runners:
             runner.stop()
         for runner in self._runners:
             runner.join()
-        _LOGGER.debug("finished stopping all threads")
+        current_app.logger.debug("finished stopping all threads")
 
 
 class Runner(Thread):
@@ -150,7 +150,7 @@ class Runner(Thread):
             except Empty:
                 continue
 
-            _LOGGER.debug("linting '%s'", task.url)
+            self._app.logger.debug("linting '%s'", task.url)
             # FIXME!!!!!
             # This step needs to be ABSOLUTELY SECURE!
             try:
@@ -173,9 +173,9 @@ class Runner(Thread):
                     timeout=900,
                 )
             except subprocess.TimeoutExpired:
-                _LOGGER.warning("linting of '%s' timed out", task.url)
+                self._app.logger.warning("linting of '%s' timed out", task.url)
             else:
-                _LOGGER.debug(
+                self._app.logger.debug(
                     "finished linting '%s' return code is %d",
                     task.url,
                     result.returncode,
