@@ -9,6 +9,8 @@ from queue import Empty, Queue
 from threading import Thread
 from typing import NamedTuple
 
+from flask import abort
+
 from .models import Repository
 
 
@@ -16,9 +18,54 @@ _LOGGER = logging.getLogger(__name__)
 _HASH_PATTERN = re.compile(r"commit (.*):")
 
 
+class NotARepository(Exception):
+    pass
+
+
 class Task(NamedTuple):
     url: str
     hash: str
+
+
+def schedule_if_new_or_later(url, scheduler):
+    try:
+        latest = latest_hash(url)
+    except NotARepository:
+        abort(400, "Not a Git repository")
+    repository = Repository.find(url)
+
+    if repository is None:
+        # Create a new entry.
+        _LOGGER.debug("creating new database entry for '%s'", url)
+        repository = Repository.create(url=url, hash=latest)
+        scheduler.add_task(Task(url, latest))
+
+    elif repository.hash != latest:
+        # Make the database entry up-to-date.
+        _LOGGER.debug("'%s' is outdated", url)
+        scheduler.add_task(Task(url, latest))
+
+    else:
+        _LOGGER.debug("'%s' is still up-to-date", url)
+
+    return repository
+
+
+def latest_hash(url):
+    try:
+        result = subprocess.run(
+            ["git", "ls-remote", url, "HEAD"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=5,
+        )
+    except subprocess.TimeoutExpired:
+        raise NotARepository()
+
+    if result.returncode != 0:
+        raise NotARepository()
+    output = result.stdout.decode("utf-8")
+    return output.split()[0]
 
 
 def hash_from_output(output):
