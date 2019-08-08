@@ -1,0 +1,25 @@
+# SPDX-Copyright: 2019 Free Software Foundation Europe e.V.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+flask = "*"
+flask-sqlalchemy = "*"
+gunicorn = "*"
+webargs = "*"
+
+[dev-packages]
+black = "==19.3b0"  # no final release available yet
+isort = "*"
+pylama = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-flask = "*"
+pytest-mock = "*"
+
+[requires]
+python_version = "3.6"

@@ -7,16 +7,6 @@
 from setuptools import setup
 
 
-requirements = [
-    "Flask==1.1.1",
-    "Flask-SQLAlchemy==2.4.0",
-    "gunicorn==19.9.0",
-    "webargs==5.4.0",
-]
-
-test_requirements = ["pytest"]
-
-
 def readme_md():
     """Return contents of README.md"""
     return open("README.md").read()
@@ -45,8 +35,6 @@ if __name__ == "__main__":
         packages=["reuse_api"],
         include_package_data=True,
         zip_safe=False,
-        install_requires=requirements,
-        tests_require=test_requirements,
         classifiers=[
             "Development Status :: 3 - Alpha",
             "Intended Audience :: Developers",

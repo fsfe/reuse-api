@@ -1,87 +1,73 @@
-# SPDX-Copyright: 2017-2019 Free Software Foundation Europe e.V.
+# SPDX-Copyright: 2019 Free Software Foundation Europe e.V.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+SOURCE_DIR = reuse_api
+
+export FLASK_SKIP_DOTENV = 1
+export FLASK_APP = ${SOURCE_DIR}
+export FLASK_ENV = development
+export FLASK_RUN_HOST = localhost
+export FLASK_RUN_PORT = 8000
+
 .DEFAULT_GOAL := help
 
+GREEN  = $(shell tput -Txterm setaf 2)
+WHITE  = $(shell tput -Txterm setaf 7)
+YELLOW = $(shell tput -Txterm setaf 3)
+RESET  = $(shell tput -Txterm sgr0)
+
+HELPME = \
+	%help; \
+	while(<>) { push @{$$help{$$2 // 'options'}}, [$$1, $$3] if /^([a-zA-Z\-]+)\s*:.*\#\#(?:@([a-zA-Z\-]+))?\s(.*)$$/ }; \
+	for (sort keys %help) { \
+	print "${WHITE}$$_:${RESET}\n"; \
+	for (@{$$help{$$_}}) { \
+	$$sep = " " x (20 - length $$_->[0]); \
+	print "  ${YELLOW}$$_->[0]${RESET}$$sep${GREEN}$$_->[1]${RESET}\n"; \
+	}; \
+	print "\n"; }
+
+help:
+	@perl -e '$(HELPME)' $(MAKEFILE_LIST)
 .PHONY: help
-help: ## show this help message
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: clean
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+virtualenv:  ##@development Set up the virtual environment with the Python dependencies.
+	@pipenv install --dev
+.PHONY: virtualenv
 
-.PHONY: clean-build
-clean-build: ## remove build artifacts
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .cache/
-	rm -fr .eggs/
-	rm -fr pip-wheel-metadata/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -fr {} +
+applyisort:  ##@development Apply a correct Python import sort inline.
+	@pipenv run isort
+.PHONY: applyisort
 
-.PHONY: clean-pyc
-clean-pyc: ## remove Python file artifacts
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
+applyblack:  ##@development Apply source code formatting with black.
+	@pipenv run black .
+.PHONY: applyblack
 
-.PHONY: clean-test
-clean-test: ## remove test and coverage artifacts
-	rm -fr .tox/
-	rm -f .coverage
-	rm -fr htmlcov/
-	rm -fr .pytest_cache/
+flask:  ##@development Run the Flask built-in web server.
+	@pipenv run flask run
+.PHONY: flask
 
-.PHONY: lint
-lint: ## check with pylint
-	pylint reuse_api tests/*.py
+gunicorn:  ##@development Run the Gunicorn based web server.
+	@pipenv run gunicorn --bind $$FLASK_RUN_HOST:$$FLASK_RUN_PORT "$$FLASK_APP:create_app()"
+.PHONY: gunicorn
 
-.PHONY: blackcheck
-blackcheck: ## check with black
-	black --check .
+isort:  ##@quality Check the Python source code for import sorting.
+	@pipenv run isort --check-only --diff
+.PHONY: isort
 
+black:  ##@quality Check the Python source code formatting with black.
+	@pipenv run black --quiet --check --diff .
 .PHONY: black
-black: ## format with black
-	isort -y -s build -s dist
-	black .
 
-.PHONY: reuse
-reuse: dist ## check with self
-	reuse lint
-	tar -xf dist/reuse-api*.tar.gz -C dist/
-	# This prevents the linter from using the project root as root.
-	git init dist/reuse-api*/
-	cd dist/reuse-api*/; reuse lint
+lint:  ##@quality Check the Python source code for coding standards compliance.
+	@pipenv run pylama
+.PHONY: lint
 
-.PHONY: test
-test: ## run tests quickly
-	py.test
+pytest:  ##@quality Run the functional tests.
+	@pipenv run pytest --cov=$(SOURCE_DIR)
+	@pipenv run coverage html
+.PHONY: pytest
 
-.PHONY: coverage
-coverage: ## check code coverage quickly
-	py.test --cov-report term-missing --cov=reuse_api
-
-.PHONY: dist
-dist: clean-build clean-pyc ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
-	ls -l dist
-
-.PHONY: install-requirements
-install-requirements:  ## install requirements
-	pip install -r requirements.txt
-
-.PHONY: uninstall
-uninstall:  ## uninstall reuse
-	-pip uninstall -y reuse-api
-
-.PHONY: install
-install: uninstall install-requirements ## install reuse
-	python setup.py install
-
-.PHONY: develop
-develop: uninstall install-requirements  ## install source directory
-	python setup.py develop
+quality: isort black lint pytest  ##@quality Run all quality checks.
+.PHONY: quality
