@@ -37,7 +37,7 @@ def badge(url):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     current_app.logger.debug("sending badge for '%s'", row.url)
-    return send_file(f"{row.status}.svg", mimetype="image/svg+xml")
+    return send_file(f"badges/{row.status}.svg", mimetype="image/svg+xml")
 
 
 # Return error messages in JSON format
