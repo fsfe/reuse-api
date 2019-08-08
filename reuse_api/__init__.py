@@ -5,12 +5,11 @@
 """A web server that handles REUSE badges."""
 
 import atexit
-import builtins
 import logging
 import os
 import subprocess
 
-from flask import Flask, abort, jsonify, request, send_file, url_for
+from flask import Flask, abort, jsonify, send_file, url_for
 from webargs.fields import Url
 from webargs.flaskparser import use_kwargs
 from werkzeug.exceptions import HTTPException
