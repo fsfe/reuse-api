@@ -6,55 +6,15 @@
 
 from setuptools import setup
 
-requirements = [
-    "Flask==1.1.1",
-    "Flask-SQLAlchemy==2.4.0",
-    "gunicorn==19.9.0",
-    "webargs==5.4.0",
-]
 
-test_requirements = ["pytest"]
-
-
-def readme_md():
-    """Return contents of README.md"""
-    return open("README.md").read()
-
-
-def changelog_md():
-    """Return contents of CHANGELOG.md"""
-    return open("CHANGELOG.md").read()
-
-
-if __name__ == "__main__":
-    setup(
-        name="reuse-api",
-        version="0.1.0",
-        url="https://reuse.software/",
-        project_urls={
-            # "Documentation": "https://reuse.readthedocs.io/",
-            "Source": "https://git.fsfe.org/reuse/api"
-        },
-        license="GPL-3.0-or-later",
-        author="Carmen Bianca Bakker",
-        author_email="carmenbianca@fsfe.org",
-        description="A badge API for REUSE",
-        long_description=readme_md() + "\n\n" + changelog_md(),
-        long_description_content_type="text/markdown",
-        package_dir={"": "src"},
-        packages=["reuse_api"],
-        include_package_data=True,
-        zip_safe=False,
-        install_requires=requirements,
-        tests_require=test_requirements,
-        classifiers=[
-            "Development Status :: 3 - Alpha",
-            "Intended Audience :: Developers",
-            "License :: OSI Approved :: "
-            "GNU General Public License v3 or later (GPLv3+)",
-            "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.6",
-            "Programming Language :: Python :: 3.7",
-            "Programming Language :: Python :: 3.8",
-        ],
-    )
+setup(
+    name="reuse-api",
+    description="A badge API for REUSE",
+    url="https://git.fsfe.org/reuse/api",
+    author="Carmen Bianca Bakker",
+    author_email="carmenbianca@fsfe.org",
+    license="GPL-3.0-or-later",
+    packages=["reuse_api"],
+    include_package_data=True,
+    zip_safe=False,
+)

@@ -1,0 +1,26 @@
+# SPDX-Copyright: 2019 Free Software Foundation Europe e.V.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# These files will not be deployed to the docker image.
+
+doc
+docker-compose.yml
+docker-compose-quality.yml
+Dockerfile
+Dockerfile-quality
+.dockerignore
+.drone.yml
+.git
+.gitignore
+LICENSES
+Makefile
+plan.md
+pyproject.toml
+README.md
+tests
+
+# The following directories are created by the "quality" step in drone, which
+# runs before the docker image is built.
+.pytest_cache
+**/__pycache__

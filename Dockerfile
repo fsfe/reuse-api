@@ -2,19 +2,21 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM jfloff/alpine-python:3.7
+FROM fsfe/alpine-pipenv:latest
 
 EXPOSE 8000
 
-# Install dependencies
-RUN apk --no-cache add openssh-client
-
 WORKDIR /root
 
-# Copy sources
-COPY . .
+# Install Alpine packages
+RUN apk --no-cache add git openssh-client
 
-# Install the application
+# Install Python packages
+COPY Pipfile Pipfile.lock ./
+RUN pipenv install --system --deploy
+
+# Install the actual application
+COPY . .
 RUN ./setup.py install
 
 # Switch to non-root user

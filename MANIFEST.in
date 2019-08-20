@@ -2,14 +2,4 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-include README.md
-include CHANGELOG.md
-include Makefile
-include requirements.txt
-
-recursive-include LICENSES *
-recursive-include src *
-recursive-include tests *
-
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
+recursive-include reuse_api *
