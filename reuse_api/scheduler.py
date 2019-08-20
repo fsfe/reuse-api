@@ -21,27 +21,35 @@ class NotARepository(Exception):
 
 
 class Task(NamedTuple):
+    protocol: str
     url: str
     hash: str
 
 
 def schedule_if_new_or_later(url, scheduler):
-    try:
-        latest = latest_hash(url)
-    except NotARepository:
+
+    # Try these protocols and use the first that works
+    for protocol in ("git", "https", "http"):
+        try:
+            latest = latest_hash(protocol, url)
+            break
+        except NotARepository:
+            pass
+    else:
         abort(400, "Not a Git repository")
+
     repository = Repository.find(url)
 
     if repository is None:
         # Create a new entry.
         current_app.logger.debug("creating new database entry for '%s'", url)
         repository = Repository.create(url=url, hash=latest)
-        scheduler.add_task(Task(url, latest))
+        scheduler.add_task(Task(protocol, url, latest))
 
     elif repository.hash != latest:
         # Make the database entry up-to-date.
         current_app.logger.debug("'%s' is outdated", url)
-        scheduler.add_task(Task(url, latest))
+        scheduler.add_task(Task(protocol, url, latest))
 
     else:
         current_app.logger.debug("'%s' is still up-to-date", url)
@@ -49,10 +57,10 @@ def schedule_if_new_or_later(url, scheduler):
     return repository
 
 
-def latest_hash(url):
+def latest_hash(protocol, url):
     try:
         result = subprocess.run(
-            ["git", "ls-remote", url, "HEAD"],
+            ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=5,
@@ -122,15 +130,15 @@ class Scheduler:
             runner.start()
 
     def join(self):
-        current_app.logger.debug("finishing the queue")
+        self._app.logger.debug("finishing the queue")
         self._queue.join()
-        current_app.logger.debug("stopping all threads")
+        self._app.logger.debug("stopping all threads")
         self._running = False
         for runner in self._runners:
             runner.stop()
         for runner in self._runners:
             runner.join()
-        current_app.logger.debug("finished stopping all threads")
+        self._app.logger.debug("finished stopping all threads")
 
 
 class Runner(Thread):
@@ -165,7 +173,7 @@ class Runner(Thread):
                         "UserKnownHostsFile=~/.ssh/known_hosts",
                         "reuse@wrk1.api.reuse.software",
                         "reuse-lint-repo",
-                        task.url,
+                        f"{task.protocol}://{task.url}",
                     ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
