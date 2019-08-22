@@ -26,16 +26,26 @@ class Task(NamedTuple):
     hash: str
 
 
-def schedule_if_new_or_later(url, scheduler):
-
+def determine_protocol(url):
+    """Determine the protocol."""
     # Try these protocols and use the first that works
     for protocol in ("git", "https", "http"):
         try:
-            latest = latest_hash(protocol, url)
-            break
+            latest_hash(protocol, url)
+            return protocol
         except NotARepository:
             pass
     else:
+        raise NotARepository()
+
+
+def schedule_if_new_or_later(url, scheduler):
+    try:
+        protocol = determine_protocol(url)
+        # TODO: This is an additional request that also happens inside of
+        # determine_protocol.
+        latest = latest_hash(protocol, url)
+    except NotARepository:
         abort(400, "Not a Git repository")
 
     repository = Repository.find(url)
