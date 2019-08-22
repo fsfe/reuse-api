@@ -5,8 +5,6 @@
 """Request handlers for all endpoints."""
 
 from flask import Blueprint, current_app, send_file, url_for
-from webargs.fields import Url
-from webargs.flaskparser import use_kwargs
 from werkzeug.exceptions import HTTPException
 
 from .scheduler import schedule_if_new_or_later
@@ -18,21 +16,8 @@ html_blueprint = Blueprint("html", __name__)
 # Blueprint for all endpoints delivering machine-readable JSON content
 json_blueprint = Blueprint("json", __name__)
 
-# Parameter definition for all blueprints needing a repository URL
-repository_params = {
-    "url": Url(
-        schemes=("git", "http", "https"),
-        required=True,
-        error_messages={
-            "required": "Missing 'url' parameter",
-            "invalid": "Invalid url for git repository",
-        },
-    )
-}
 
-
-@html_blueprint.route("/badge", methods=["GET"])
-@use_kwargs(repository_params)
+@html_blueprint.route("/badge/<path:url>")
 def badge(url):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
@@ -49,9 +34,8 @@ def handle_error(err):
         return {"error": err.description}, err.code
 
 
-@json_blueprint.route("/api/project", methods=["GET"])
-@use_kwargs(repository_params)
-def api_project(url):
+@json_blueprint.route("/status/<path:url>")
+def status(url):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     # Return the current entry in the database.
