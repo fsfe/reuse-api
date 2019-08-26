@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>REUSE compliance information for {{url}}</title>
+  </head>
+  <body>
+    <h1>REUSE compliance information for {{url}}</h1>
+    {% if status == "checking" %}
+    <p>
+      The check for REUSE compliance has not yet been finished.
+    </p>
+    {% else %}
+    <p>
+      {% if status == "compliant" %}
+      {{url}} is REUSE compliant!
+      {% elif status == "non-compliant" %}
+      {{url}} is <strong>not</strong> REUSE compliant!
+      {% endif %}
+    </p>
+    <p>
+      Commit {{hash}} was checked on {{last_access}} with the following result:
+    </p>
+    <pre>{{lint_output}}</pre>
+    <p>
+      <img src="{{badge}}"/>
+    </p>
+    <!-- FIXME: I don't know how to build the markdown code for the badge -->
+    <p>
+      JSON status information can be retrieved through
+      <a href="{{json}}">{{json}}</a>.
+    </p>
+    {% endif %}
+  </body>
+</html>
