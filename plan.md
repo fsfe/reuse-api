@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2019 Free Software Foundation Europe e.V.
+
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 # Plan for the API service
 
 This project is supposed to allow projects to check their code for REUSE
