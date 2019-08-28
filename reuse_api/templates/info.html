@@ -18,17 +18,21 @@
       {% endif %}
     </p>
     <p>
-      Commit {{hash}} was checked on {{last_access}} with the following result:
-    </p>
-    <pre>{{lint_output}}</pre>
-    <p>
       <img src="{{badge}}"/>
     </p>
     <!-- FIXME: I don't know how to build the markdown code for the badge -->
     <p>
+      To add the badge to your README.md, use the following snippet:
+    </p>
+    <pre>[![]({{badge}})](https://reuse.software/)</pre>
+    <p>
       JSON status information can be retrieved through
       <a href="{{json}}">{{json}}</a>.
     </p>
+    <p>
+      Commit {{hash}} was checked on {{last_access}} with the following result:
+    </p>
+    <pre>{{lint_output}}</pre>
     {% endif %}
   </body>
 </html>
