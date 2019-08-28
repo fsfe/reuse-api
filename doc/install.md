@@ -7,7 +7,11 @@ The file [`Pipfile`] lists all Python dependencies of reuse-api, and
 dependencies recommended for use. You can use `pipenv install --system` to
 download and install all these dependencies on your computer.
 
-Please note that reuse-api requires SSH access to a REUSE lint server.
+Please note that reuse-api requires a running
+[FSFE form server](https://git.fsfe.org/fsfe-system-hackers/forms) and SSH
+access to a [REUSE lint server](https://git.fsfe.org/reuse/api-worker). The
+file `repos.json` of the form server must be available in reuse-api's working
+directory.
 
 
 ## Local install
@@ -54,6 +58,24 @@ steps defined in [`.drone.yml`]:
    docker image and start the corresponding container. The file
    [`docker-compose.yml`] defines the parameters for this step, referring to
    the [`Dockerfile`] described in the previous section.
+
+
+## Secrets
+
+The following secrets are [managed in drone](http://docs.drone.io/manage-secrets/):
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Requirement</th>
+  </tr>
+  <tr>
+    <th>secret_key</th>
+    <td>Secret key used by flask for various purposes</td>
+    <td>Can be arbitarily assigned, but should remain constant over server rebuilds</td>
+  </tr>
+</table>
 
 
 [`Pipfile`]: ../Pipfile
