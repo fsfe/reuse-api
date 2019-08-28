@@ -7,6 +7,9 @@
 import os
 
 
+# Configuration for Flask
+SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
+
 # Configuration for the repository storage
 # NOTE: A relative path currently (Flask-SQLAlchemy < 3.0) is relative to the
 # application root, not relative to the current working directory! So we have
@@ -14,5 +17,9 @@ import os
 # See also https://github.com/pallets/flask-sqlalchemy/issues/462
 SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.getcwd()}/database.sqlite"
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# Configuration for the form server used for registration
+FORMS_URL = "https://forms.fsfe.org/email"
+FORMS_FILE = "repos.json"
 
 # TODO: SERVERNAME

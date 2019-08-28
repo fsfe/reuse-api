@@ -54,7 +54,8 @@ def schedule_if_new_or_later(url, scheduler):
         # Create a new entry.
         current_app.logger.debug("creating new database entry for '%s'", url)
         repository = Repository.create(url=url, hash=latest)
-        scheduler.add_task(Task(protocol, url, latest))
+        if repository:
+            scheduler.add_task(Task(protocol, url, latest))
 
     elif repository.hash != latest:
         # Make the database entry up-to-date.
