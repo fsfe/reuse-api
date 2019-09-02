@@ -34,6 +34,17 @@ html_blueprint = Blueprint("html", __name__)
 json_blueprint = Blueprint("json", __name__)
 
 
+# Filter for a project URL
+def sanitize_project_url(data):
+    if data is not None:
+        p = data.find("://")
+        if p != -1:
+            data = data[p + 3 :]  # noqa
+        if data.lower().endswith(".git"):
+            data = data[:-4]
+    return data
+
+
 # Validation of a project URL
 def validate_project_url(form, field):
     try:
@@ -51,7 +62,9 @@ class RegisterForm(FlaskForm):
         label="Email address", validators=[InputRequired(), Email()]
     )
     project = StringField(
-        label="Project URL", validators=[InputRequired(), validate_project_url]
+        label="Project URL",
+        filters=[sanitize_project_url],
+        validators=[InputRequired(), validate_project_url],
     )
 
 
