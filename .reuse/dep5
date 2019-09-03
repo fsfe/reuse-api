@@ -10,3 +10,20 @@ License: CC0-1.0
 Files: reuse_api/templates/*.html
 Copyright: 2019 Free Software Foundation Europe e.V.
 License: GPL-3.0-or-later
+
+Files: reuse_api/templates/base/*.html
+Copyright: 2015 Omar Abdelhafith <o.arrabi@me.com>
+           2019 Free Software Foundation Europe e.V.
+License: MIT
+
+Files: reuse_api/static/fonts/roboto/*
+Copyright: 2018 Google
+License: Apache-2.0
+
+Files: reuse_api/static/fonts/fontawesome/webfonts/*
+Copyright: 2018 Font Awesome
+License: OFL-1.1
+
+Files: reuse_api/static/img/*
+Copyright: 2019 Free Software Foundation Europe <https://fsfe.org>
+License: CC-BY-SA-4.0
