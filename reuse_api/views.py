@@ -16,7 +16,7 @@ from flask import (
 from flask_wtf import FlaskForm
 from requests import post
 from werkzeug.exceptions import HTTPException
-from wtforms import StringField, ValidationError
+from wtforms import StringField, BooleanField, ValidationError
 from wtforms.validators import Email, InputRequired
 
 from .models import Repository
@@ -61,15 +61,16 @@ def validate_project_url(form, field):
 
 # Registration form
 class RegisterForm(FlaskForm):
-    name = StringField(label="Name", validators=[InputRequired()])
+    name = StringField(label="Your name", validators=[InputRequired()])
     confirm = StringField(
-        label="Email address", validators=[InputRequired(), Email()]
+        label="Your email", validators=[InputRequired(), Email()]
     )
     project = StringField(
-        label="Project URL",
+        label="Your project URL",
         filters=[sanitize_project_url],
         validators=[InputRequired(), validate_project_url],
     )
+    wantupdates = BooleanField()
 
 
 @html_blueprint.route("/register", methods=["GET", "POST"])
