@@ -14,6 +14,7 @@ services:
       VIRTUAL_HOST: "api.reuse.software"
       LETSENCRYPT_HOST: "api.reuse.software"
       LETSENCRYPT_EMAIL: "contact@fsfe.org"
+      SECRET_KEY: "${SECRET_KEY}"
     volumes:
       - "/srv/reuse-api:/home/fsfe:rw"
     restart: always

@@ -32,7 +32,11 @@ applyblack` to reformat the code before you commit.
 reuse-api can be run from the git checkout directory for testing and
 debugging.
 
-Please note that reuse-api requires SSH access to a REUSE lint server.
+Please note that reuse-api requires a running
+[FSFE form server](https://git.fsfe.org/fsfe-system-hackers/forms) and SSH
+access to a [REUSE lint server](https://git.fsfe.org/reuse/api-worker). The
+file `repos.json` of the form server must be available in reuse-api's working
+directory.
 
 When you have set up that, you can run `make flask` to run reuse-api
 with Flask's built-in web server in debug mode. Alternatively, you can run

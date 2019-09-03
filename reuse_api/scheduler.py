@@ -54,7 +54,8 @@ def schedule_if_new_or_later(url, scheduler):
         # Create a new entry.
         current_app.logger.debug("creating new database entry for '%s'", url)
         repository = Repository.create(url=url, hash=latest)
-        scheduler.add_task(Task(protocol, url, latest))
+        if repository:
+            scheduler.add_task(Task(protocol, url, latest))
 
     elif repository.hash != latest:
         # Make the database entry up-to-date.
@@ -101,8 +102,15 @@ def update_task(task, return_code, output):
     if new_hash is None:
         new_hash = task.hash
 
+    # Here, we update the URL as well, since it could differ in case from
+    # what's stored previously, and we want the info pages to display the URL
+    # in the form it was used for the last check.
     Repository.find(task.url).update(
-        hash=new_hash, status=status, lint_code=return_code, lint_output=output
+        url=task.url,
+        hash=new_hash,
+        status=status,
+        lint_code=return_code,
+        lint_output=output,
     )
 
 

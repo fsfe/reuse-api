@@ -5,6 +5,8 @@
 pipeline:
   deploy:
     image: tmaier/docker-compose
+    secrets:
+      - secret_key
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:

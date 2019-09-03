@@ -1,0 +1,31 @@
+{% macro render_field(field, before="", after="") %}
+  <p>
+    {{field.label()}}:
+    {{before}}
+    {{field(required=field.flags.required)}}
+    {{after}}
+  </p>
+  {% if field.errors %}
+    {% for error in field.errors %}
+      <p>{{error}}</p>
+    {% endfor %}
+  {% endif %}
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Register a project for the REUSE API</title>
+  </head>
+  <body>
+    <h1>Register a project for the REUSE API</h1>
+
+    <form action="" method="post">
+      {{form.csrf_token}}
+      {{render_field(form.name)}}
+      {{render_field(form.confirm)}}
+      {{render_field(form.project, "git://", ".git")}}
+      <input type="submit" value="Register"/>
+    </form>
+  </body>
+</html>

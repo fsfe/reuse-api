@@ -2,8 +2,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Created by our application
+# Test data
 database.sqlite
+repos.json
 
 # Created by Python running locally
 __pycache__/
