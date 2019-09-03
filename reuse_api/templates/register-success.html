@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Registration successful</title>
-  </head>
-  <body>
-    <h1>Registration successful</h1>
-    <p>
-      Thank you for registering {{project}} for the REUSE API. Please check
-      your email for further steps.
-    </p>
-  </body>
-</html>
+{% extends "base/base.html" %}
+
+{% block title %}Registration successful{% endblock %}
+
+{% block content %}
+  <h1>Registration successful</h1>
+  <p>
+    Thank you for registering {{project}} for the REUSE API. Please check
+    your email for further steps.
+  </p>
+
+{% endblock %}

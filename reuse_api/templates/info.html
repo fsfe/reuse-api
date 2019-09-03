@@ -1,39 +1,41 @@
-<!DOCTYPE html>
-<!-- FIXME: Make this look better -->
-<html lang="en">
-  <head>
-    <title>REUSE compliance information for {{url}}</title>
-  </head>
-  <body>
+{% extends "base/base.html" %}
+
+{% block title %}REUSE compliance information for {{url}}{% endblock %}
+
+{% block content %}
     <h1>REUSE compliance information for {{url}}</h1>
     {% if status == "checking" %}
     <p>
-      The check for REUSE compliance has not yet been finished.
+      The initial check for REUSE compliance has not yet been finished. Please refresh the page in a few seconds.
     </p>
     {% else %}
     <p>
       {% if status == "compliant" %}
-      {{url}} is REUSE compliant!
+      Congratulations, <em>{{url}}</em> is REUSE compliant!
       {% elif status == "non-compliant" %}
-      {{url}} is <strong>not</strong> REUSE compliant!
+      Unfortunately, <em>{{url}}</em> is <strong>not</strong> REUSE compliant!
       {% endif %}
     </p>
+
+    <h2>Badge</h2>
     <p>
       <img src="{{badge}}"/>
     </p>
-    <!-- FIXME: I don't know how to build the markdown code for the badge -->
     <p>
-      To add the badge to your README.md, use the following snippet:
+      To add the badge to your project's <code>README.md</code> file, use the following snippet:
     </p>
-    <pre>[![]({{badge}})](https://reuse.software/)</pre>
+    <pre>[![REUSE compliant]({{badge}})](https://reuse.software)</pre>
+
+    <h2>Parseable JSON</h2>
     <p>
-      JSON status information can be retrieved through
-      <a href="{{json}}">{{json}}</a>.
+      All information about the latest compliance check can also be accessed via a <a href="{{json}}">machine-parsable JSON file</a>.
     </p>
+
+    <h2>Last lint output</h2>
     <p>
-      Commit {{hash}} was checked on {{last_access}} with the following result:
+      Commit <code>{{hash}}</code> was checked on {{last_access}} with the following result:
     </p>
-    <pre>{{lint_output}}</pre>
+    <pre class="pre-scrollable">{{lint_output}}</pre>
     {% endif %}
-  </body>
-</html>
+
+{% endblock %}
