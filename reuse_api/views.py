@@ -33,6 +33,10 @@ html_blueprint = Blueprint("html", __name__)
 # Blueprint for all endpoints delivering machine-readable JSON content
 json_blueprint = Blueprint("json", __name__)
 
+# Start page
+@html_blueprint.route("/")
+def index():
+    return render_template("index.html")
 
 # Filter for a project URL
 def sanitize_project_url(data):
@@ -104,6 +108,7 @@ def info(url):
     return render_template(
         "info.html",
         url=row.url,
+        project_name="/".join(row.url.split("/")[-2:]),
         hash=row.hash,
         status=row.status,
         lint_code=row.lint_code,

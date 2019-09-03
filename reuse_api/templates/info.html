@@ -1,12 +1,13 @@
 {% extends "base/base.html" %}
 
-{% block title %}REUSE compliance information for {{url}}{% endblock %}
+{% block title %}{{project_name}} | REUSE API{% endblock %}
 
 {% block content %}
-    <h1>REUSE compliance information for {{url}}</h1>
+    <h1>REUSE compliance of {{project_name}}</h1>
     {% if status == "checking" %}
     <p>
-      The initial check for REUSE compliance has not yet been finished. Please refresh the page in a few seconds.
+      The initial check for REUSE compliance has not yet been finished.
+      Please refresh the page in a few seconds.
     </p>
     {% else %}
     <p>
@@ -22,18 +23,21 @@
       <img src="{{badge}}"/>
     </p>
     <p>
-      To add the badge to your project's <code>README.md</code> file, use the following snippet:
+      To add the badge to your project's <code>README.md</code> file,
+      use the following snippet:
     </p>
     <pre>[![REUSE compliant]({{badge}})](https://reuse.software)</pre>
 
     <h2>Parseable JSON</h2>
     <p>
-      All information about the latest compliance check can also be accessed via a <a href="{{json}}">machine-parsable JSON file</a>.
+      All information about the latest compliance check can also be
+      accessed via a <a href="{{json}}">machine-parsable JSON file</a>.
     </p>
 
     <h2>Last lint output</h2>
     <p>
-      Commit <code>{{hash}}</code> was checked on {{last_access}} with the following result:
+      Commit <code>{{hash}}</code> was checked on {{last_access}} with
+      the following result:
     </p>
     <pre class="pre-scrollable">{{lint_output}}</pre>
     {% endif %}

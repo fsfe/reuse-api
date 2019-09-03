@@ -1,0 +1,137 @@
+{% extends "base/base.html" %}
+
+{% block title %}REUSE API - Easy REUSE compliance check{% endblock %}
+
+{% block content %}
+  <h1 class="title"><strong>REUSE</strong> API</h1>
+  <p class="lead intro">
+    Welcome to the REUSE API. This service helps you to continuously
+    check and display compliance with the REUSE guidelines. REUSE makes
+    licensing easy for humans and machines alike. Register your project
+    with us, make it REUSE compliant, and get your compliant badge
+    today!
+  </p>
+  
+  <p class="lead intro">
+    If you are not sure what REUSE is, please head to <a
+    href="https://reuse.software">our main page</a> first.
+  </p>
+
+  <h2>Check your project</h2>
+
+  <p>
+    We offer a <a href="https://reuse.software/dev/">wide set of
+    tools</a> to support you in adopting REUSE for your project. As a
+    supplement, this API checks the REUSE compliance status for you.
+    You can include a badge indicating the live status in your README
+    file, and parse the output using the generated JSON file.
+  </p>
+
+  <p>
+    All it takes is a registration of your project with this service.
+    <a href="/register">Sign up</a>, confirm your email, and see the
+    output.
+  </p>
+
+  <div class="row vertical-align">
+
+    <div class="col-sm-8">
+
+      <h2>What is REUSE?</h2>
+
+      <p>
+        Copyright and licensing is difficult, especially when reusing
+        software from different projects that are released under
+        various different licenses. REUSE was started by the <a
+        href="https://fsfe.org">Free Software Foundation Europe
+        (FSFE)</a> to provide a set of recommendations to make
+        licensing your Free Software projects easier. Not only do these
+        recommendations make it easier for you to declare the licenses
+        under which your works are released, but they also make it
+        easier for a computer to understand how your project is
+        licensed.
+      </p>
+
+    </div>
+
+    <div class="reuse-logo col-sm-4">
+      <img src="{{url_for('static', filename='img/reuse.png')}}" alt="Logo of REUSE">
+    </div>
+
+  </div>
+
+  <h2>Troubleshooting</h2>
+
+  <p>
+    When using this service, you might run into some commonly asked
+    questions. If yours is not answered here, please <a
+    href="https://git.fsfe.org/reuse/api/issues">open an issue</a> or
+    get in touch with the <a
+    href="https://lists.fsfe.org/mailman/listinfo/reuse">REUSE
+    community</a>.
+  </p>
+
+  <p>
+    <ul>
+      <li>
+        <strong>Which version control systems are supported?</strong><br />
+        Currently, this service as well as the underlying <a
+        href="https://reuse.software/dev">helper tool</a> only support
+        Git. Please refer to <a
+        href="https://reuse.software/faq/#no-git">our FAQ section</a>
+        for more information.
+      </li>
+      <li>
+        <strong>Which platforms are supported?</strong><br />
+        As long as it is Git, we strive to support all platforms. We
+        value decentralisation, so you will also be able to connect
+        your own instance to our service. If yours does not work,
+        please open an issue in our <a
+        href="https://git.fsfe.org/reuse/api">project repo</a>.
+      </li>
+      <li>
+        <strong>Can I register multiple projects?</strong><br />
+        Yes, but please do not abuse our service and only register the
+        projects you actually care for. We are a charitable non-profit
+        organisations and habe limited server capacities. Also, please
+        make sure to register and confirm your projects one-by-one.
+      </li>
+      <li>
+        <strong>Are private repositories supported?</strong><br />
+        No, but users who want to check the status of their private
+        repos can <a href="https://reuse.software/dev/#ci">include the
+        REUSE linter in their CI/CD processes</a>. If you would like to
+        help us extend this service, you are welcome to check out the
+        <a href="https://git.fsfe.org/reuse/api">code on our Git
+        platform</a>.
+      </li>
+      <li>
+        <strong>Which branches are checked?</strong><br />
+        We only check the main branch when cloning your repository.
+        This service does not support checking other branches
+        currently. However, you can <a
+        href="https://reuse.software/dev/#ci">include the REUSE helper
+        tool in your CI/CD processes</a> to achieve that during your
+        development.
+      </li>
+      <li>
+        <strong>Why do you need my email for registration?</strong><br />
+        The REUSE API is a new service under continuous development. We
+        would like to contact you if we need to introduce some breaking
+        changes (which we will try to avoid of course). You will also
+        be able to receive additional information about REUSE if you
+        like.
+      </li>
+      <li>
+        <strong>I want to change/delete my project here.</strong><br />
+        If you want your project to be deleted here or have it changed
+        (e.g. with a different address), please <a
+        href="https://fsfe.org/contact">contact us</a>. But please be
+        aware that anyone else can add your project again with their
+        email address as long as it is a valid and accessible Git
+        repository.
+      </li>
+    </ul>
+  </p>
+
+{% endblock %}
