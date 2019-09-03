@@ -1,97 +1,45 @@
+<!--
+  SPDX-License-Identifier: MIT
+  SPDX-FileCopyrightText: 2015 Omar Abdelhafith <o.arrabi@me.com>
+  SPDX-FileCopyrightText: 2019 Free Software Foundation Europe e.V. <https://fsfe.org>
+-->
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>{% block title %}{{_("FSFE")}}{% endblock %}</title>
+<html>
+<head>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
     <link rel="icon" type="image/png" href="{{url_for('static', filename='img/favicon.png')}}" />
+    <title>{% block title %}FSFE{% endblock %}</title>
 
-    <!-- Website CSS -->
+    <!-- Bootstrap Core CSS -->
     <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet" />
+
+    <!-- Custom CSS -->
     <link href="{{url_for('static', filename='css/landing-page.css')}}" rel="stylesheet" />
     <link href="{{url_for('static', filename='css/template.css')}}" rel="stylesheet" />
     <link href="{{url_for('static', filename='css/share.css')}}" rel="stylesheet" />
     <link href="{{url_for('static', filename='css/custom.css')}}" rel="stylesheet" />
+
+    <!-- Custom Fonts -->
     <link href="{{url_for('static', filename='fonts/roboto/roboto.css')}}" rel="stylesheet" />
+
     <link href="{{url_for('static', filename='fonts/fontawesome/css/all.min.css')}}" rel="stylesheet" />
+
     <!-- Custom CSS for this service -->
     <link href="{{url_for('static', filename='css/api.css')}}" rel="stylesheet" />
-  </head>
-  <body id="page-top">
-    <div id="wrap">
 
-    <!-- NAV -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <noscript><div class="noscript"><strong>Warning:</strong> Some interactive features will not work with JavaScript disabled.</div></noscript>
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                  <a class="page-scroll navbar-brand" href="/" title="REUSE API">
-                    <img id="logo" src="{{url_for('static', filename='img/reuse-horizontal-api.png')}}" />
-                  </a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                  <li class=""><a href="https://reuse.software">REUSE</a></li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
-    <div class="content-section-b">
-      <div class="container page-standard">
-    <!-- /NAV -->
-    
-      {% block content %}
-      {% endblock %}
+</head>
+<body id="page-top">
+<div id="wrap">
+<!-- /HEAD -->
 
-    <!-- FOOTER -->
-      </div> <!-- /.container -->
-    </div> <!-- /.content-section-b -->
-    </div> <!-- /#wrap -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                  <!-- SOCIAL -->
-                  <div class="social">
-                    <ul class="social-links">
-                      <li><a href="https://git.fsfe.org/reuse" title="Git" target="_blank"><i class="fab fa-git"></i></a></li>
-                      <li><a href="https://github.com/search?q=topic%3Areuse&#43;org%3Afsfe&amp;type=Repositories" title="Github" target="_blank"><i class="fab fa-github"></i></a></li>
-                      <li><a href="https://lists.fsfe.org/mailman/listinfo/reuse" title="Email" target="_blank"><i class="fa fa-envelope"></i></a></li>
-                      <li><a href="https://mastodon.social/@fsfe" title="Mastodon" rel="me" target="_blank"><i class="fab fa-mastodon"></i></a></li>
-                      <li><a href="https://twitter.com/fsfe" title="Twitter" target="_blank"><i class="fab fa-twitter"></i></a></li>
-                    </ul>
-                  </div>
-                  <!-- /SOCIAL -->
-                    <p class="copyright text-muted small">Copyright &copy; 2019 <a href="https://fsfe.org/">Free Software Foundation Europe e.V.</a> – <a href="https://fsfe.org/about/legal/imprint.en.html">Imprint & Privacy</a>, <a href="https://fsfe.org/about/transparency-commitment.html">Transparency Committment</a></p>
-                    <p class="text-muted small">Unless stated otherwise, the content of the website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 License</a>.
-                  </p>
-                </div>
-                <div class="col-md-4">
-                </div>
-            </div>
-        </div>
-    </footer>
-    <a class="page-scroll" href="#page-top" title="Scroll to top">
-      <div id="scroll-to-top">
-        <i class="fa fa-chevron-up" aria-hidden="true"></i>
-      </div>
-    </a>
-    <!-- /FOOTER -->
+{% include "base/nav.html" %}
 
-    <!-- JS -->
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <!-- /JS -->
-  </body>
-</html>
+{% block content %}
+{% endblock %}
+
+{% include "base/footer.html" %}
