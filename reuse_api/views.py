@@ -16,7 +16,7 @@ from flask import (
 from flask_wtf import FlaskForm
 from requests import post
 from werkzeug.exceptions import HTTPException
-from wtforms import StringField, BooleanField, ValidationError
+from wtforms import BooleanField, StringField, ValidationError
 from wtforms.validators import Email, InputRequired
 
 from .models import Repository
@@ -37,6 +37,7 @@ json_blueprint = Blueprint("json", __name__)
 @html_blueprint.route("/")
 def index():
     return render_template("index.html")
+
 
 # Filter for a project URL
 def sanitize_project_url(data):
