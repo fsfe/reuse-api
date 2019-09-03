@@ -1,30 +1,30 @@
-{% macro render_field(field, before="", after="", placeholder="", desc="") %}
-  {% if field.errors %}
-    {% for error in field.errors %}
-      <p class="text-danger col-sm-offset-2">{{error}}</p>
-    {% endfor %}
-  {% endif %}
-  <div class="form-group">
-    <div class="col-sm-2">
-      {{field.label()}}
-    </div>
+{% macro render_field(field, before="", after="", placeholder="") %}
+  <div class="form-group{% if field.errors %} has-error{% endif %}">
+    {{field.label(class="col-sm-2 control-label")}}
     <div class="col-sm-5">
       {% if before or after %}
         <div class="input-group">
       {% endif %}
       {% if before %}
-        <span class="input-group-addon" id="basic-addon1">{{before}}</span>
+        <span class="input-group-addon">{{before}}</span>
       {% endif %}
-      {{field(required=field.flags.required, class="form-control", placeholder=placeholder)}}
+      {{field(class="form-control", placeholder=placeholder)}}
       {% if after %}
-        <span class="input-group-addon" id="basic-addon2">{{after}}</span>
+        <span class="input-group-addon">{{after}}</span>
       {% endif %}
       {% if before or after %}
         </div>
       {% endif %}
+      {% if field.errors %}
+        <ul class="col-sm-offset-2 list-unstyled help-block">
+          {% for error in field.errors %}
+            <li><strong>{{error}}</strong></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
     </div>
     <div class="col-sm-5 small">
-      {{desc}}
+      {{field.description}}
     </div>
   </div>
 {% endmacro %}
@@ -40,26 +40,17 @@
     <form class="form-horizontal" action="" method="post">
       {{form.csrf_token}}
       {{render_field(form.name)}}
-      {{render_field(
-        form.confirm,
-        desc="We need your email address to contact you in case of
-              important changes to this service. If you would like to
-              be informed about important updates on REUSE and the
-              FSFE, please tick the optional box further down."
-      )}}
+      {{render_field(form.confirm)}}
       {{render_field(
         form.project,
         before="git://",
         after=".git",
-        placeholder="gitserver.com/user/repo",
-        desc="Please add your project URL without a schema like http://
-              or git://. We automatically try git, https, and http as
-              schemas."
+        placeholder="gitserver.com/user/repo"
       )}}
       <div class="form-group">
         <div class="checkbox col-sm-offset-2 col-sm-5">
           <label>
-            <input type="checkbox" name="wantupdates" id="wantupdates"> I want to receive occasional information about REUSE and other FSFE activities
+            {{form.wantupdates}} {{form.wantupdates.label}}
           </label>
         </div>
       </div>

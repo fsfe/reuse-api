@@ -6,3 +6,8 @@
 .small {
   line-height: initial;
 }
+
+.form-control, .input-group-addon {
+  font-size: inherit;
+  height: auto;
+}

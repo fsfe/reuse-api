@@ -64,14 +64,30 @@ def validate_project_url(form, field):
 class RegisterForm(FlaskForm):
     name = StringField(label="Your name", validators=[InputRequired()])
     confirm = StringField(
-        label="Your email", validators=[InputRequired(), Email()]
+        label="Your email",
+        description=(
+            "We need your email address to contact you in case of important "
+            "changes to this service. If you would like to be informed about "
+            "important updates on REUSE and the FSFE, please tick the "
+            "optional box further down."
+        ),
+        validators=[InputRequired(), Email()],
     )
     project = StringField(
         label="Your project URL",
+        description=(
+            "Please add your project URL without a schema like http:// or "
+            "git://. We automatically try git, https, and http as schemas."
+        ),
         filters=[sanitize_project_url],
         validators=[InputRequired(), validate_project_url],
     )
-    wantupdates = BooleanField()
+    wantupdates = BooleanField(
+        label=(
+            "I want to receive occasional information about REUSE and other "
+            "FSFE activities"
+        )
+    )
 
 
 @html_blueprint.route("/register", methods=["GET", "POST"])
