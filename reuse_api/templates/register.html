@@ -12,12 +12,12 @@
   {% endif %}
 {% endmacro %}
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Register a project for the REUSE API</title>
-  </head>
-  <body>
+{% extends "base/base.html" %}
+
+{% block title %}Register a project for the REUSE API{% endblock %}
+
+{% block content %}
+
     <h1>Register a project for the REUSE API</h1>
 
     <form action="" method="post">
@@ -27,5 +27,5 @@
       {{render_field(form.project, "git://", ".git")}}
       <input type="submit" value="Register"/>
     </form>
-  </body>
-</html>
+
+{% endblock %}
