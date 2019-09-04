@@ -135,6 +135,9 @@ def info(url):
         badge=url_for(
             "html.badge", url=row.url, _external=True, _scheme="https"
         ),
+        info=url_for(
+            "html.info", url=row.url, _external=True, _scheme="https"
+        ),
         json=url_for(
             "json.status", url=row.url, _external=True, _scheme="https"
         ),
