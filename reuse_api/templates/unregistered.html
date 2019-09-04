@@ -1,0 +1,17 @@
+{% extends "base/base.html" %}
+
+{% block title %}Project not registered | REUSE API{% endblock %}
+
+{% block content %}
+  <h1>Project not registered</h1>
+  <p class="lead">
+    Your requested project <em>{{url}}</em> is not registered with this
+    service.
+  </p>
+
+  <p>
+    Please register your project <a href="/register">here</a> to enable
+    the automatic checks.
+  </p>
+
+{% endblock %}

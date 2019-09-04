@@ -4,15 +4,7 @@
 
 """Request handlers for all endpoints."""
 
-from flask import (
-    Blueprint,
-    abort,
-    current_app,
-    escape,
-    render_template,
-    send_file,
-    url_for,
-)
+from flask import Blueprint, current_app, render_template, send_file, url_for
 from flask_wtf import FlaskForm
 from requests import post
 from werkzeug.exceptions import HTTPException
@@ -121,7 +113,7 @@ def info(url):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
-        abort(404, f'The project "{escape(url)}" is not registered.')
+        return render_template("unregistered.html", url=url), 404
 
     return render_template(
         "info.html",
