@@ -96,7 +96,7 @@ def register():
     if form.validate_on_submit():
         response = post(
             url=current_app.config["FORMS_URL"],
-            data={"appid": "reuse-api", **form.data, "obligatory": True},
+            data={"appid": "reuse-api", **form.data},
             allow_redirects=False,
         )
         if not response.ok:
