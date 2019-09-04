@@ -23,7 +23,7 @@ class Repository(db.Model):
     status = db.Column(db.String(13), default="checking")
     lint_code = db.Column(db.SmallInteger)
     lint_output = db.Column(db.Text)
-    last_access = db.Column(db.DateTime(timezone=True))
+    last_access = db.Column(db.DateTime())
 
     @staticmethod
     def is_registered(url):
