@@ -16,7 +16,7 @@ from flask import (
 from flask_wtf import FlaskForm
 from requests import post
 from werkzeug.exceptions import HTTPException
-from wtforms import StringField, ValidationError
+from wtforms import BooleanField, StringField, ValidationError
 from wtforms.validators import Email, InputRequired
 
 from .models import Repository
@@ -37,6 +37,7 @@ json_blueprint = Blueprint("json", __name__)
 @html_blueprint.route("/")
 def index():
     return render_template("index.html")
+
 
 # Filter for a project URL
 def sanitize_project_url(data):
@@ -61,14 +62,31 @@ def validate_project_url(form, field):
 
 # Registration form
 class RegisterForm(FlaskForm):
-    name = StringField(label="Name", validators=[InputRequired()])
+    name = StringField(label="Your name", validators=[InputRequired()])
     confirm = StringField(
-        label="Email address", validators=[InputRequired(), Email()]
+        label="Your email",
+        description=(
+            "We need your email address to contact you in case of important "
+            "changes to this service. If you would like to be informed about "
+            "important updates on REUSE and the FSFE, please tick the "
+            "optional box further down."
+        ),
+        validators=[InputRequired(), Email()],
     )
     project = StringField(
-        label="Project URL",
+        label="Your project URL",
+        description=(
+            "Please add your project URL without a schema like http:// or "
+            "git://. We automatically try git, https, and http as schemas."
+        ),
         filters=[sanitize_project_url],
         validators=[InputRequired(), validate_project_url],
+    )
+    wantupdates = BooleanField(
+        label=(
+            "I want to receive occasional information about REUSE and other "
+            "FSFE activities"
+        )
     )
 
 

@@ -1,15 +1,32 @@
-{% macro render_field(field, before="", after="") %}
-  <p>
-    {{field.label()}}:
-    {{before}}
-    {{field(required=field.flags.required)}}
-    {{after}}
-  </p>
-  {% if field.errors %}
-    {% for error in field.errors %}
-      <p>{{error}}</p>
-    {% endfor %}
-  {% endif %}
+{% macro render_field(field, before="", after="", placeholder="") %}
+  <div class="form-group{% if field.errors %} has-error{% endif %}">
+    {{field.label(class="col-sm-2 control-label")}}
+    <div class="col-sm-5">
+      {% if before or after %}
+        <div class="input-group">
+      {% endif %}
+      {% if before %}
+        <span class="input-group-addon">{{before}}</span>
+      {% endif %}
+      {{field(class="form-control", placeholder=placeholder)}}
+      {% if after %}
+        <span class="input-group-addon">{{after}}</span>
+      {% endif %}
+      {% if before or after %}
+        </div>
+      {% endif %}
+      {% if field.errors %}
+        <ul class="col-sm-offset-2 list-unstyled help-block">
+          {% for error in field.errors %}
+            <li><strong>{{error}}</strong></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+    <div class="col-sm-5 small">
+      {{field.description}}
+    </div>
+  </div>
 {% endmacro %}
 
 {% extends "base/base.html" %}
@@ -20,12 +37,28 @@
 
     <h1>Register a project</h1>
 
-    <form action="" method="post">
+    <form class="form-horizontal" action="" method="post">
       {{form.csrf_token}}
       {{render_field(form.name)}}
       {{render_field(form.confirm)}}
-      {{render_field(form.project, "git://", ".git")}}
-      <input type="submit" value="Register"/>
+      {{render_field(
+        form.project,
+        before="git://",
+        after=".git",
+        placeholder="gitserver.com/user/repo"
+      )}}
+      <div class="form-group">
+        <div class="checkbox col-sm-offset-2 col-sm-5">
+          <label>
+            {{form.wantupdates}} {{form.wantupdates.label}}
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-4">
+          <button type="submit" class="btn btn-primary btn-lg">Register</button>
+        </div>
+      </div>
     </form>
 
 {% endblock %}
