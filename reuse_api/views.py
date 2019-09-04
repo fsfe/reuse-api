@@ -4,8 +4,6 @@
 
 """Request handlers for all endpoints."""
 
-import time
-
 from flask import (
     Blueprint,
     abort,
@@ -133,7 +131,6 @@ def info(url):
         status=row.status,
         lint_code=row.lint_code,
         lint_output=row.lint_output,
-        timezone=time.localtime().tm_zone,
         last_access=(
             row.last_access.strftime("%d %b %Y %X")
             if row.last_access

@@ -54,5 +54,5 @@ class Repository(db.Model):
         self.status = status
         self.lint_code = lint_code
         self.lint_output = lint_output
-        self.last_access = datetime.now()
+        self.last_access = datetime.utcnow()
         db.session.commit()
