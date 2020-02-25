@@ -29,7 +29,7 @@ class Task(NamedTuple):
 def determine_protocol(url):
     """Determine the protocol."""
     # Try these protocols and use the first that works
-    for protocol in ("git", "https", "http"):
+    for protocol in ("https", "git", "http"):
         try:
             latest_hash(protocol, url)
             return protocol
