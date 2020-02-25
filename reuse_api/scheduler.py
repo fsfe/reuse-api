@@ -26,63 +26,67 @@ class Task(NamedTuple):
     hash: str
 
 
-def determine_protocol(url):
-    """Determine the protocol."""
-    # Try these protocols and use the first that works
-    for protocol in ("git", "https", "http"):
-        try:
-            latest_hash(protocol, url)
-            return protocol
-        except NotARepository:
-            pass
-    else:
-        raise NotARepository()
+class HashProtocol(NamedTuple):
+    hash: str
+    protocol: str
 
 
 def schedule_if_new_or_later(url, scheduler):
-    try:
-        protocol = determine_protocol(url)
-        # TODO: This is an additional request that also happens inside of
-        # determine_protocol.
-        latest = latest_hash(protocol, url)
-    except NotARepository:
-        abort(400, "Not a Git repository")
-
     repository = Repository.find(url)
+    latest = None
 
     if repository is None:
+        try:
+            latest, protocol = latest_hash(url)
+        except NotARepository:
+            abort(400, "Not a Git repository")
         # Create a new entry.
         current_app.logger.debug("creating new database entry for '%s'", url)
-        repository = Repository.create(url=url, hash=latest)
-        if repository:
-            scheduler.add_task(Task(protocol, url, latest))
+        repository = Repository.create(url=url, protocol=protocol, hash=latest)
+    else:
+        latest, protocol = latest_hash(repository.url, repository.protocol)
+        if protocol != repository.protocol:
+            repository.protocol = protocol
 
-    elif repository.hash != latest:
+    if repository.hash != latest:
         # Make the database entry up-to-date.
         current_app.logger.debug("'%s' is outdated", url)
         scheduler.add_task(Task(protocol, url, latest))
-
     else:
         current_app.logger.debug("'%s' is still up-to-date", url)
 
     return repository
 
 
-def latest_hash(protocol, url):
+def _ls_remote(url, protocol):
     try:
         result = subprocess.run(
             ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            timeout=5,
+            timeout=2.5,
         )
     except subprocess.TimeoutExpired:
         raise NotARepository()
 
     if result.returncode != 0:
         raise NotARepository()
+
     output = result.stdout.decode("utf-8")
-    return output.split()[0]
+    return HashProtocol(output.split()[0], protocol)
+
+
+def latest_hash(url, protocol=None):
+    protocols = ["https", "git", "http"]
+    if protocol is not None:
+        protocols = [protocol] + protocols
+    for protocol in protocols:
+        try:
+            return _ls_remote(url, protocol)
+        except NotARepository:
+            pass
+    else:
+        raise NotARepository()
 
 
 def hash_from_output(output):
@@ -107,6 +111,7 @@ def update_task(task, return_code, output):
     # in the form it was used for the last check.
     Repository.find(task.url).update(
         url=task.url,
+        protocol=task.protocol,
         hash=new_hash,
         status=status,
         lint_code=return_code,

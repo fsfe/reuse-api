@@ -19,6 +19,7 @@ def init_models(app):
 
 class Repository(db.Model):
     url = db.Column(db.String, primary_key=True)
+    protocol = db.Column(db.String(10))
     hash = db.Column(db.String(40))
     status = db.Column(db.String(13), default="checking")
     lint_code = db.Column(db.SmallInteger)
@@ -48,8 +49,9 @@ class Repository(db.Model):
             db.func.lower(cls.url) == db.func.lower(url)
         ).one_or_none()
 
-    def update(self, url, hash, status, lint_code, lint_output):
+    def update(self, url, protocol, hash, status, lint_code, lint_output):
         self.url = url
+        self.protocol = protocol
         self.hash = hash
         self.status = status
         self.lint_code = lint_code
