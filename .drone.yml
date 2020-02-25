@@ -3,6 +3,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 pipeline:
+  reuse:
+    image: fsfe/reuse:latest
+    commands:
+      - reuse lint
+
   deploy:
     image: tmaier/docker-compose
     secrets:
