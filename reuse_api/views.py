@@ -105,7 +105,18 @@ def badge(url):
         return send_file(f"badges/unregistered.svg", mimetype="image/svg+xml")
 
     current_app.logger.debug("sending badge for '%s'", row.url)
-    return send_file(f"badges/{row.status}.svg", mimetype="image/svg+xml")
+
+    # Disable caching for badge files
+    result = send_file(f"badges/{row.status}.svg", mimetype="image/svg+xml")
+    result.cache_control.max_age = 0
+    result.cache_control.must_revalidate = True
+    result.cache_control.no_cache = True
+    result.cache_control.no_store = True
+    result.cache_control.private = True
+    result.cache_control.public = False
+    result.headers['Expires'] = "Thu, 01 Jan 1970 00:00:00 UTC"
+
+    return result
 
 
 @html_blueprint.route("/info/<path:url>")

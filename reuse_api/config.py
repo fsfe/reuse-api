@@ -9,7 +9,6 @@ import os
 
 # Configuration for Flask
 SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
-SEND_FILE_MAX_AGE_DEFAULT = 60
 
 # Configuration for the repository storage
 # NOTE: A relative path currently (Flask-SQLAlchemy < 3.0) is relative to the
