@@ -86,9 +86,11 @@ class RegisterForm(FlaskForm):
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        params = {"appid": "reuse-api", **form.data}
+        del params["csrf_token"]
         response = post(
             url=current_app.config["FORMS_URL"],
-            data={"appid": "reuse-api", **form.data},
+            data=params,
             allow_redirects=False,
         )
         if not response.ok:
