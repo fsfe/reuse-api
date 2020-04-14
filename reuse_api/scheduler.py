@@ -33,27 +33,25 @@ class HashProtocol(NamedTuple):
 
 def schedule_if_new_or_later(url, scheduler):
     repository = Repository.find(url)
-    latest = None
 
     if repository is None:
+        # Create a new entry.
+        current_app.logger.debug("creating new database entry for '%s'", url)
         try:
             latest, protocol = latest_hash(url)
         except NotARepository:
             abort(400, "Not a Git repository")
-        # Create a new entry.
-        current_app.logger.debug("creating new database entry for '%s'", url)
         repository = Repository.create(url=url, protocol=protocol, hash=latest)
+        if repository:
+            scheduler.add_task(Task(protocol, url, latest))
     else:
         latest, protocol = latest_hash(repository.url, repository.protocol)
-        if protocol != repository.protocol:
-            repository.protocol = protocol
-
-    if repository.hash != latest:
-        # Make the database entry up-to-date.
-        current_app.logger.debug("'%s' is outdated", url)
-        scheduler.add_task(Task(protocol, url, latest))
-    else:
-        current_app.logger.debug("'%s' is still up-to-date", url)
+        if repository.hash != latest:
+            # Make the database entry up-to-date.
+            current_app.logger.debug("'%s' is outdated", url)
+            scheduler.add_task(Task(protocol, url, latest))
+        else:
+            current_app.logger.debug("'%s' is still up-to-date", url)
 
     return repository
 
@@ -86,7 +84,7 @@ def latest_hash(url, protocol=None):
         except NotARepository:
             pass
     else:
-        raise NotARepository()
+        raise NotARepository
 
 
 def hash_from_output(output):

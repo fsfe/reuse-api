@@ -12,11 +12,7 @@ from wtforms import BooleanField, StringField, ValidationError
 from wtforms.validators import Email, InputRequired
 
 from .models import Repository
-from .scheduler import (
-    NotARepository,
-    determine_protocol,
-    schedule_if_new_or_later,
-)
+from .scheduler import NotARepository, latest_hash, schedule_if_new_or_later
 
 
 # Blueprint for all endpoints delivering human-readable HTML/SVG content
@@ -45,7 +41,7 @@ def sanitize_project_url(data):
 # Validation of a project URL
 def validate_project_url(form, field):
     try:
-        determine_protocol(field.data)
+        latest_hash(field.data)
     except NotARepository:
         raise ValidationError("Not a Git repository")
     if Repository.is_registered(field.data):
@@ -118,6 +114,7 @@ def info(url):
     return render_template(
         "info.html",
         url=row.url,
+        protocol=row.protocol,
         project_name="/".join(row.url.split("/")[-2:]),
         hash=row.hash,
         status=row.status,
@@ -156,6 +153,7 @@ def status(url):
     # Return the current entry in the database.
     return {
         "url": row.url,
+        "protocol": row.protocol,
         "hash": row.hash,
         "status": row.status,
         "lint_code": row.lint_code,
