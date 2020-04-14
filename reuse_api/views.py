@@ -104,10 +104,23 @@ def badge(url):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
-        return send_file(f"badges/unregistered.svg", mimetype="image/svg+xml")
+        status = "unregistered"
+    else:
+        current_app.logger.debug(f"sending badge for '{row.url}'")
+        status = row.status
 
-    current_app.logger.debug("sending badge for '%s'", row.url)
-    return send_file(f"badges/{row.status}.svg", mimetype="image/svg+xml")
+    result = send_file(f"badges/{status}.svg", mimetype="image/svg+xml")
+
+    # Disable caching for badge files
+    result.cache_control.max_age = 0
+    result.cache_control.must_revalidate = True
+    result.cache_control.no_cache = True
+    result.cache_control.no_store = True
+    result.cache_control.private = True
+    result.cache_control.public = False
+    result.headers['Expires'] = "Thu, 01 Jan 1970 00:00:00 UTC"
+
+    return result
 
 
 @html_blueprint.route("/info/<path:url>")
