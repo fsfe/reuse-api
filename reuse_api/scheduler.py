@@ -189,7 +189,7 @@ class Runner(Thread):
                         "StrictHostKeyChecking=accept-new",
                         "-o",
                         "UserKnownHostsFile=~/.ssh/known_hosts",
-                        "reuse@wrk2.api.reuse.software",
+                        "reuse@wrk3.api.reuse.software",
                         "reuse-lint-repo",
                         f"{task.protocol}://{task.url}",
                     ],
