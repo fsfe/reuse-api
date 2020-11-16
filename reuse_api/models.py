@@ -27,6 +27,9 @@ class Repository(db.Model):
 
     @staticmethod
     def is_registered(url):
+        """
+        Ensure the user is registered and has validated their email from the `forms` app
+        """
         with open(current_app.config["FORMS_FILE"]) as f:
             for project in json.load(f):
                 if project["include_vars"]["project"].lower() == url.lower():

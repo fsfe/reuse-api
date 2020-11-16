@@ -11,13 +11,22 @@ services:
     labels:
       fsfe-monitoring: "true"
     environment:
-      VIRTUAL_HOST: "api.reuse.software"
-      LETSENCRYPT_HOST: "api.reuse.software"
-      LETSENCRYPT_EMAIL: "contact@fsfe.org"
+      VIRTUAL_HOST: "${VIRTUAL_HOST}"
+      LETSENCRYPT_HOST: "${LETSENCRYPT_HOST}"
+      LETSENCRYPT_EMAIL: "${LETSENCRYPT_EMAIL}"
       SECRET_KEY: "${SECRET_KEY}"
+      SQLALCHEMY_DATABASE_PATH: "${SQLALCHEMY_DATABASE_PATH}"
+      SSH_KEY_PATH: "${SSH_KEY_PATH}"
+      SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH}"
+      SSH_USER: "${SSH_USER}"
+      REUSE_API: "${REUSE_API}"
+      FORMS_URL: "${FORMS_URL}"
     volumes:
-      - "/srv/reuse-api:/home/fsfe:rw"
+      - "${VM_VOLUME_PATH}:${CONTAINER_VOLUME_PATH}:rw"
     restart: always
+    networks:
+      - default
+      - reuse-api-net
 
   connect-bridge:
     depends_on:
@@ -26,3 +35,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: docker network connect bridge reuse-api
+
+networks:
+  reuse-api-net:
+    external: true

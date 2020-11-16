@@ -11,6 +11,7 @@ from typing import NamedTuple
 from flask import abort, current_app
 
 from .models import Repository
+from .config import SSH_KEY_PATH, SSH_USER, SSH_KNOW_HOST_PATH, SSH_USER, REUSE_API
 
 
 _HASH_PATTERN = re.compile(r"commit (.*):")
@@ -184,12 +185,12 @@ class Runner(Thread):
                     [
                         "ssh",
                         "-i",
-                        "~/.ssh/reuse_ed25519",
+                        SSH_KEY_PATH,
                         "-o",
                         "StrictHostKeyChecking=accept-new",
                         "-o",
-                        "UserKnownHostsFile=~/.ssh/known_hosts",
-                        "reuse@wrk3.api.reuse.software",
+                        f"UserKnownHostsFile={SSH_KNOW_HOST_PATH}",
+                        f"{SSH_USER}@{REUSE_API}",
                         "reuse-lint-repo",
                         f"{task.protocol}://{task.url}",
                     ],

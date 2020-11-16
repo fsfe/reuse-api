@@ -15,11 +15,19 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 # application root, not relative to the current working directory! So we have
 # to define an absolute path.
 # See also https://github.com/pallets/flask-sqlalchemy/issues/462
-SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.getcwd()}/database.sqlite"
+SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.environ.get("SQLALCHEMY_DATABASE_PATH", f"{os.getcwd()}/database.sqlite")
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Configuration for the form server used for registration
-FORMS_URL = "https://forms.fsfe.org/email"
+FORMS_URL = os.environ.get("FORMS_URL", "https://forms.fsfe.org/email")
 FORMS_FILE = "repos.json"
+if not os.path.isfile(FORMS_FILE):
+    raise FileNotFoundError("Can't run without access to the '%s' file", FORMS_FILE)
 
-# TODO: SERVERNAME
+# SSH configurations
+SSH_KEY_PATH = os.environ.get("SSH_KEY_PATH", "~/.ssh/reuse_ed25519")
+SSH_KNOW_HOST_PATH = os.environ.get("SSH_KNOW_HOST_PATH", "~/.ssh/known_hosts")
+SSH_USER = os.environ.get("SSH_USER", "reuse")
+
+# Servername
+REUSE_API = os.environ.get("REUSE_API", "wrk3.api.reuse.software")

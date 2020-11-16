@@ -44,6 +44,26 @@ with Flask's built-in web server in debug mode. Alternatively, you can run
 production.
 
 
+## Testing and debugging environment with docker-compose
+
+You can simulate a complete environment with docker-compose and submodules.
+
+- Clone the repository with all submodules `git submodule update --init --recursive`
+- Run `chmod 600 ./api-worker/worker-setup/files` to set SSH files with the correct rights
+- Go inside the `api-worker/docker-image` directory and run `docker build -t reuse-api-worker-runner .`
+- Go inside the `api-worker` directory and run `docker-compose up --build -d`
+- Go inside the `forms` directory and run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d`
+- Run `echo "[]" > /srv/forms/reuse-api/repos.json` that is a shared file with the `forms` API
+- Run `chmod 777 /srv/reuse-api`. Otherwise, the database file cannot be created, and starting reuse-api aborts
+- Go back to the root of the repository
+- Copy the `.env.default` file to `.env`
+- Run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d`
+- Now the api is available on `http://localhost:8081` from your browser
+
+Note: If you go on `http://localhost:1080` you will be able to see emails normally sent to the customer. 
+The link provided inside the emails can be on a subnet that you can't reach from your browser directly. So don't forget to replace the domain name by `localhost`.
+After that, the API `forms` will redirect you to the `reuse` website, don't forget to change the url to `localhost:8081`.
+
 ## Automatic quality checks
 
 The following commands are available for automatic quality checks:

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2019 Free Software Foundation Europe e.V.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+version: '3'
+services:
+  reuse-api:
+    networks:
+      - forms_default
+    ports:
+      - "8081:8000"
+    volumes:
+      - ./api-worker/worker-setup/files:/home/fsfe/.ssh:ro
+      - /srv/forms/reuse-api/repos.json:/home/fsfe/repos.json:ro
+
+networks:
+  forms_default:
+    external: true
+
