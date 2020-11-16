@@ -11,22 +11,19 @@ services:
     labels:
       fsfe-monitoring: "true"
     environment:
-      VIRTUAL_HOST: "${VIRTUAL_HOST}"
-      LETSENCRYPT_HOST: "${LETSENCRYPT_HOST}"
-      LETSENCRYPT_EMAIL: "${LETSENCRYPT_EMAIL}"
+      VIRTUAL_HOST: "${VIRTUAL_HOST:-api.reuse.software}"
+      LETSENCRYPT_HOST: "${LETSENCRYPT_HOST:-api.reuse.software}"
+      LETSENCRYPT_EMAIL: "${LETSENCRYPT_EMAIL:-contact@fsfe.org}"
       SECRET_KEY: "${SECRET_KEY}"
-      SQLALCHEMY_DATABASE_PATH: "${SQLALCHEMY_DATABASE_PATH}"
-      SSH_KEY_PATH: "${SSH_KEY_PATH}"
-      SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH}"
-      SSH_USER: "${SSH_USER}"
-      REUSE_API: "${REUSE_API}"
-      FORMS_URL: "${FORMS_URL}"
+      SQLALCHEMY_DATABASE_PATH: "${SQLALCHEMY_DATABASE_PATH:-/home/fsfe/database.sqlite}"
+      SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/reuse_ed25519}"
+      SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"
+      SSH_USER: "${SSH_USER:-reuse}"
+      REUSE_API: "${REUSE_API:-wrk3.api.reuse.software}"
+      FORMS_URL: "${FORMS_URL:-https://forms.fsfe.org/email}"
     volumes:
-      - "${VM_VOLUME_PATH}:${CONTAINER_VOLUME_PATH}:rw"
+      - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
     restart: always
-    networks:
-      - default
-      - reuse-api-net
 
   connect-bridge:
     depends_on:
@@ -35,7 +32,3 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: docker network connect bridge reuse-api
-
-networks:
-  reuse-api-net:
-    external: true
