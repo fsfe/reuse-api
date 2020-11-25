@@ -5,8 +5,6 @@
 version: '3'
 services:
   reuse-api:
-    networks:
-      - forms_default
     ports:
       - "8081:8000"
     volumes:
@@ -15,6 +13,7 @@ services:
     networks:
       - default
       - reuse-api-net
+      - forms_default
 
 networks:
   forms_default:

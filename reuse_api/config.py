@@ -31,3 +31,5 @@ SSH_USER = os.environ.get("SSH_USER", "reuse")
 
 # Servername
 REUSE_API = os.environ.get("REUSE_API", "wrk3.api.reuse.software")
+
+NB_RUNNER = int(os.environ.get("NB_RUNNER", "6"))

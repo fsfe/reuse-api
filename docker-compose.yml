@@ -21,9 +21,13 @@ services:
       SSH_USER: "${SSH_USER:-reuse}"
       REUSE_API: "${REUSE_API:-wrk3.api.reuse.software}"
       FORMS_URL: "${FORMS_URL:-https://forms.fsfe.org/email}"
+      NB_RUNNER: "${NB_RUNNER:-6}"
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
     restart: always
+    networks:
+      - default
+      - reuse-api-net
 
   connect-bridge:
     depends_on:
@@ -32,3 +36,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: docker network connect bridge reuse-api
+
+networks:
+  reuse-api-net:
+    external: true

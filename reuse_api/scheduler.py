@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import re
+import threading
 import subprocess
 from queue import Empty, Queue
 from threading import Thread
@@ -11,7 +12,7 @@ from typing import NamedTuple
 from flask import abort, current_app
 
 from .models import Repository
-from .config import SSH_KEY_PATH, SSH_USER, SSH_KNOW_HOST_PATH, SSH_USER, REUSE_API
+from .config import SSH_KEY_PATH, SSH_KNOW_HOST_PATH, SSH_USER, REUSE_API, NB_RUNNER
 
 
 _HASH_PATTERN = re.compile(r"commit (.*):")
@@ -25,6 +26,39 @@ class Task(NamedTuple):
     protocol: str
     url: str
     hash: str
+
+
+class TaskQueue(Queue):
+    """
+    Allows to know when a Task is already in the Queue or in computation to limit redundant execution
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.task_mutex = threading.Lock()
+        self.task_urls = {}
+
+    def put_nowait(self, task: Task, **kwargs) -> None:
+        with self.task_mutex:
+            self.task_urls[task.url] = True
+            super().put_nowait(task, **kwargs)
+
+    def done(self, task: Task) -> None:
+        with self.task_mutex:
+            del self.task_urls[task.url]
+        super().task_done()
+
+    def __contains__(self, task: Task) -> bool:
+        with self.task_mutex:
+            return task.url in self.task_urls
+
+    def qsize(self) -> int:
+        """
+        Return the total number of elements that are being computed and waiting to be computed
+        """
+        with self.task_mutex:
+            return len(self.task_urls)
+
 
 
 def determine_protocol(url):
@@ -41,6 +75,8 @@ def determine_protocol(url):
 
 
 def schedule_if_new_or_later(url, scheduler):
+    protocol, latest = None, None
+
     try:
         protocol = determine_protocol(url)
         # TODO: This is an additional request that also happens inside of
@@ -50,18 +86,22 @@ def schedule_if_new_or_later(url, scheduler):
         abort(400, "Not a Git repository")
 
     repository = Repository.find(url)
+    task_of_repository = Task(protocol, url, latest)
 
     if repository is None:
         # Create a new entry.
         current_app.logger.debug("creating new database entry for '%s'", url)
         repository = Repository.create(url=url, hash=latest)
         if repository:
-            scheduler.add_task(Task(protocol, url, latest))
+            scheduler.add_task(task_of_repository)
 
     elif repository.hash != latest:
         # Make the database entry up-to-date.
         current_app.logger.debug("'%s' is outdated", url)
-        scheduler.add_task(Task(protocol, url, latest))
+        scheduler.add_task(task_of_repository)
+
+    elif scheduler.contain_task(task_of_repository):
+        current_app.logger.debug("'%s' already in queue", url)
 
     else:
         current_app.logger.debug("'%s' is still up-to-date", url)
@@ -127,17 +167,13 @@ class Scheduler:
 
     def __init__(self, app):
         self._app = app
-        self._queue = Queue()
-        self._runners = [Runner(self._queue, self._app) for _ in range(6)]
+        self._queue = TaskQueue()
+        self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
         self._running = False
 
     def add_task(self, task):
         if self._running:
-            current_app.logger.debug("adding '%s' to queue", task.url)
-            current_app.logger.debug(
-                "size of queue is %d", self._queue.qsize()
-            )
-            self._queue.put_nowait(task)
+            self._add_task_if_not_already_enqueue(task)
         else:
             current_app.logger.warning(
                 "cannot add task to queue when scheduler is not running"
@@ -158,6 +194,19 @@ class Scheduler:
         for runner in self._runners:
             runner.join()
         self._app.logger.debug("finished stopping all threads")
+
+    def contain_task(self, task):
+        return task in self._queue
+
+    def _add_task_if_not_already_enqueue(self, task):
+        if self.contain_task(task):
+            current_app.logger.debug("'%s' already in queue", task.url)
+        else:
+            current_app.logger.debug("adding '%s' to queue", task.url)
+            self._queue.put_nowait(task)
+            current_app.logger.debug(
+                "size of queue is %d", self._queue.qsize()
+            )
 
 
 class Runner(Thread):
@@ -212,7 +261,7 @@ class Runner(Thread):
                         task, result.returncode, result.stdout.decode("utf-8")
                     )
             finally:
-                self._queue.task_done()
+                self._queue.done(task)
 
     def join(self, *args, **kwargs):
         self.stop()
