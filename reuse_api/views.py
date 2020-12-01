@@ -28,7 +28,11 @@ json_blueprint = Blueprint("json", __name__)
 # Start page
 @html_blueprint.route("/")
 def index():
-    return render_template("index.html")
+    compliant_repos = Repository.projects().total
+    return render_template(
+        "index.html",
+        compliant_repos=compliant_repos
+    )
 
 
 # Filter for a project URL
@@ -182,3 +186,12 @@ def status(url):
             "html.badge", url=row.url, _external=True, _scheme="https"
         ),
     }
+
+@html_blueprint.route('/projects')
+@html_blueprint.route('/projects/page/<int:page>')
+def projects(page=1):
+    registered_list = Repository.projects(page)
+    return render_template(
+        'projects.html',
+        registered_list=registered_list
+    )

@@ -1,0 +1,55 @@
+{% extends "base/base.html" %}
+
+{% block title %}Compliant projects | REUSE API{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+  <h1>Compliant Projects</h1>
+
+  <p class="lead">
+    Of all repositories registered with this service, {{ registered_list.total }} are
+    successfully following the REUSE best practices. You can view them below,
+    sorted by their last check.
+  </p>
+
+  <table class="table table-striped registered">
+    <tr>
+      <th>
+        Repository URL
+      </th>
+      <th>
+        Details
+      </th>
+      <th>
+        Repository
+      </th>
+    </tr>
+    {%  for project in registered_list.items %}
+      <tr>
+        <td>
+          {{ project.url }}
+        </td>
+        <td>
+          <a href="/info/{{ project.url }}"><i class="fas fa-info-circle"></i></a>
+        </td>
+        <td>
+          <a href="https://{{ project.url }}"><i class="fas fa-external-link-alt"></i></a>
+        </td>
+      </tr>
+    {% endfor %}
+      <tr>
+        <td></td>
+        <td>
+          {% if registered_list.has_prev %}
+            <a href="{{ url_for('html.projects', page=registered_list.prev_num) }}">Previous</a>
+          {% endif %}
+        </td>
+        <td>
+          {% if registered_list.has_next %}
+            <a href="{{ url_for('html.projects', page=registered_list.next_num) }}">Next</a>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+{% endblock %}

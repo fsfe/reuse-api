@@ -6,7 +6,9 @@ import json
 from datetime import datetime
 
 from flask import current_app
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, orm
+
+from .config import NB_REPOSITORY_BY_PAGINATION
 
 
 db = SQLAlchemy()
@@ -50,6 +52,19 @@ class Repository(db.Model):
         return cls.query.filter(
             db.func.lower(cls.url) == db.func.lower(url)
         ).one_or_none()
+
+    @classmethod
+    def projects(cls, page=1):
+        """
+        Produce a list of compliant repos, sorted by last_access, and paginate
+        """
+        return cls.query.order_by(
+            cls.last_access.desc()
+        ).filter(
+            cls.status == "compliant"
+        ).options(
+            orm.load_only("url")
+        ).paginate(page, per_page=NB_REPOSITORY_BY_PAGINATION)
 
     def update(self, url, hash, status, lint_code, lint_output):
         self.url = url

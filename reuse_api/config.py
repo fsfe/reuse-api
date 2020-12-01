@@ -32,4 +32,8 @@ SSH_USER = os.environ.get("SSH_USER", "reuse")
 # Servername
 REUSE_API = os.environ.get("REUSE_API", "wrk3.api.reuse.software")
 
+# Number of maximum checks in queue
 NB_RUNNER = int(os.environ.get("NB_RUNNER", "6"))
+
+# Number of repository return during pagination
+NB_REPOSITORY_BY_PAGINATION = int(os.environ.get("NB_REPOSITORY_BY_PAGES", "10"))

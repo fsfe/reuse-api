@@ -11,3 +11,41 @@
   font-size: inherit;
   height: auto;
 }
+
+/* Table on /registered */
+table.registered {
+  table-layout: fixed;
+}
+table.registered th:first-child {
+  width: 75%;
+}
+table.registered th:not(:first-child),
+table.registered td:not(:first-child) {
+  text-align: center;
+}
+table.registered a {
+  color: #666;
+}
+table.registered a:hover {
+  color: #000;
+}
+/* better mobile view */
+@media(max-width: 768px) {
+  /* Fix striped to make background for the whole row */
+  table.registered.table-striped > tbody > tr:nth-child(2n+1) {
+    background-color: #f9f9f9;
+  }
+  table.registered th {
+    display: none;
+  }
+  table.registered tr {
+    border-top: 1px solid #ddd;
+  }
+  /* avoid that table is side-scrollable */
+  table.registered td {
+    border-top: none !important;
+    display: inline-block;
+    white-space: unset !important;
+    overflow-wrap: anywhere;
+  }
+}

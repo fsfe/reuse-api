@@ -22,6 +22,7 @@ services:
       REUSE_API: "${REUSE_API:-wrk3.api.reuse.software}"
       FORMS_URL: "${FORMS_URL:-https://forms.fsfe.org/email}"
       NB_RUNNER: "${NB_RUNNER:-6}"
+      NB_REPOSITORY_BY_PAGINATION: "${NB_REPOSITORY_BY_PAGINATION:-10}"
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
     restart: always
