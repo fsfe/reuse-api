@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM fsfe/alpine-pipenv:latest
+FROM fsfe/alpine-pipenv:3.9
 
 EXPOSE 8000
 
