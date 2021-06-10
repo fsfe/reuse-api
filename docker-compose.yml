@@ -5,11 +5,10 @@
 version: '3'
 services:
   reuse-api:
-    image: reuse-api
-    build: .
     container_name: reuse-api
-    labels:
-      fsfe-monitoring: "true"
+    build: .
+    image: reuse-api
+    restart: always
     environment:
       VIRTUAL_HOST: "${VIRTUAL_HOST:-api.reuse.software}"
       LETSENCRYPT_HOST: "${LETSENCRYPT_HOST:-api.reuse.software}"
@@ -25,12 +24,11 @@ services:
       NB_REPOSITORY_BY_PAGINATION: "${NB_REPOSITORY_BY_PAGINATION:-10}"
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
-    restart: always
 
   connect-bridge:
-    depends_on:
-      - reuse-api
     image: docker:dind
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: docker network connect bridge reuse-api
+    depends_on:
+      - reuse-api
+    command: /bin/sh -c 'docker network connect bridge reuse-api'
