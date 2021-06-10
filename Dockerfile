@@ -2,14 +2,18 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM fsfe/alpine-pipenv:3.9
+FROM fsfe/pipenv:python-3.8
 
 EXPOSE 8000
 
 WORKDIR /root
 
-# Install Alpine packages
-RUN apk --no-cache add git openssh-client
+# Install required packages
+RUN apt-get -q update && \
+    apt-get -qy --allow-downgrades --allow-remove-essential --allow-change-held-packages upgrade && \
+    apt-get install -y git openssh-client && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Python packages
 COPY Pipfile Pipfile.lock ./
@@ -20,7 +24,7 @@ COPY . .
 RUN ./setup.py install
 
 # Switch to non-root user
-RUN adduser -g "FSFE" -s "/sbin/nologin" -D fsfe
+RUN adduser --gecos "FSFE" --shell "/sbin/nologin" --disabled-password fsfe
 USER fsfe
 WORKDIR /home/fsfe
 

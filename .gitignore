@@ -8,6 +8,7 @@ repos.json
 
 # Created by Python running locally
 __pycache__/
+venv/
 
 # Created by setup.py
 build/

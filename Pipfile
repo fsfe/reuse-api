@@ -7,6 +7,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
+email-validator = "*"
 flask = "*"
 flask-sqlalchemy = "*"
 flask-wtf = "*"
@@ -14,7 +15,7 @@ gunicorn = "*"
 requests = "*"
 
 [dev-packages]
-black = "==19.3b0"  # no final release available yet
+black = "==21.5b2 "  # no final release available yet
 isort = "*"
 pylama = "*"
 pytest = "*"
@@ -23,4 +24,4 @@ pytest-flask = "*"
 pytest-mock = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
