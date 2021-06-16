@@ -56,8 +56,10 @@ def validate_project_url(form, field):
         info_page = url_for(
             "html.info", url=field.data, _external=True, _scheme="https"
         )
-        info_page_url = f'<a href="{info_page}">{field.data}</a>'
-        raise ValidationError(f"Project is already registered on {info_page_url}")
+        info_page_url = f'<a href="{info_page}">here</a>'
+        raise ValidationError(
+            f"Project is already registered. See its REUSE status {info_page_url}."
+        )
 
 
 # Registration form
