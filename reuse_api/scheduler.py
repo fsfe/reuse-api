@@ -3,16 +3,22 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import re
-import threading
 import subprocess
+import threading
 from queue import Empty, Queue
 from threading import Thread
 from typing import NamedTuple
 
 from flask import abort, current_app
 
+from .config import (
+    NB_RUNNER,
+    REUSE_API,
+    SSH_KEY_PATH,
+    SSH_KNOW_HOST_PATH,
+    SSH_USER,
+)
 from .models import Repository
-from .config import SSH_KEY_PATH, SSH_KNOW_HOST_PATH, SSH_USER, REUSE_API, NB_RUNNER
 
 
 _HASH_PATTERN = re.compile(r"commit (.*):")
