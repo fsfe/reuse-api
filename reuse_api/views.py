@@ -29,10 +29,7 @@ json_blueprint = Blueprint("json", __name__)
 @html_blueprint.route("/")
 def index():
     compliant_repos = Repository.projects().total
-    return render_template(
-        "index.html",
-        compliant_repos=compliant_repos
-    )
+    return render_template("index.html", compliant_repos=compliant_repos)
 
 
 # Filter for a project URL
@@ -128,7 +125,7 @@ def badge(url):
     result.cache_control.no_store = True
     result.cache_control.private = True
     result.cache_control.public = False
-    result.headers['Expires'] = "Thu, 01 Jan 1970 00:00:00 UTC"
+    result.headers["Expires"] = "Thu, 01 Jan 1970 00:00:00 UTC"
 
     return result
 
@@ -193,11 +190,9 @@ def status(url):
         ),
     }
 
-@html_blueprint.route('/projects')
-@html_blueprint.route('/projects/page/<int:page>')
+
+@html_blueprint.route("/projects")
+@html_blueprint.route("/projects/page/<int:page>")
 def projects(page=1):
     registered_list = Repository.projects(page)
-    return render_template(
-        'projects.html',
-        registered_list=registered_list
-    )
+    return render_template("projects.html", registered_list=registered_list)

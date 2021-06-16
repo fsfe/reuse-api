@@ -58,13 +58,12 @@ class Repository(db.Model):
         """
         Produce a list of compliant repos, sorted by last_access, and paginate
         """
-        return cls.query.order_by(
-            cls.last_access.desc()
-        ).filter(
-            cls.status == "compliant"
-        ).options(
-            orm.load_only("url")
-        ).paginate(page, per_page=NB_REPOSITORY_BY_PAGINATION)
+        return (
+            cls.query.order_by(cls.last_access.desc())
+            .filter(cls.status == "compliant")
+            .options(orm.load_only("url"))
+            .paginate(page, per_page=NB_REPOSITORY_BY_PAGINATION)
+        )
 
     def update(self, url, hash, status, lint_code, lint_output):
         self.url = url

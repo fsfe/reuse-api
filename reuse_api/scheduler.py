@@ -66,7 +66,6 @@ class TaskQueue(Queue):
             return len(self.task_urls)
 
 
-
 def determine_protocol(url):
     """Determine the protocol."""
     # Try these protocols and use the first that works
@@ -174,7 +173,9 @@ class Scheduler:
     def __init__(self, app):
         self._app = app
         self._queue = TaskQueue()
-        self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
+        self._runners = [
+            Runner(self._queue, self._app) for _ in range(NB_RUNNER)
+        ]
         self._running = False
 
     def add_task(self, task):

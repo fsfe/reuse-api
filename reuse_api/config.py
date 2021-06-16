@@ -15,14 +15,18 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 # application root, not relative to the current working directory! So we have
 # to define an absolute path.
 # See also https://github.com/pallets/flask-sqlalchemy/issues/462
-SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.environ.get("SQLALCHEMY_DATABASE_PATH", f"{os.getcwd()}/database.sqlite")
+SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.environ.get(
+    "SQLALCHEMY_DATABASE_PATH", f"{os.getcwd()}/database.sqlite"
+)
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Configuration for the form server used for registration
 FORMS_URL = os.environ.get("FORMS_URL", "https://forms.fsfe.org/email")
 FORMS_FILE = "repos.json"
 if not os.path.isfile(FORMS_FILE):
-    raise FileNotFoundError("Can't run without access to the '%s' file", FORMS_FILE)
+    raise FileNotFoundError(
+        "Can't run without access to the '%s' file", FORMS_FILE
+    )
 
 # SSH configurations
 SSH_KEY_PATH = os.environ.get("SSH_KEY_PATH", "~/.ssh/reuse_ed25519")
@@ -36,4 +40,6 @@ REUSE_API = os.environ.get("REUSE_API", "wrk3.api.reuse.software")
 NB_RUNNER = int(os.environ.get("NB_RUNNER", "6"))
 
 # Number of repository return during pagination
-NB_REPOSITORY_BY_PAGINATION = int(os.environ.get("NB_REPOSITORY_BY_PAGES", "10"))
+NB_REPOSITORY_BY_PAGINATION = int(
+    os.environ.get("NB_REPOSITORY_BY_PAGES", "10")
+)
