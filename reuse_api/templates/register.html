@@ -18,7 +18,7 @@
       {% if field.errors %}
         <ul class="col-sm-offset-2 list-unstyled help-block">
           {% for error in field.errors %}
-            <li><strong>{{error}}</strong></li>
+            <li><strong>{{error|safe}}</strong></li>
           {% endfor %}
         </ul>
       {% endif %}

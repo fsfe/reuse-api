@@ -53,7 +53,11 @@ def validate_project_url(form, field):
     except NotARepository:
         raise ValidationError("Not a Git repository")
     if Repository.is_registered(field.data):
-        raise ValidationError("Project is already registered")
+        info_page = url_for(
+            "html.info", url=field.data, _external=True, _scheme="https"
+        )
+        info_page_url = f'<a href="{info_page}">{field.data}</a>'
+        raise ValidationError(f"Project is already registered on {info_page_url}")
 
 
 # Registration form
