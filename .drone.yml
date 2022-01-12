@@ -16,27 +16,27 @@ steps:
   - name: deploy
     image: docker/compose:1.29.2
     commands:
-    - docker-compose -p reuse-api up --build -d
+      - docker-compose -p reuse-api up --build -d
     environment:
+      XDG_RUNTIME_DIR: "/run/user/1001"
+      DOCKER_HOST: "unix:///run/user/1001/docker.sock"
       SECRET_KEY:
         from_secret: secret_key
     volumes:
-    - name: dockersock
-      path: /var/run/docker.sock
+      - name: dockersock
+        path: /run/user/1001/docker.sock
     when:
       branch:
-      - master
+        - master
       event:
-      - push
-      - tag
-      - deployment
+        - push
+        - tag
+        - deployment
 
 node:
-  cont: lund
+  cont2: noris
 
 volumes:
-- name: dockersock
-  host:
-    path: /var/run/docker.sock
-
-...
+  - name: dockersock
+    host:
+      path: /run/user/1001/docker.sock

@@ -24,7 +24,7 @@ COPY . .
 RUN ./setup.py install
 
 # Switch to non-root user
-RUN adduser --gecos "FSFE" --shell "/sbin/nologin" --disabled-password fsfe
+RUN adduser --uid 1000 --gecos "FSFE" --shell "/sbin/nologin" --disabled-password fsfe
 USER fsfe
 WORKDIR /home/fsfe
 

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-version: '3'
+version: "3"
 services:
   reuse-api:
     container_name: reuse-api
@@ -24,11 +24,16 @@ services:
       NB_REPOSITORY_BY_PAGINATION: "${NB_REPOSITORY_BY_PAGINATION:-10}"
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
+    ports:
+      - "6360:8000"
+    labels:
+      proxy.host: "api.reuse.software"
+      proxy.port: "6360"
 
   connect-bridge:
     image: docker:dind
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /run/user/1001/docker.sock:/var/run/docker.sock
     depends_on:
       - reuse-api
     command: /bin/sh -c 'docker network connect bridge reuse-api'
