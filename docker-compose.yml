@@ -24,11 +24,12 @@ services:
       NB_REPOSITORY_BY_PAGINATION: "${NB_REPOSITORY_BY_PAGINATION:-10}"
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
-    ports:
-      - "6360:8000"
+    # Reverse Proxy
     labels:
       proxy.host: "api.reuse.software"
       proxy.port: "6360"
+    ports:
+      - "6360:8000"
 
   connect-bridge:
     image: docker:dind
