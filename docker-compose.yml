@@ -10,9 +10,6 @@ services:
     image: reuse-api
     restart: always
     environment:
-      VIRTUAL_HOST: "${VIRTUAL_HOST:-api.reuse.software}"
-      LETSENCRYPT_HOST: "${LETSENCRYPT_HOST:-api.reuse.software}"
-      LETSENCRYPT_EMAIL: "${LETSENCRYPT_EMAIL:-contact@fsfe.org}"
       SECRET_KEY: "${SECRET_KEY}"
       SQLALCHEMY_DATABASE_PATH: "${SQLALCHEMY_DATABASE_PATH:-/home/fsfe/database.sqlite}"
       SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/reuse_ed25519}"
@@ -30,11 +27,3 @@ services:
       proxy.port: "6360"
     ports:
       - "6360:8000"
-
-  connect-bridge:
-    image: docker:dind
-    volumes:
-      - /run/user/1001/docker.sock:/var/run/docker.sock
-    depends_on:
-      - reuse-api
-    command: /bin/sh -c 'docker network connect bridge reuse-api'
