@@ -60,7 +60,7 @@ You can simulate a complete environment with docker-compose and submodules.
 - Run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d`
 - Now the api is available on `http://localhost:8081` from your browser
 
-Note: If you go on `http://localhost:1080` you will be able to see emails normally sent to the customer. 
+Note: If you go on `http://localhost:1080` you will be able to see emails normally sent to the customer.
 The link provided inside the emails can be on a subnet that you can't reach from your browser directly. So don't forget to replace the domain name by `localhost`.
 After that, the API `forms` will redirect you to the `reuse` website, don't forget to change the url to `localhost:8081`.
 
@@ -70,10 +70,12 @@ The following commands are available for automatic quality checks:
 
 * `make isort` to verify the correct sorting of imports.
 * `make black` to verify the correct formatting of source code.
-* `make lint` to verify the compliance with coding standards.
+* `make pylama` to verify the compliance with coding standards.
 * `make pytest` to run the functional tests defined in the [tests](../tests)
   directory.
 * `make quality` to run all of the above tests.
+
+Run these in the virtual environment to use the same versions as everyone else.
 
 All these tests are also run during the deployment process, and updating the
 code on the production server is refused if any of the tests fails, so it is

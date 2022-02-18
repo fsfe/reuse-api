@@ -6,12 +6,15 @@ version: "3"
 services:
   reuse-api:
     container_name: reuse-api
-    build: .
     image: reuse-api
+    build:
+      context: .
+      target: prod
     restart: always
     environment:
       SECRET_KEY: "${SECRET_KEY}"
       SQLALCHEMY_DATABASE_PATH: "${SQLALCHEMY_DATABASE_PATH:-/home/fsfe/database.sqlite}"
+      FORMS_FILE: "${FORMS_FILE:-/home/fsfe/repos.json}"
       SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/reuse_ed25519}"
       SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"
       SSH_USER: "${SSH_USER:-reuse}"

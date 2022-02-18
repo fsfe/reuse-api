@@ -12,6 +12,28 @@ steps:
     commands:
       - reuse lint
 
+  - name: quality-image
+    image: docker/compose:1.29.2
+    environment:
+      # Docker configuration
+      XDG_RUNTIME_DIR: "/run/user/1001"
+      DOCKER_HOST: "unix:///run/user/1001/docker.sock"
+    volumes:
+      - name: dockersock
+        path: /run/user/1001/docker.sock
+    commands:
+      - docker-compose -p reuse-api --file docker-compose.quality.yml build
+
+  # Run pytest
+  - name: quality
+    image: reuse-api-quality
+    pull: never
+    commands:
+      - make quality
+      - pipenv --rm
+    depends_on:
+      - quality-image
+
   # Build and deploy Docker
   - name: deploy
     image: docker/compose:1.29.2
@@ -42,6 +64,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: 33c984a08bc0331bdf2c29e5f5814a99f7550b1e52ef82cd0dbe6aa6023ae218
+hmac: 816b42ef12ea65ad19e1759fd4aa2c2af7b1fc57cadc28c779b24c5f2a705edb
 
 ...

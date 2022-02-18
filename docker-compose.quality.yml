@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2019 Free Software Foundation Europe e.V.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+version: '3'
+services:
+  reuse-api-quality:
+    image: reuse-api-quality
+    container_name: reuse-api-quality
+    build:
+      target: quality
+      context: .

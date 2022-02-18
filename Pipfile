@@ -22,6 +22,7 @@ pytest = "*"
 pytest-cov = "*"
 pytest-flask = "*"
 pytest-mock = "*"
+requests-mock = "*"
 
 [requires]
 python_version = "3.8"

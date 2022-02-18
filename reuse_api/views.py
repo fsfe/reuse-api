@@ -25,6 +25,7 @@ html_blueprint = Blueprint("html", __name__)
 # Blueprint for all endpoints delivering machine-readable JSON content
 json_blueprint = Blueprint("json", __name__)
 
+
 # Start page
 @html_blueprint.route("/")
 def index():
@@ -94,7 +95,8 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         params = {"appid": "reuse-api", **form.data}
-        del params["csrf_token"]
+        if "csrf_token" in params:
+            del params["csrf_token"]
         response = post(
             url=current_app.config["FORMS_URL"],
             data=params,

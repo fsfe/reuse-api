@@ -36,7 +36,8 @@ class Task(NamedTuple):
 
 class TaskQueue(Queue):
     """
-    Allows to know when a Task is already in the Queue or in computation to limit redundant execution
+    Allows to know when a Task is already in the Queue or in computation to
+    limit redundant execution
     """
 
     def __init__(self, **kwargs):

@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 SOURCE_DIR = reuse_api
+# Files/dirs to be checked by pylama/black/isort
+QUALITY_TARGETS = $(SOURCE_DIR) tests/* *.py
 
 export FLASK_SKIP_DOTENV = 1
 export FLASK_APP = ${SOURCE_DIR}
@@ -37,11 +39,11 @@ virtualenv:  ##@development Set up the virtual environment with the Python depen
 .PHONY: virtualenv
 
 applyisort:  ##@development Apply a correct Python import sort inline.
-	@pipenv run isort
+	@pipenv run isort $(QUALITY_TARGETS)
 .PHONY: applyisort
 
 applyblack:  ##@development Apply source code formatting with black.
-	@pipenv run black .
+	@pipenv run black $(QUALITY_TARGETS)
 .PHONY: applyblack
 
 flask:  ##@development Run the Flask built-in web server.
@@ -53,21 +55,20 @@ gunicorn:  ##@development Run the Gunicorn based web server.
 .PHONY: gunicorn
 
 isort:  ##@quality Check the Python source code for import sorting.
-	@pipenv run isort --check-only --diff
+	@pipenv run isort --check --diff $(QUALITY_TARGETS)
 .PHONY: isort
 
 black:  ##@quality Check the Python source code formatting with black.
-	@pipenv run black --quiet --check --diff .
+	@pipenv run black --check --diff $(QUALITY_TARGETS)
 .PHONY: black
 
-lint:  ##@quality Check the Python source code for coding standards compliance.
-	@pipenv run pylama
-.PHONY: lint
+pylama:  ##@quality Check the Python source code for coding standards compliance.
+	@pipenv run pylama $(QUALITY_TARGETS)
+.PHONY: pylama
 
 pytest:  ##@quality Run the functional tests.
-	@pipenv run pytest --cov=$(SOURCE_DIR)
-	@pipenv run coverage html
+	@pipenv run pytest --cov=$(SOURCE_DIR) tests
 .PHONY: pytest
 
-quality: isort black lint pytest  ##@quality Run all quality checks.
+quality: isort black pylama pytest  ##@quality Run all quality checks.
 .PHONY: quality

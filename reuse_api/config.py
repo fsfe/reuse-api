@@ -22,7 +22,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Configuration for the form server used for registration
 FORMS_URL = os.environ.get("FORMS_URL", "https://forms.fsfe.org/email")
-FORMS_FILE = "repos.json"
+FORMS_FILE = os.environ.get("FORMS_FILE", "repos.json")
 if not os.path.isfile(FORMS_FILE):
     raise FileNotFoundError(
         "Can't run without access to the '%s' file", FORMS_FILE
