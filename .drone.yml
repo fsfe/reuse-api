@@ -47,6 +47,8 @@ steps:
     volumes:
       - name: dockersock
         path: /run/user/1001/docker.sock
+    depends_on:
+      - quality
     when:
       branch:
         - master
@@ -64,6 +66,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: 816b42ef12ea65ad19e1759fd4aa2c2af7b1fc57cadc28c779b24c5f2a705edb
+hmac: e26210a9e7e5fcd5ca0230b99d5272313c51982664be02aaf0e7b772be0f876b
 
 ...
