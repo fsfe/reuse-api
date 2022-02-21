@@ -8,5 +8,5 @@ services:
     image: reuse-api-quality
     container_name: reuse-api-quality
     build:
-      target: quality
+      target: dev
       context: .

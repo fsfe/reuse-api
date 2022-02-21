@@ -15,26 +15,15 @@ RUN pip3 install --no-cache-dir -U pip
 RUN rm -r /opt/bitnami/python/lib/python3.8/site-packages/setuptools*
 # Install pipenv and setuptools
 RUN pip3 install --no-cache-dir -U pipenv setuptools
-RUN install_packages pipenv git openssh-client
+RUN install_packages git openssh-client
 
 # Import Python packages
 COPY Pipfile Pipfile.lock ./
 
 
-FROM builder AS dev-builder
-# Install Python packages
+FROM builder AS dev
+# Install Python development packages
 RUN pipenv install --dev --system
-
-
-FROM dev-builder as quality
-# Install make
-RUN install_packages make
-
-
-FROM dev-builder as dev
-# Copy application code and tests
-COPY . .
-CMD gunicorn --bind 0.0.0.0:8000 "reuse_api:create_app()"
 
 
 FROM builder AS prod
