@@ -63,7 +63,7 @@ You can simulate a complete environment with docker-compose and submodules.
 
 A number of URLs will have to be replaced manually during the whole register/confirm/view process.
 
-* REUSE API web interface: http://localhost:8180
+* REUSE API web interface: http://localhost:8081
 * See confirmation emails: http://localhost:1080
 * Confirm the verification: http://localhost:8080 (you will be redirected to reuse.software after confirmation, change that back to localhost:8180)
 
