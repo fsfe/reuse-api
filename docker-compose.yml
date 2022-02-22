@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-version: "3"
+version: "3.4"
 services:
   reuse-api:
     container_name: reuse-api

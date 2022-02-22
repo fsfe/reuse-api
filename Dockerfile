@@ -2,41 +2,28 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM fsfe/pipenv:python-3.8 AS builder
+FROM bitnami/python:3.8 AS builder
 
 EXPOSE 8000
 
 WORKDIR /root
 
-# Install required packages
-RUN apt-get -q update && \
-    apt-get -qy --allow-downgrades --allow-remove-essential --allow-change-held-packages upgrade && \
-    apt-get install -y git openssh-client && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Upgrade / install required packages
+RUN install_packages git openssh-client
+# Upgrade setuptools and pip (https://github.com/bitnami/bitnami-docker-python/issues/13)
+RUN pip3 install --no-cache-dir -U pip
+# Remove pre-installed setuptools version
+RUN rm -r /opt/bitnami/python/lib/python3.8/site-packages/setuptools*
+# Install pipenv and setuptools
+RUN pip3 install --no-cache-dir -U pipenv setuptools
 
 # Import Python packages
 COPY Pipfile Pipfile.lock ./
 
 
-FROM builder AS dev-builder
-# Install Python packages
+FROM builder AS dev
+# Install Python development packages
 RUN pipenv install --dev --system
-
-
-FROM dev-builder as quality
-# Install make
-RUN apt-get -q update && \
-    apt-get -qy --allow-downgrades --allow-remove-essential --allow-change-held-packages upgrade && \
-    apt-get install -y make && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-
-FROM dev-builder as dev
-# Copy application code and tests
-COPY . .
-CMD gunicorn --bind 0.0.0.0:8000 "reuse_api:create_app()"
 
 
 FROM builder AS prod
