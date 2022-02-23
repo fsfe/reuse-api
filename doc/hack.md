@@ -75,7 +75,8 @@ The following commands are available for automatic quality checks:
 * `make black` to verify the correct formatting of source code.
 * `make pylama` to verify the compliance with coding standards.
 * `make pytest` to run the functional tests defined in the [tests](../tests)
-  directory.
+  directory. Please note that you may need to delete/rename your `.env`
+  temporarily to avoid tests to fail.
 * `make quality` to run all of the above tests.
 
 Run these in the virtual environment to use the same versions as everyone else.
