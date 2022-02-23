@@ -15,7 +15,7 @@ gunicorn = "*"
 requests = "*"
 
 [dev-packages]
-black = "==21.5b2 "  # no final release available yet
+black = "==22.1.0"
 isort = "*"
 pylama = "*"
 pytest = "*"
