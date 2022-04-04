@@ -9,13 +9,7 @@ EXPOSE 8000
 WORKDIR /root
 
 # Upgrade / install required packages
-RUN install_packages git openssh-client
-# Upgrade setuptools and pip (https://github.com/bitnami/bitnami-docker-python/issues/13)
-RUN pip3 install --no-cache-dir -U pip
-# Remove pre-installed setuptools version
-RUN rm -r /opt/bitnami/python/lib/python3.8/site-packages/setuptools*
-# Install pipenv and setuptools
-RUN pip3 install --no-cache-dir -U pipenv setuptools
+RUN install_packages git openssh-client pipenv
 
 # Import Python packages
 COPY Pipfile Pipfile.lock ./
