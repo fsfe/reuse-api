@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM bitnami/python:3.8 AS builder
+FROM bitnami/python:3.10 AS builder
 
 EXPOSE 8000
 
