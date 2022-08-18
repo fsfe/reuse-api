@@ -8,7 +8,7 @@ services:
     ports:
       - "8081:8000"
     volumes:
-      - ./api-worker/worker-setup/files:/home/fsfe/.ssh:ro
+      - ./api-worker/worker-setup/files:/home/fsfe/.ssh:rw
       - /srv/forms/reuse-api/repos.json:/home/fsfe/repos.json:ro
     networks:
       - default
