@@ -51,13 +51,14 @@ You can simulate a complete environment with docker-compose and submodules.
 - Clone the repository with all submodules `git submodule update --init --recursive`
 - Run `chmod 600 ./api-worker/worker-setup/files/test_ed25519` to set SSH files with the correct rights
 - Run `docker build -f api-worker/docker-image/Dockerfile -t reuse-api-worker-runner api-worker/docker-image` to prepare the image that checks repos on the API worker
+- Run `docker network create reuse-api-net` to create the internal Docker network in case it does not exist yet
 - Run `docker-compose -f api-worker/docker-compose.yml up --build -d` to set up a local instance of the API worker
 - Run `docker-compose -f forms/docker-compose.yml -f forms/docker-compose.dev.yml up --build -d` to set up a local version of the forms API
 - Run `echo "[]" > /srv/forms/reuse-api/repos.json` that is a shared file with the `forms` API
 - Run `chmod 777 /srv/reuse-api`. Otherwise, the database file cannot be created, and starting reuse-api aborts
 - Copy the `.env.default` file to `.env`
-- Run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d`
-- Now the api is available on `http://localhost:8081` from your browser
+- Run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d` to start the actual API in development mode
+- Now the API is available on `http://localhost:8081` from your browser
 
 ### URLs
 
