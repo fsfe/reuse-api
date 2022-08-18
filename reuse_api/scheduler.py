@@ -61,7 +61,8 @@ class TaskQueue(Queue):
 
     def qsize(self) -> int:
         """
-        Return the total number of elements that are being computed and waiting to be computed
+        Return the total number of elements that are being computed and waiting
+        to be computed
         """
         with self.task_mutex:
             return len(self.task_urls)
@@ -81,6 +82,7 @@ def determine_protocol(url):
 
 
 def schedule_if_new_or_later(url, scheduler):
+    """Check whether repo has a new commit and execute check accordingly"""
     protocol, latest = None, None
 
     try:
@@ -116,7 +118,9 @@ def schedule_if_new_or_later(url, scheduler):
 
 
 def latest_hash(protocol, url):
+    """Find the latest hash of the given Git URL"""
     try:
+        # pylint: disable=subprocess-run-check
         result = subprocess.run(
             ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
             stdout=subprocess.PIPE,
@@ -133,6 +137,7 @@ def latest_hash(protocol, url):
 
 
 def hash_from_output(output):
+    """Export the commit's SHA hashsum from the output"""
     line = output.strip().split("\n")[0]
     match = _HASH_PATTERN.search(line)
     if match is not None:
@@ -141,6 +146,8 @@ def hash_from_output(output):
 
 
 def update_task(task, return_code, output):
+    """Depending on the output, update the information of the repository:
+    status, new hash, status, url and lint code/output"""
     if return_code == 0:
         status = "compliant"
     else:
@@ -204,9 +211,11 @@ class Scheduler:
         self._app.logger.debug("finished stopping all threads")
 
     def contain_task(self, task):
+        """Check if the given task is already queued"""
         return task in self._queue
 
     def _add_task_if_not_already_enqueue(self, task):
+        """Add task to queue if not already in queue"""
         if self.contain_task(task):
             current_app.logger.debug("'%s' already in queue", task.url)
         else:
@@ -235,9 +244,8 @@ class Runner(Thread):
                 continue
 
             self._app.logger.debug("linting '%s'", task.url)
-            # FIXME!!!!!
-            # This step needs to be ABSOLUTELY SECURE!
             try:
+                # pylint: disable=subprocess-run-check
                 result = subprocess.run(
                     [
                         "ssh",
@@ -253,7 +261,6 @@ class Runner(Thread):
                     ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-                    # TODO: Verify whether this timeout is reasonable.
                     timeout=900,
                 )
             except subprocess.TimeoutExpired:
