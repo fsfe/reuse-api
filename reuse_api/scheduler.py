@@ -271,10 +271,23 @@ class Runner(Thread):
                     task.url,
                     result.returncode,
                 )
-                with self._app.app_context():
-                    update_task(
-                        task, result.returncode, result.stdout.decode("utf-8")
+                # If the return code of the SSH connection is 255, we can
+                # assume that the SSH connection failed. In this case, we do
+                # not update the repository, neither the hash nor the status.
+                # Instead, we write a warning that should be monitored.
+                if result.returncode == 255:
+                    self._app.logger.warning(
+                        "SSH connection failed when checking '%s'. Not "
+                        "updating database.",
+                        task.url,
                     )
+                else:
+                    with self._app.app_context():
+                        update_task(
+                            task,
+                            result.returncode,
+                            result.stdout.decode("utf-8"),
+                        )
             finally:
                 self._queue.done(task)
 
