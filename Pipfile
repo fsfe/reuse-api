@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [[source]]
+name = "PyPi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
