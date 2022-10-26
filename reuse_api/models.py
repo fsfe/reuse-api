@@ -7,8 +7,8 @@ from datetime import datetime
 
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy, orm
-from sqlalchemy.engine import Engine
 from sqlalchemy import event
+from sqlalchemy.engine import Engine
 
 from .config import NB_REPOSITORY_BY_PAGINATION
 
