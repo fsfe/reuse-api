@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1a126c2ddaa028751579c9f207430fb396a9c577fd8e9f0ff8dca5fc39930431"
+            "sha256": "689f317dd4d7b92cbda4a41e3b0bc7a0d721700473cfc53aea6f565cc836d01b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -9,7 +9,6 @@
         },
         "sources": [
             {
-                "name": "pypi.org",
                 "url": "https://pypi.org/simple",
                 "verify_ssl": true
             }
@@ -45,7 +44,7 @@
                 "sha256:0f7569a4a6ff151958b64304071d370daa3243d15941a7beedf0c9fe5105603e",
                 "sha256:a851e51367fb93e9e1361732c1d60dab63eff98712e503ea7d92e6eccb109b4f"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==2.2.1"
         },
         "email-validator": {
@@ -347,7 +346,6 @@
                 "sha256:f586c26118bc6e714ec58c09df0157fe2d9ee195c764f630eb0d8e7ccce72e69",
                 "sha256:f6fe02afde060bbeef044af7996f335fbe90b039ccf3f5eb8f16df8b20f77666"
             ],
-            "index": "PyPi",
             "version": "==22.6.0"
         },
         "certifi": {
@@ -432,14 +430,6 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==6.4.4"
-        },
-        "exceptiongroup": {
-            "hashes": [
-                "sha256:2e3c3fc1538a094aab74fad52d6c33fc94de3dfee3ee01f187c0e0c72aec5337",
-                "sha256:9086a4a21ef9b31c72181c77c040a074ba0889ee56a7b289ff0afb0d97655f96"
-            ],
-            "markers": "python_version < '3.11'",
-            "version": "==1.0.0rc9"
         },
         "flask": {
             "hashes": [
