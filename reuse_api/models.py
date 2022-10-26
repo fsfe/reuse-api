@@ -7,11 +7,22 @@ from datetime import datetime
 
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy, orm
+from sqlalchemy.engine import Engine
+from sqlalchemy import event
 
 from .config import NB_REPOSITORY_BY_PAGINATION
 
 
 db = SQLAlchemy()
+
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL")
+    cursor.execute("PRAGMA synchronous=NORMAL")
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 
 def init_models(app):
