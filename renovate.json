@@ -1,3 +1,7 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "packageRules": [
+    {
+      "matchManagers": ["pipenv", "dockerfile", "docker-compose"],
+    }
+  ]
 }
