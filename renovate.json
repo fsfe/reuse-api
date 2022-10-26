@@ -1,7 +1,3 @@
 {
-  "packageRules": [
-    {
-      "matchManagers": ["pipenv", "dockerfile", "docker-compose"],
-    }
-  ]
+  "enabledManagers": ["dockerfile", "pipenv", "docker-compose"]
 }
