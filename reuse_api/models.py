@@ -6,8 +6,8 @@ import json
 from datetime import datetime
 
 from flask import current_app
-from flask_sqlalchemy import SQLAlchemy, orm
-from sqlalchemy import event
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import event, orm
 from sqlalchemy.engine import Engine
 
 from .config import NB_REPOSITORY_BY_PAGINATION
