@@ -7,8 +7,6 @@ services:
   reuse-api-quality:
     image: reuse-api-quality
     container_name: reuse-api-quality
-    environment:
-      SQLALCHEMY_DATABASE_URI: "sqlite:///:memory:"
     build:
       target: dev
       context: .
