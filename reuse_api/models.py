@@ -59,7 +59,7 @@ class Repository(db.Model):
             cls.query.order_by(cls.last_access.desc())
             .filter(cls.status == "compliant")
             .options(orm.load_only("url"))
-            .paginate(page, per_page=NB_REPOSITORY_BY_PAGINATION)
+            .paginate(page=page, per_page=NB_REPOSITORY_BY_PAGINATION)
         )
 
     def update(self, url, hash, status, lint_code, lint_output):
