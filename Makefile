@@ -14,6 +14,8 @@ export FLASK_RUN_PORT = 8000
 
 .DEFAULT_GOAL := help
 
+COMPOSE := docker compose
+
 GREEN  = $(shell tput -Txterm setaf 2)
 WHITE  = $(shell tput -Txterm setaf 7)
 YELLOW = $(shell tput -Txterm setaf 3)
@@ -69,6 +71,19 @@ pylama:  ##@quality Check the Python source code for coding standards compliance
 pytest:  ##@quality Run the functional tests.
 	@pipenv run pytest --cov=$(SOURCE_DIR) tests
 .PHONY: pytest
+
+dev: ##@development Bring up entire environment with docker compose
+	@docker network create forms_default || echo "Network already present."
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
+		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml up
+
+dev.up: ##@development Bring up entire environment with docker compose and detach
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
+		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml up -d
+
+dev.down: ##@development Bring down entire environment with docker compose
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
+		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml down
 
 quality: isort black pylama pytest  ##@quality Run all quality checks.
 .PHONY: quality
