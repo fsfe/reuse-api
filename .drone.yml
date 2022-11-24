@@ -36,9 +36,9 @@ steps:
 
   # Build and deploy Docker
   - name: deploy
-    image: docker/compose:1.29.2
+    image: docker:20
     commands:
-      - docker-compose -p reuse-api up --build -d
+      - docker compose -p reuse-api up --build -d
     environment:
       XDG_RUNTIME_DIR: "/run/user/1001"
       DOCKER_HOST: "unix:///run/user/1001/docker.sock"
@@ -66,6 +66,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: e26210a9e7e5fcd5ca0230b99d5272313c51982664be02aaf0e7b772be0f876b
+hmac: 22da019d0fa2aaa52ef768881492247ef06969182e8885e513a89c9d40dd4660
 
 ...
