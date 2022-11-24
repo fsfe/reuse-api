@@ -15,7 +15,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 # application root, not relative to the current working directory! So we have
 # to define an absolute path.
 # See also https://github.com/pallets/flask-sqlalchemy/issues/462
-SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:")
+SQLALCHEMY_DATABASE_URI = os.environ.get(
+    "SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:"
+)
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Configuration for the form server used for registration
