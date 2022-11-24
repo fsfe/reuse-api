@@ -39,7 +39,7 @@ WORKDIR /home/fsfe
 # Production
 FROM bitnami/python:3.10 AS prod
 EXPOSE 8000
-RUN install_packages git openssh-client
+RUN install_packages git openssh-client pgloader
 
 # Install Python packages
 COPY --from=builder requirements.txt ./
