@@ -11,7 +11,7 @@ import os
 from flask import Flask
 
 from . import config
-from .models import init_models
+from .models import db
 from .scheduler import Scheduler
 from .views import html_blueprint, json_blueprint
 
@@ -31,7 +31,9 @@ def create_app():
     os.environ["GIT_TERMINAL_PROMPT"] = "0"
 
     # Initialize database
-    init_models(app)
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     app.scheduler = Scheduler(app)
     # FIXME: This is ideally only run when the app is fully "started", but I
