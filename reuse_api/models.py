@@ -16,20 +16,6 @@ from .config import NB_REPOSITORY_BY_PAGINATION
 db = SQLAlchemy()
 
 
-@event.listens_for(Engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
-
-
-def init_models(app):
-    db.init_app(app)
-    db.create_all(app=app)
-
-
 class Repository(db.Model):
     url = db.Column(db.String, primary_key=True)
     hash = db.Column(db.String(40))
