@@ -85,5 +85,9 @@ dev.down: ##@development Bring down entire environment with docker compose
 	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
 		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml down
 
+dev.logs: ##@development Get logs of running docker containers
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
+		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml logs -f
+
 quality: isort black pylama pytest  ##@quality Run all quality checks.
 .PHONY: quality
