@@ -5,29 +5,34 @@
 version: "3"
 services:
   reuse-api:
+    container_name: reuse-api
+    image: reuse-api
     build:
       context: .
       target: dev
+    restart: always
     ports:
       - "27000:8000"
     environment:
-      SECRET_KEY: "${SECRET_KEY:-verysecretkey}"
       FLASK_APP: "/home/fsfe/reuse_api"
       FLASK_RUN_HOST: "0.0.0.0"
       FLASK_RUN_PORT: "8000"
-      SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:fsfe@reuse-db/reuse"
+      FORMS_FILE: "${FORMS_FILE:-/home/fsfe/forms/repos.json}"
+      FORMS_URL: "http://forms:8080/email"
+      NB_REPOSITORY_BY_PAGES: 100
       REUSE_API: "reuse-api-worker"
+      SECRET_KEY: "${SECRET_KEY:-verysecretkey}"
+      SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:fsfe@reuse-db/reuse"
       SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/test_ed25519}"
       SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"
       SSH_USER: "root"
-      NB_REPOSITORY_BY_PAGES: 100
-      FORMS_URL: "http://forms:8080/email"
-      FORMS_FILE: "${FORMS_FILE:-/home/fsfe/forms/repos.json}"
     command: "flask --debug run"
     volumes:
       - ./reuse_api:/home/fsfe/reuse_api
       - ./api-worker/worker-setup/files:/home/fsfe/.ssh:rw
       - ./forms/store/reuse-api/:/home/fsfe/forms/:ro
+    depends_on:
+      - reuse-db
     networks:
       - default
       - forms_default
@@ -41,6 +46,7 @@ services:
       POSTGRESQL_DATABASE: reuse
     ports:
       - "27001:5432"
+    restart: always
 
   reuse-api-worker:
     container_name: reuse-api-worker
