@@ -36,7 +36,13 @@ class Repository(db.Model):
 
     @classmethod
     def create(cls, **kwargs):
+        """
+        Create a new database entry for the url if project is registered
+        """
         if not cls.is_registered(kwargs.get("url")):
+            current_app.logger.debug(
+                "there is no valid registration for '%s'", kwargs.get("url")
+            )
             return None
         record = cls(**kwargs)
         db.session.add(record)
@@ -45,6 +51,9 @@ class Repository(db.Model):
 
     @classmethod
     def find(cls, url):
+        """
+        Try to find database entry by URL
+        """
         return cls.query.filter(
             db.func.lower(cls.url) == db.func.lower(url)
         ).one_or_none()
