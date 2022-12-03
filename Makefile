@@ -74,19 +74,19 @@ pytest:  ##@quality Run the functional tests.
 
 dev: ##@development Bring up entire environment with docker compose
 	@docker network create forms_default || echo "Network already present."
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
+	@$(COMPOSE) -f docker-compose.dev.yml \
 		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml up
 
 dev.up: ##@development Bring up entire environment with docker compose and detach
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
+	@$(COMPOSE) -f docker-compose.dev.yml \
 		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml up -d
 
 dev.down: ##@development Bring down entire environment with docker compose
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
+	@$(COMPOSE) -f docker-compose.dev.yml \
 		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml down
 
 dev.logs: ##@development Get logs of running docker containers
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
+	@$(COMPOSE) -f docker-compose.dev.yml \
 		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml logs -f
 
 quality: isort black pylama pytest  ##@quality Run all quality checks.

@@ -11,15 +11,17 @@ services:
     ports:
       - "27000:8000"
     environment:
+      SECRET_KEY: "${SECRET_KEY:-verysecretkey}"
       FLASK_APP: "/home/fsfe/reuse_api"
       FLASK_RUN_HOST: "0.0.0.0"
       FLASK_RUN_PORT: "8000"
       SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:fsfe@reuse-db/reuse"
       REUSE_API: "reuse-api-worker"
-      SSH_KEY_PATH: "/home/fsfe/.ssh/test_ed25519"
-      SSH_KNOW_HOST_PATH: "/home/fsfe/.ssh/known_hosts"
+      SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/reuse_ed25519}"
+      SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"
       SSH_USER: "root"
       NB_REPOSITORY_BY_PAGES: 100
+      FORMS_URL: "http://forms:8080/email"
     command: "flask --debug run"
     volumes:
       - ./reuse_api:/home/fsfe/reuse_api
