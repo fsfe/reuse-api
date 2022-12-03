@@ -76,7 +76,6 @@ pytest:  ##@quality Run the functional tests.
 dev.prep: ##@development Initially build the docker image that the API worker executes
 	@chmod 600 ./api-worker/worker-setup/files/test_ed25519
 	@mkdir -p ./forms/store/reuse-api
-	@mkdir -p ./db && chmod 777 ./db
 	@if ! [ -e ./forms/store/reuse-api/repos.json ]; then echo [] > ./forms/store/reuse-api/repos.json; fi
 	@docker build -f api-worker/docker-image/Dockerfile -t reuse-api-worker-runner api-worker/docker-image
 .PHONY: dev.prep
@@ -98,8 +97,7 @@ dev.logs: ##@development Get logs of running docker containers
 
 dev.reset: ##@development Prune some configs to test the API from scratch
 	@echo [] > ./forms/store/reuse-api/repos.json
-	@rm ./api-worker/worker-setup/files/known_hosts
-	@rm -r ./db
+	@rm -f ./api-worker/worker-setup/files/known_hosts
 .PHONY: dev.reset
 
 quality: isort black pylama pytest  ##@quality Run all quality checks.
