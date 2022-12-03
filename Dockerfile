@@ -42,7 +42,7 @@ EXPOSE 8000
 RUN install_packages git openssh-client pgloader
 
 # Install Python packages
-COPY --from=builder requirements.txt ./
+COPY --from=builder /root/requirements.txt ./
 RUN pip install -r requirements.txt
 RUN ./setup.py install
 
