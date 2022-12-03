@@ -7,27 +7,12 @@ from datetime import datetime
 
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import event, orm
-from sqlalchemy.engine import Engine
+from sqlalchemy import orm
 
 from .config import NB_REPOSITORY_BY_PAGINATION
 
 
 db = SQLAlchemy()
-
-
-@event.listens_for(Engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
-
-
-def init_models(app):
-    db.init_app(app)
-    db.create_all(app=app)
 
 
 class Repository(db.Model):
@@ -73,7 +58,7 @@ class Repository(db.Model):
             cls.query.order_by(cls.last_access.desc())
             .filter(cls.status == "compliant")
             .options(orm.load_only("url"))
-            .paginate(page, per_page=NB_REPOSITORY_BY_PAGINATION)
+            .paginate(page=page, per_page=NB_REPOSITORY_BY_PAGINATION)
         )
 
     def update(self, url, hash, status, lint_code, lint_output):

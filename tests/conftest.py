@@ -35,6 +35,7 @@ def mocked_forms_app(tmp_repos):
 
     app.config["TESTING"] = True
     app.config["WTF_CSRF_ENABLED"] = False
+
     return app
 
 

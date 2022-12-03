@@ -12,21 +12,33 @@ services:
       target: prod
     restart: always
     environment:
-      SECRET_KEY: "${SECRET_KEY}"
-      SQLALCHEMY_DATABASE_PATH: "${SQLALCHEMY_DATABASE_PATH:-/home/fsfe/database.sqlite}"
       FORMS_FILE: "${FORMS_FILE:-/home/fsfe/repos.json}"
+      FORMS_URL: "${FORMS_URL:-https://forms.fsfe.org/email}"
+      NB_REPOSITORY_BY_PAGINATION: "${NB_REPOSITORY_BY_PAGINATION:-10}"
+      NB_RUNNER: "${NB_RUNNER:-6}"
+      REUSE_API: "${REUSE_API:-wrk3.api.reuse.software}"
+      SECRET_KEY: "${SECRET_KEY}"
+      SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:${SECRET_KEY}@reuse-db/reuse"
       SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/reuse_ed25519}"
       SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"
       SSH_USER: "${SSH_USER:-reuse}"
-      REUSE_API: "${REUSE_API:-wrk3.api.reuse.software}"
-      FORMS_URL: "${FORMS_URL:-https://forms.fsfe.org/email}"
-      NB_RUNNER: "${NB_RUNNER:-6}"
-      NB_REPOSITORY_BY_PAGINATION: "${NB_REPOSITORY_BY_PAGINATION:-10}"
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
-    # Reverse Proxy
+    ports:
+      - "6360:8000"
     labels:
       proxy.host: "api.reuse.software"
       proxy.port: "6360"
-    ports:
-      - "6360:8000"
+
+  reuse-db:
+    container_name: reuse-db
+    image: bitnami/postgresql:13
+    environment:
+      POSTGRESQL_USERNAME: fsfe
+      POSTGRESQL_PASSWORD: "${SECRET_KEY}"
+      POSTGRESQL_DATABASE: reuse
+    expose:
+      - "5432"
+    restart: always
+    volumes:
+      - "/srv/reuse-api/db:/bitnami/postgresql:rw"

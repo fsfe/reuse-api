@@ -2,21 +2,64 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-version: '3'
+version: "3"
 services:
   reuse-api:
+    container_name: reuse-api
+    image: reuse-api
+    build:
+      context: .
+      target: dev
+    restart: always
     ports:
-      - "8081:8000"
+      - "27000:8000"
+    environment:
+      FLASK_APP: "/home/fsfe/reuse_api"
+      FLASK_RUN_HOST: "0.0.0.0"
+      FLASK_RUN_PORT: "8000"
+      FORMS_FILE: "${FORMS_FILE:-/home/fsfe/forms/repos.json}"
+      FORMS_URL: "http://forms:8080/email"
+      NB_REPOSITORY_BY_PAGES: 100
+      REUSE_API: "reuse-api-worker"
+      SECRET_KEY: "${SECRET_KEY:-verysecretkey}"
+      SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:fsfe@reuse-db/reuse"
+      SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/test_ed25519}"
+      SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"
+      SSH_USER: "root"
+    command: "flask --debug run"
     volumes:
+      - ./reuse_api:/home/fsfe/reuse_api
       - ./api-worker/worker-setup/files:/home/fsfe/.ssh:rw
-      - /srv/forms/reuse-api/repos.json:/home/fsfe/repos.json:ro
+      - ./forms/store/reuse-api/:/home/fsfe/forms/:ro
+    depends_on:
+      - reuse-db
     networks:
       - default
-      - reuse-api-net
       - forms_default
+
+  reuse-db:
+    container_name: reuse-db
+    image: bitnami/postgresql:13
+    environment:
+      POSTGRESQL_USERNAME: fsfe
+      POSTGRESQL_PASSWORD: fsfe
+      POSTGRESQL_DATABASE: reuse
+    ports:
+      - "27001:5432"
+    restart: always
+
+  reuse-api-worker:
+    container_name: reuse-api-worker
+    build:
+      context: api-worker
+    image: reuse-api-worker
+    restart: always
+    expose:
+      - "22"
+    # Docker in container uses the host's Docker socket
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
   forms_default:
-    external: true
-  reuse-api-net:
     external: true
