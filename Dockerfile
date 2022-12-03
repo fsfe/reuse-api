@@ -44,16 +44,15 @@ RUN install_packages git openssh-client pgloader
 # Install Python packages
 COPY --from=builder /root/requirements.txt ./
 RUN pip install -r requirements.txt
-RUN ./setup.py install
+
+# Install the actual application
+COPY . .
+RUN ./setup.py install --user
 
 # Switch to non-root user
 RUN adduser --uid 1000 --gecos "FSFE" --shell "/sbin/nologin" --disabled-password fsfe
 USER fsfe
 WORKDIR /home/fsfe
-
-# Install the actual application
-COPY . .
-RUN ./setup.py install --user
 
 # Run the WSGI server
 CMD gunicorn --bind 0.0.0.0:8000 "reuse_api:create_app()"
