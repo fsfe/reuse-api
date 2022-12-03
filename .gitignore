@@ -5,6 +5,7 @@
 # Test data
 database.sqlite
 repos.json
+db/
 
 # Created by Python running locally
 __pycache__/

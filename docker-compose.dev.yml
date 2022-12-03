@@ -47,6 +47,8 @@ services:
     ports:
       - "27001:5432"
     restart: always
+    volumes:
+      - "./db/:/bitnami/postgresql:rw"
 
   reuse-api-worker:
     container_name: reuse-api-worker
