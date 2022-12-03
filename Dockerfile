@@ -47,7 +47,7 @@ RUN pip install -r requirements.txt
 
 # Install the actual application
 COPY . .
-RUN ./setup.py install --user
+RUN ./setup.py install
 
 # Switch to non-root user
 RUN adduser --uid 1000 --gecos "FSFE" --shell "/sbin/nologin" --disabled-password fsfe
