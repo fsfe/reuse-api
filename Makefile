@@ -23,7 +23,7 @@ RESET  = $(shell tput -Txterm sgr0)
 
 HELPME = \
 	%help; \
-	while(<>) { push @{$$help{$$2 // 'options'}}, [$$1, $$3] if /^([a-zA-Z\-]+)\s*:.*\#\#(?:@([a-zA-Z\-]+))?\s(.*)$$/ }; \
+	while(<>) { push @{$$help{$$2 // 'options'}}, [$$1, $$3] if /^([a-zA-Z\-\.]+)\s*:.*\#\#(?:@([a-zA-Z\-]+))?\s(.*)$$/ }; \
 	for (sort keys %help) { \
 	print "${WHITE}$$_:${RESET}\n"; \
 	for (@{$$help{$$_}}) { \
@@ -31,6 +31,7 @@ HELPME = \
 	print "  ${YELLOW}$$_->[0]${RESET}$$sep${GREEN}$$_->[1]${RESET}\n"; \
 	}; \
 	print "\n"; }
+
 
 help:
 	@perl -e '$(HELPME)' $(MAKEFILE_LIST)
@@ -72,22 +73,33 @@ pytest:  ##@quality Run the functional tests.
 	@pipenv run pytest --cov=$(SOURCE_DIR) tests
 .PHONY: pytest
 
-dev: ##@development Bring up entire environment with docker compose
-	@docker network create forms_default || echo "Network already present."
-	@$(COMPOSE) -f docker-compose.dev.yml \
-		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml up
+dev.prep: ##@development Initially build the docker image that the API worker executes
+	@chmod 600 ./api-worker/worker-setup/files/test_ed25519
+	@mkdir -p ./forms/store/reuse-api
+	@if ! [ -e ./forms/store/reuse-api/repos.json ]; then echo [] > ./forms/store/reuse-api/repos.json; fi
+	@docker build -f api-worker/docker-image/Dockerfile -t reuse-api-worker-runner api-worker/docker-image
+.PHONY: dev.prep
 
-dev.up: ##@development Bring up entire environment with docker compose and detach
-	@$(COMPOSE) -f docker-compose.dev.yml \
-		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml up -d
+dev.up: dev.prep ##@development Bring up entire environment with docker compose and detach
+	@docker network create forms_default || echo "Network already present."
+	@$(COMPOSE)	-f forms/docker-compose.yml -f forms/docker-compose.dev.yml up -d
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml up -d
+.PHONY: dev.up
 
 dev.down: ##@development Bring down entire environment with docker compose
-	@$(COMPOSE) -f docker-compose.dev.yml \
-		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml down
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml down
+	@$(COMPOSE)	-f forms/docker-compose.yml -f forms/docker-compose.dev.yml down
+.PHONY: dev.down
 
 dev.logs: ##@development Get logs of running docker containers
-	@$(COMPOSE) -f docker-compose.dev.yml \
+	@$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml \
 		-f forms/docker-compose.yml -f forms/docker-compose.dev.yml logs -f
+.PHONY: dev.logs
+
+dev.reset: ##@development Prune some configs to test the API from scratch
+	@echo [] > ./forms/store/reuse-api/repos.json
+	@rm ./api-worker/worker-setup/files/known_hosts
+.PHONY: dev.reset
 
 quality: isort black pylama pytest  ##@quality Run all quality checks.
 .PHONY: quality
