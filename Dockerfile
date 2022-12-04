@@ -55,4 +55,4 @@ USER fsfe
 WORKDIR /home/fsfe
 
 # Run the WSGI server
-CMD gunicorn --bind 0.0.0.0:8000 "reuse_api:create_app()"
+CMD gunicorn --bind=0.0.0.0:8000 --workers=4 "reuse_api:create_app()"
