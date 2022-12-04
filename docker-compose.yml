@@ -16,7 +16,7 @@ services:
       FORMS_URL: "${FORMS_URL:-https://forms.fsfe.org/email}"
       NB_REPOSITORY_BY_PAGINATION: "${NB_REPOSITORY_BY_PAGINATION:-10}"
       NB_RUNNER: "${NB_RUNNER:-6}"
-      REUSE_API: "${REUSE_API:-wrk3.api.reuse.software}"
+      REUSE_API: "${REUSE_API:-wrk1.api.reuse.software}"
       SECRET_KEY: "${SECRET_KEY}"
       SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:${SECRET_KEY}@reuse-db/reuse"
       SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/reuse_ed25519}"

@@ -34,7 +34,7 @@ SSH_KNOW_HOST_PATH = os.environ.get("SSH_KNOW_HOST_PATH", "~/.ssh/known_hosts")
 SSH_USER = os.environ.get("SSH_USER", "reuse")
 
 # Servername
-REUSE_API = os.environ.get("REUSE_API", "wrk3.api.reuse.software")
+REUSE_API = os.environ.get("REUSE_API", "wrk1.api.reuse.software")
 
 # Number of maximum checks in queue
 NB_RUNNER = int(os.environ.get("NB_RUNNER", "6"))
