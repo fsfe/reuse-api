@@ -16,6 +16,7 @@ from .config import (
     REUSE_API,
     SSH_KEY_PATH,
     SSH_KNOW_HOST_PATH,
+    SSH_PORT,
     SSH_USER,
 )
 from .models import Repository
@@ -256,6 +257,8 @@ class Runner(Thread):
                         "-o",
                         f"UserKnownHostsFile={SSH_KNOW_HOST_PATH}",
                         f"{SSH_USER}@{REUSE_API}",
+                        "-p",
+                        SSH_PORT,
                         "reuse-lint-repo",
                         f"{task.protocol}://{task.url}",
                     ],

@@ -25,6 +25,7 @@ services:
       SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:fsfe@reuse-db/reuse"
       SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/test_ed25519}"
       SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"
+      SSH_PORT: 22
       SSH_USER: "root"
     command: "flask --debug run"
     volumes:

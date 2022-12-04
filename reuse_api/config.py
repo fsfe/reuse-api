@@ -31,6 +31,7 @@ if not os.path.isfile(FORMS_FILE):
 # SSH configurations
 SSH_KEY_PATH = os.environ.get("SSH_KEY_PATH", "~/.ssh/reuse_ed25519")
 SSH_KNOW_HOST_PATH = os.environ.get("SSH_KNOW_HOST_PATH", "~/.ssh/known_hosts")
+SSH_PORT = os.environ.get("SSH_PORT", "22")
 SSH_USER = os.environ.get("SSH_USER", "reuse")
 
 # Servername
