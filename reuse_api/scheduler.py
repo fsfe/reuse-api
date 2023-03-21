@@ -171,6 +171,7 @@ def update_task(task, output):
         status=status,
         lint_code=output["exit_code"],
         lint_output=output["lint_output"],
+        spdx_output=output["spdx_output"],
     )
 
 
