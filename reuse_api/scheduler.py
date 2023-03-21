@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: 2019 Free Software Foundation Europe e.V.
+# SPDX-FileCopyrightText: 2023 DB Systel GmbH
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import json
 import re
 import subprocess
 import threading
@@ -146,13 +148,16 @@ def hash_from_output(output):
     return None
 
 
-def update_task(task, return_code, output):
+def update_task(task, output):
     """Depending on the output, update the information of the repository:
     status, new hash, status, url and lint code/output"""
-    if return_code == 0:
+    # Output is JSON, convert to dict
+    output = json.loads(output)[0]
+    if output["exit_code"] == 0:
         status = "compliant"
     else:
         status = "non-compliant"
+    # TODO: was hash_from_output() actually working before?
     new_hash = hash_from_output(output)
     if new_hash is None:
         new_hash = task.hash
@@ -164,8 +169,8 @@ def update_task(task, return_code, output):
         url=task.url,
         hash=new_hash,
         status=status,
-        lint_code=return_code,
-        lint_output=output,
+        lint_code=output["exit_code"],
+        lint_output=output["lint_output"],
     )
 
 
@@ -231,6 +236,7 @@ class Scheduler:
 
 class Runner(Thread):
     """Defining one task in the schedule queue"""
+
     def __init__(self, queue, app):
         self._queue = queue
         self._app = app
@@ -253,17 +259,23 @@ class Runner(Thread):
                 result = subprocess.run(
                     [
                         "ssh",
+                        # SSH private key
                         "-i",
                         SSH_KEY_PATH,
+                        # accept new host keys, define known_hosts file
                         "-o",
                         "StrictHostKeyChecking=accept-new",
                         "-o",
                         f"UserKnownHostsFile={SSH_KNOW_HOST_PATH}",
+                        # SSH host (API worker), and its port
                         f"{SSH_USER}@{REUSE_API}",
                         "-p",
                         SSH_PORT,
-                        "reuse-lint-repo",
+                        # Command with args (repo URL, verbosity)
+                        "reuse_lint_repo",
+                        "-r",
                         f"{task.protocol}://{task.url}",
+                        "-v",
                     ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
@@ -289,9 +301,9 @@ class Runner(Thread):
                     )
                 else:
                     with self._app.app_context():
+                        # Update database entry with the results of this check
                         update_task(
                             task,
-                            result.returncode,
                             result.stdout.decode("utf-8"),
                         )
             finally:
