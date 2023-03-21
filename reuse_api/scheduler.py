@@ -188,6 +188,7 @@ class Scheduler:
         self._running = False
 
     def add_task(self, task):
+        """Add a repository to the check queue"""
         if self._running:
             self._add_task_if_not_already_enqueue(task)
         else:
@@ -196,6 +197,7 @@ class Scheduler:
             )
 
     def run(self):
+        """Start scheduler"""
         self._running = True
         for runner in self._runners:
             runner.start()
@@ -228,6 +230,7 @@ class Scheduler:
 
 
 class Runner(Thread):
+    """Defining one task in the schedule queue"""
     def __init__(self, queue, app):
         self._queue = queue
         self._app = app
@@ -299,4 +302,5 @@ class Runner(Thread):
         super().join(*args, **kwargs)
 
     def stop(self):
+        """Stop the tasks"""
         self._running = False
