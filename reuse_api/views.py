@@ -149,6 +149,7 @@ def info(url):
         status=row.status,
         lint_code=row.lint_code,
         lint_output=row.lint_output,
+        spdx_output=row.spdx_output,
         last_access=(
             row.last_access.strftime("%d %b %Y %X")
             if row.last_access
@@ -163,6 +164,19 @@ def info(url):
         json=url_for(
             "json.status", url=row.url, _external=True, _scheme="https"
         ),
+    )
+
+
+@html_blueprint.route("/sbom/<path:url>")
+def sbom(url):
+    row = schedule_if_new_or_later(url, current_app.scheduler)
+
+    if row is None:
+        return render_template("unregistered.html", url=url), 404
+
+    return render_template(
+        "sbom.html",
+        spdx_output=row.spdx_output,
     )
 
 
@@ -186,6 +200,7 @@ def status(url):
         "status": row.status,
         "lint_code": row.lint_code,
         "lint_output": row.lint_output,
+        "spdx_output": row.spdx_output,
         "last_access": row.last_access.isoformat()
         if row.last_access
         else None,
