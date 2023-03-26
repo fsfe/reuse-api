@@ -161,6 +161,9 @@ def info(url):
         info=url_for(
             "html.info", url=row.url, _external=True, _scheme="https"
         ),
+        sbom=url_for(
+            "html.sbom", url=row.url, _external=False
+        ),
         json=url_for(
             "json.status", url=row.url, _external=True, _scheme="https"
         ),
