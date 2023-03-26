@@ -167,17 +167,14 @@ def info(url):
     )
 
 
-@html_blueprint.route("/sbom/<path:url>")
+@html_blueprint.route("/sbom/<path:url>.spdx")
 def sbom(url):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
         return render_template("unregistered.html", url=url), 404
 
-    return render_template(
-        "sbom.html",
-        spdx_output=row.spdx_output,
-    )
+    return row.spdx_output
 
 
 # Return error messages in JSON format
