@@ -184,6 +184,7 @@ def handle_error(err):
 
 
 @json_blueprint.route("/status/<path:url>")
+@json_blueprint.route("/status/<path:url>.json")
 def status(url):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
