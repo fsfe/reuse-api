@@ -53,9 +53,7 @@ def validate_project_url(form, field):
     except NotARepository:
         raise ValidationError("Not a Git repository")
     if Repository.is_registered(field.data):
-        info_page = url_for(
-            "html.info", url=field.data, _external=True, _scheme="https"
-        )
+        info_page = url_for("html.info", url=field.data, _external=False)
         info_page_url = f'<a href="{info_page}">here</a>'
         raise ValidationError(
             f"Project is already registered. See its REUSE status {info_page_url}."
@@ -155,18 +153,16 @@ def info(url):
             if row.last_access
             else None
         ),
-        badge=url_for(
+        badge_external=url_for(
             "html.badge", url=row.url, _external=True, _scheme="https"
         ),
-        info=url_for(
+        badge_internal=url_for("html.badge", url=row.url, _external=False),
+        info_external=url_for(
             "html.info", url=row.url, _external=True, _scheme="https"
         ),
-        sbom=url_for(
-            "html.sbom", url=row.url, _external=False
-        ),
-        json=url_for(
-            "json.status", url=row.url, _external=True, _scheme="https"
-        ),
+        info_internal=url_for("html.info", url=row.url, _external=False),
+        sbom=url_for("html.sbom", url=row.url, _external=False),
+        json=url_for("json.status", url=row.url, _external=False),
     )
 
 
