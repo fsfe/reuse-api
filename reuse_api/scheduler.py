@@ -150,17 +150,14 @@ def hash_from_output(output):
 
 def update_task(task, output):
     """Depending on the output, update the information of the repository:
-    status, new hash, status, url and lint code/output"""
+    status, new hash, status, url, lint code/output, spdx output"""
     # Output is JSON, convert to dict
-    output = json.loads(output)[0]
+    output = json.loads(output)
     if output["exit_code"] == 0:
         status = "compliant"
     else:
         status = "non-compliant"
-    # TODO: was hash_from_output() actually working before?
-    new_hash = hash_from_output(output)
-    if new_hash is None:
-        new_hash = task.hash
+    new_hash = task.hash
 
     # Here, we update the URL as well, since it could differ in case from
     # what's stored previously, and we want the info pages to display the URL
@@ -256,28 +253,29 @@ class Runner(Thread):
 
             self._app.logger.debug("linting '%s'", task.url)
             try:
+                cmd = [
+                    "ssh",
+                    # SSH private key
+                    "-i",
+                    SSH_KEY_PATH,
+                    # accept new host keys, define known_hosts file
+                    "-o",
+                    "StrictHostKeyChecking=accept-new",
+                    "-o",
+                    f"UserKnownHostsFile={SSH_KNOW_HOST_PATH}",
+                    # SSH host (API worker), and its port
+                    f"{SSH_USER}@{REUSE_API}",
+                    "-p",
+                    SSH_PORT,
+                    # Command with args (repo URL, verbosity)
+                    "reuse_lint_repo",
+                    "-r",
+                    f"{task.protocol}://{task.url}",
+                    "-v",
+                ]
                 # pylint: disable=subprocess-run-check
                 result = subprocess.run(
-                    [
-                        "ssh",
-                        # SSH private key
-                        "-i",
-                        SSH_KEY_PATH,
-                        # accept new host keys, define known_hosts file
-                        "-o",
-                        "StrictHostKeyChecking=accept-new",
-                        "-o",
-                        f"UserKnownHostsFile={SSH_KNOW_HOST_PATH}",
-                        # SSH host (API worker), and its port
-                        f"{SSH_USER}@{REUSE_API}",
-                        "-p",
-                        SSH_PORT,
-                        # Command with args (repo URL, verbosity)
-                        "reuse_lint_repo",
-                        "-r",
-                        f"{task.protocol}://{task.url}",
-                        "-v",
-                    ],
+                    cmd,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     timeout=900,
@@ -297,8 +295,9 @@ class Runner(Thread):
                 if result.returncode == 255:
                     self._app.logger.warning(
                         "SSH connection failed when checking '%s'. Not "
-                        "updating database.",
+                        "updating database. STDERR was: %s",
                         task.url,
+                        result.stderr.decode("UTF-8"),
                     )
                 else:
                     with self._app.app_context():
