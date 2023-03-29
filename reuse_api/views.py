@@ -7,6 +7,7 @@
 
 from flask import (
     Blueprint,
+    abort,
     current_app,
     render_template,
     request,
@@ -185,26 +186,6 @@ def sbom(url):
     return row.spdx_output
 
 
-@html_blueprint.route("/reset/<path:url>", methods=["POST"])
-def reset(url):
-    """Unset the hash of a repository and trigger a new check"""
-    # Check if `admin_key` param in POST request matches ADMIN_KEY
-    if request.form.get("admin_key") == ADMIN_KEY:
-        repository = schedule_if_new_or_later(
-            url, current_app.scheduler, force=True
-        )
-        # If re-check done and repository actually exists
-        if repository:
-            return f"Repository {url} has been scheduled for re-check\n"
-
-        # Fall-back: admin-key was correct but repository does not exist and
-        # isn't registered
-        return f"Repository {url} is not registered"
-
-    # Admin-key was wrong
-    return "Authentication failed"
-
-
 # Return error messages in JSON format
 @json_blueprint.errorhandler(HTTPException)
 def handle_error(err):
@@ -243,13 +224,42 @@ def projects(page=1):
     return render_template("projects.html", registered_list=registered_list)
 
 
-@json_blueprint.route("/analytics/<string:query>.json", methods=["POST"])
+# ------------------------------------------------------------------------------
+# ADMINISTRATIVE FUNCTIONS
+# Only accessible by providing the valid admin key via POST request
+# ------------------------------------------------------------------------------
+def check_admin(key):
+    """Check whether provided admin key is correct, otherwise abort with 401"""
+    if key != ADMIN_KEY:
+        abort(401)
+
+
+@html_blueprint.route("/admin/reset/<path:url>", methods=["POST"])
+def reset(url):
+    """Unset the hash of a repository and trigger a new check"""
+
+    # Check for valid admin credentials
+    check_admin(request.form.get("admin_key"))
+    # Force re-check
+    repository = schedule_if_new_or_later(
+        url, current_app.scheduler, force=True
+    )
+    # If re-check scheduled and repository actually exists
+    if repository:
+        return f"Repository {url} has been scheduled for re-check\n"
+
+    # Fall-back: repository does not exist and isn't registered
+    return f"Repository {url} is not registered"
+
+
+@json_blueprint.route("/admin/analytics/<string:query>.json", methods=["POST"])
 def analytics(query):
     """Show certain analytics, only accessible with admin key"""
-    if request.form.get("admin_key") == ADMIN_KEY:
-        if query == "all_projects":
-            return Repository.all_projects()
 
-        return {"error": "Invalid analytics query"}
+    # Check for valid admin credentials
+    check_admin(request.form.get("admin_key"))
 
-    return {"error": "Authentication failed"}
+    if query == "all_projects":
+        return Repository.all_projects()
+
+    return {"error": "Invalid analytics URL"}
