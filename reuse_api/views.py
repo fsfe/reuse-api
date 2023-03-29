@@ -241,3 +241,15 @@ def status(url):
 def projects(page=1):
     registered_list = Repository.projects(page)
     return render_template("projects.html", registered_list=registered_list)
+
+
+@json_blueprint.route("/analytics/<string:query>.json", methods=["POST"])
+def analytics(query):
+    """Show certain analytics, only accessible with admin key"""
+    if request.form.get("admin_key") == ADMIN_KEY:
+        if query == "all_projects":
+            return Repository.all_projects()
+
+        return {"error": "Invalid analytics query"}
+
+    return {"error": "Authentication failed"}

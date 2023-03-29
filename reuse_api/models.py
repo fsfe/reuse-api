@@ -71,6 +71,26 @@ class Repository(db.Model):
             .paginate(page=page, per_page=NB_REPOSITORY_BY_PAGINATION)
         )
 
+    @classmethod
+    def all_projects(cls):
+        """
+        Produce a list of all repos in the database with some of their
+        information
+        """
+        repos = []
+        for repo in cls.query.all():
+            repos.append(
+                {
+                    "url": repo.url,
+                    "status": repo.status,
+                    "hash": repo.hash,
+                    "lint_code": repo.lint_code,
+                    "last_access": repo.last_access,
+                }
+            )
+
+        return repos
+
     def update(self, url, hash, status, lint_code, lint_output, spdx_output):
         self.url = url
         self.hash = hash
