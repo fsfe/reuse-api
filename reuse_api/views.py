@@ -39,6 +39,7 @@ json_blueprint = Blueprint("json", __name__)
 # Start page
 @html_blueprint.route("/")
 def index():
+    """Index page"""
     # FIXME: deactivated the count of compliant repos on the index page to
     # reduce concurrent sqlite requests
     # compliant_repos = Repository.projects().total
@@ -47,10 +48,13 @@ def index():
 
 # Filter for a project URL
 def sanitize_project_url(data):
+    """
+    Convert a repository URL to domain.tld/path, removing schema and extension
+    """
     if data is not None:
-        p = data.find("://")
-        if p != -1:
-            data = data[p + 3 :]  # noqa
+        scheme = data.find("://")
+        if scheme != -1:
+            data = data[scheme + 3 :]  # noqa
         if data.lower().endswith(".git"):
             data = data[:-4]
     return data
@@ -58,6 +62,7 @@ def sanitize_project_url(data):
 
 # Validation of a project URL
 def validate_project_url(form, field):
+    """Check if URL is a valid Git repo and already registered"""
     try:
         determine_protocol(field.data)
     except NotARepository:
@@ -72,6 +77,8 @@ def validate_project_url(form, field):
 
 # Registration form
 class RegisterForm(FlaskForm):
+    """Form class for repository registration page"""
+
     name = StringField(label="Your name", validators=[InputRequired()])
     confirm = StringField(
         label="Your email",
@@ -102,6 +109,7 @@ class RegisterForm(FlaskForm):
 
 @html_blueprint.route("/register", methods=["GET", "POST"])
 def register():
+    """Registration form for new projects"""
     form = RegisterForm()
     if form.validate_on_submit():
         params = {"appid": "reuse-api", **form.data}
@@ -120,15 +128,16 @@ def register():
 
 @html_blueprint.route("/badge/<path:url>")
 def badge(url):
+    """The SVG badge for a repo"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
-        status = "unregistered"
+        lint_status = "unregistered"
     else:
         current_app.logger.debug(f"sending badge for '{row.url}'")
-        status = row.status
+        lint_status = row.status
 
-    result = send_file(f"badges/{status}.svg", mimetype="image/svg+xml")
+    result = send_file(f"badges/{lint_status}.svg", mimetype="image/svg+xml")
 
     # Disable caching for badge files
     result.cache_control.max_age = 0
@@ -144,6 +153,7 @@ def badge(url):
 
 @html_blueprint.route("/info/<path:url>")
 def info(url):
+    """General info page for repo"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
@@ -178,6 +188,7 @@ def info(url):
 
 @html_blueprint.route("/sbom/<path:url>.spdx")
 def sbom(url):
+    """SPDX SBOM in tag:value format"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
@@ -189,12 +200,14 @@ def sbom(url):
 # Return error messages in JSON format
 @json_blueprint.errorhandler(HTTPException)
 def handle_error(err):
+    """Handle HTTP errors, return as JSON"""
     return {"error": err.description}, err.code
 
 
 @json_blueprint.route("/status/<path:url>")
 @json_blueprint.route("/status/<path:url>.json")
 def status(url):
+    """Machine-readable information about a repo in JSON format"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
@@ -220,6 +233,7 @@ def status(url):
 @html_blueprint.route("/projects")
 @html_blueprint.route("/projects/page/<int:page>")
 def projects(page=1):
+    """Show paginated table of compliant registered repositories"""
     registered_list = Repository.projects(page)
     return render_template("projects.html", registered_list=registered_list)
 

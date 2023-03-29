@@ -16,6 +16,8 @@ db = SQLAlchemy()
 
 
 class Repository(db.Model):
+    """Repository database class"""
+
     url = db.Column(db.String, primary_key=True)
     hash = db.Column(db.String(40))
     status = db.Column(db.String(13), default="checking")
@@ -92,6 +94,7 @@ class Repository(db.Model):
         return repos
 
     def update(self, url, hash, status, lint_code, lint_output, spdx_output):
+        """Update the database entry of a Repository"""
         self.url = url
         self.hash = hash
         self.status = status
