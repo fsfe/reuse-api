@@ -84,7 +84,7 @@ def determine_protocol(url):
         raise NotARepository()
 
 
-def schedule_if_new_or_later(url, scheduler):
+def schedule_if_new_or_later(url, scheduler, force=False):
     """Check whether repo has a new commit and execute check accordingly"""
     protocol, latest = None, None
 
@@ -113,6 +113,10 @@ def schedule_if_new_or_later(url, scheduler):
 
     elif scheduler.contain_task(task_of_repository):
         current_app.logger.debug("'%s' already in queue", url)
+
+    elif force:
+        current_app.logger.debug("'%s' will be forcefully rechecked", url)
+        scheduler.add_task(task_of_repository)
 
     else:
         current_app.logger.debug("'%s' is still up-to-date", url)

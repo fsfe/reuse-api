@@ -1,16 +1,25 @@
 # SPDX-FileCopyrightText: 2019 Free Software Foundation Europe e.V.
+# SPDX-FileCopyrightText: 2023 DB Systel GmbH
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """Request handlers for all endpoints."""
 
-from flask import Blueprint, current_app, render_template, send_file, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    render_template,
+    request,
+    send_file,
+    url_for,
+)
 from flask_wtf import FlaskForm
 from requests import post
 from werkzeug.exceptions import HTTPException
 from wtforms import BooleanField, StringField, ValidationError
 from wtforms.validators import Email, InputRequired
 
+from .config import ADMIN_KEY
 from .models import Repository
 from .scheduler import (
     NotARepository,
@@ -174,6 +183,26 @@ def sbom(url):
         return render_template("unregistered.html", url=url), 404
 
     return row.spdx_output
+
+
+@html_blueprint.route("/reset/<path:url>", methods=["POST"])
+def reset(url):
+    """Unset the hash of a repository and trigger a new check"""
+    # Check if `admin_key` param in POST request matches ADMIN_KEY
+    if request.form.get("admin_key") == ADMIN_KEY:
+        repository = schedule_if_new_or_later(
+            url, current_app.scheduler, force=True
+        )
+        # If re-check done and repository actually exists
+        if repository:
+            return f"Repository {url} has been scheduled for re-check\n"
+
+        # Fall-back: admin-key was correct but repository does not exist and
+        # isn't registered
+        return f"Repository {url} is not registered"
+
+    # Admin-key was wrong
+    return "Authentication failed"
 
 
 # Return error messages in JSON format

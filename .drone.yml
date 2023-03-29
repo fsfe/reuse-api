@@ -46,6 +46,8 @@ steps:
       DOCKER_HOST: "unix:///run/user/1001/docker.sock"
       SECRET_KEY:
         from_secret: secret_key
+      ADMIN_KEY:
+        from_secret: admin_key
     volumes:
       - name: dockersock
         path: /run/user/1001/docker.sock
@@ -68,6 +70,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: ac904f97657e956463a275ae8dca5c431f7e452eb761f4ebd1aab626a742bd12
+hmac: 903d7edadd247e9498e60016a5d8b79361967fceca9980bc66bd26884cea96b5
 
 ...

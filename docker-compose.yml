@@ -18,6 +18,7 @@ services:
       NB_RUNNER: 6
       REUSE_API: "wrk1.api.reuse.software"
       SECRET_KEY: "${SECRET_KEY}"
+      ADMIN_KEY: "${ADMIN_KEY}"
       SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:${SECRET_KEY}@reuse-db/reuse"
       SSH_KEY_PATH: "~/.ssh/reuse_ed25519"
       SSH_KNOW_HOST_PATH: "~/.ssh/known_hosts"
