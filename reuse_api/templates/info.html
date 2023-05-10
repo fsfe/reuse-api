@@ -29,19 +29,29 @@
 
     <h2>Badge</h2>
     <p>
-      <img src="{{badge}}"/>
+      <img src="{{badge_internal}}"/>
     </p>
     <p>
       To add the badge to your project's <code>README.md</code> file,
       use the following snippet:
     </p>
-    <pre>[![REUSE status]({{badge}})]({{info}})</pre>
+    <pre>[![REUSE status]({{badge_external}})]({{info_external}})</pre>
 
-    <h2>Parseable JSON</h2>
+    <h2>Machine-readable information</h2>
     <p>
-      All information about the latest compliance check can also be
-      accessed via a <a href="{{json}}">machine-parsable JSON file</a>.
+      The API provides machine-readable artifacts for automatic analysis.
     </p>
+    <ul>
+      <li>
+        All information about the latest compliance check can also be
+        accessed via a <a href="{{json}}">machine-parsable JSON file</a>.
+      </li>
+      <li>
+        You can gather the automatically generated <a href="{{sbom}}">SPDX
+        SBOM</a> in Tag:Value format, based on the <code>reuse spdx</code>
+        command.
+      </li>
+    </ul>
 
     <h2>Last lint output</h2>
     <p>

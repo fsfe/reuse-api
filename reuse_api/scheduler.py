@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: 2019 Free Software Foundation Europe e.V.
+# SPDX-FileCopyrightText: 2023 DB Systel GmbH
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import json
 import re
 import subprocess
 import threading
@@ -82,7 +84,7 @@ def determine_protocol(url):
         raise NotARepository()
 
 
-def schedule_if_new_or_later(url, scheduler):
+def schedule_if_new_or_later(url, scheduler, force=False):
     """Check whether repo has a new commit and execute check accordingly"""
     protocol, latest = None, None
 
@@ -111,6 +113,10 @@ def schedule_if_new_or_later(url, scheduler):
 
     elif scheduler.contain_task(task_of_repository):
         current_app.logger.debug("'%s' already in queue", url)
+
+    elif force:
+        current_app.logger.debug("'%s' will be forcefully rechecked", url)
+        scheduler.add_task(task_of_repository)
 
     else:
         current_app.logger.debug("'%s' is still up-to-date", url)
@@ -146,16 +152,16 @@ def hash_from_output(output):
     return None
 
 
-def update_task(task, return_code, output):
+def update_task(task, output):
     """Depending on the output, update the information of the repository:
-    status, new hash, status, url and lint code/output"""
-    if return_code == 0:
+    status, new hash, status, url, lint code/output, spdx output"""
+    # Output is JSON, convert to dict
+    output = json.loads(output)
+    if output["exit_code"] == 0:
         status = "compliant"
     else:
         status = "non-compliant"
-    new_hash = hash_from_output(output)
-    if new_hash is None:
-        new_hash = task.hash
+    new_hash = task.hash
 
     # Here, we update the URL as well, since it could differ in case from
     # what's stored previously, and we want the info pages to display the URL
@@ -164,8 +170,9 @@ def update_task(task, return_code, output):
         url=task.url,
         hash=new_hash,
         status=status,
-        lint_code=return_code,
-        lint_output=output,
+        lint_code=output["exit_code"],
+        lint_output=output["lint_output"],
+        spdx_output=output["spdx_output"],
     )
 
 
@@ -188,6 +195,7 @@ class Scheduler:
         self._running = False
 
     def add_task(self, task):
+        """Add a repository to the check queue"""
         if self._running:
             self._add_task_if_not_already_enqueue(task)
         else:
@@ -196,6 +204,7 @@ class Scheduler:
             )
 
     def run(self):
+        """Start scheduler"""
         self._running = True
         for runner in self._runners:
             runner.start()
@@ -228,6 +237,8 @@ class Scheduler:
 
 
 class Runner(Thread):
+    """Defining one task in the schedule queue"""
+
     def __init__(self, queue, app):
         self._queue = queue
         self._app = app
@@ -246,22 +257,29 @@ class Runner(Thread):
 
             self._app.logger.debug("linting '%s'", task.url)
             try:
+                cmd = [
+                    "ssh",
+                    # SSH private key
+                    "-i",
+                    SSH_KEY_PATH,
+                    # accept new host keys, define known_hosts file
+                    "-o",
+                    "StrictHostKeyChecking=accept-new",
+                    "-o",
+                    f"UserKnownHostsFile={SSH_KNOW_HOST_PATH}",
+                    # SSH host (API worker), and its port
+                    f"{SSH_USER}@{REUSE_API}",
+                    "-p",
+                    SSH_PORT,
+                    # Command with args (repo URL, verbosity)
+                    "reuse_lint_repo",
+                    "-r",
+                    f"{task.protocol}://{task.url}",
+                    "-v",
+                ]
                 # pylint: disable=subprocess-run-check
                 result = subprocess.run(
-                    [
-                        "ssh",
-                        "-i",
-                        SSH_KEY_PATH,
-                        "-o",
-                        "StrictHostKeyChecking=accept-new",
-                        "-o",
-                        f"UserKnownHostsFile={SSH_KNOW_HOST_PATH}",
-                        f"{SSH_USER}@{REUSE_API}",
-                        "-p",
-                        SSH_PORT,
-                        "reuse-lint-repo",
-                        f"{task.protocol}://{task.url}",
-                    ],
+                    cmd,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     timeout=900,
@@ -281,14 +299,15 @@ class Runner(Thread):
                 if result.returncode == 255:
                     self._app.logger.warning(
                         "SSH connection failed when checking '%s'. Not "
-                        "updating database.",
+                        "updating database. STDERR was: %s",
                         task.url,
+                        result.stderr.decode("UTF-8"),
                     )
                 else:
                     with self._app.app_context():
+                        # Update database entry with the results of this check
                         update_task(
                             task,
-                            result.returncode,
                             result.stdout.decode("utf-8"),
                         )
             finally:
@@ -299,4 +318,5 @@ class Runner(Thread):
         super().join(*args, **kwargs)
 
     def stop(self):
+        """Stop the tasks"""
         self._running = False

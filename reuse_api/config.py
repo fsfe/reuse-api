@@ -10,6 +10,9 @@ import os
 # Configuration for Flask
 SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 
+# Admin key for the REUSE API, necessary for some operations
+ADMIN_KEY = os.environ.get("ADMIN_KEY", "admin_key")
+
 # Configuration for the repository storage
 # NOTE: A relative path currently (Flask-SQLAlchemy < 3.0) is relative to the
 # application root, not relative to the current working directory! So we have

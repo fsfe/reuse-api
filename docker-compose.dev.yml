@@ -22,6 +22,7 @@ services:
       NB_REPOSITORY_BY_PAGES: 100
       REUSE_API: "reuse-api-worker"
       SECRET_KEY: "${SECRET_KEY:-verysecretkey}"
+      ADMIN_KEY: "${ADMIN_KEY:-myadminkey}"
       SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:fsfe@reuse-db/reuse"
       SSH_KEY_PATH: "${SSH_KEY_PATH:-~/.ssh/test_ed25519}"
       SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"

@@ -16,11 +16,14 @@ db = SQLAlchemy()
 
 
 class Repository(db.Model):
+    """Repository database class"""
+
     url = db.Column(db.String, primary_key=True)
     hash = db.Column(db.String(40))
     status = db.Column(db.String(13), default="checking")
     lint_code = db.Column(db.SmallInteger)
     lint_output = db.Column(db.Text)
+    spdx_output = db.Column(db.Text)
     last_access = db.Column(db.DateTime())
 
     @staticmethod
@@ -70,11 +73,33 @@ class Repository(db.Model):
             .paginate(page=page, per_page=NB_REPOSITORY_BY_PAGINATION)
         )
 
-    def update(self, url, hash, status, lint_code, lint_output):
+    @classmethod
+    def all_projects(cls):
+        """
+        Produce a list of all repos in the database with some of their
+        information
+        """
+        repos = []
+        for repo in cls.query.all():
+            repos.append(
+                {
+                    "url": repo.url,
+                    "status": repo.status,
+                    "hash": repo.hash,
+                    "lint_code": repo.lint_code,
+                    "last_access": repo.last_access,
+                }
+            )
+
+        return repos
+
+    def update(self, url, hash, status, lint_code, lint_output, spdx_output):
+        """Update the database entry of a Repository"""
         self.url = url
         self.hash = hash
         self.status = status
         self.lint_code = lint_code
         self.lint_output = lint_output
+        self.spdx_output = spdx_output
         self.last_access = datetime.utcnow()
         db.session.commit()

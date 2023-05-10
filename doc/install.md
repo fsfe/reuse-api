@@ -81,6 +81,11 @@ The following secrets are [managed in drone](http://docs.drone.io/manage-secrets
     <td>Secret key used by flask for various purposes</td>
     <td>Can be arbitarily assigned, but should remain constant over server rebuilds</td>
   </tr>
+  <tr>
+    <th>admin_key</th>
+    <td>Admin key used to access some protected functions</td>
+    <td>Should be strong enough to not be guessable, and known to admins of the REUSE API</td>
+  </tr>
 </table>
 
 
