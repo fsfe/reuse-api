@@ -40,10 +40,8 @@ json_blueprint = Blueprint("json", __name__)
 @html_blueprint.route("/")
 def index():
     """Index page"""
-    # FIXME: deactivated the count of compliant repos on the index page to
-    # reduce concurrent sqlite requests
-    # compliant_repos = Repository.projects().total
-    return render_template("index.html", compliant_repos="thousands of")
+    compliant_repos = Repository.projects().total
+    return render_template("index.html", compliant_repos=compliant_repos)
 
 
 # Filter for a project URL
