@@ -59,7 +59,7 @@ A number of URLs will have to be replaced manually during the whole register/con
 
 * REUSE API web interface: http://localhost:27000
 * See confirmation emails: http://localhost:1080
-* Confirm the verification: http://localhost:8080 (you will be redirected to reuse.software after confirmation, change that back to localhost:8180)
+* Confirm the verification: http://localhost:8080 (you will be redirected to reuse.software after confirmation, change that back to http://localhost:27000)
 
 ### Debugging
 
