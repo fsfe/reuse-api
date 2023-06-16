@@ -90,6 +90,7 @@ class Repository(db.Model):
                     "last_access": repo.last_access,
                 }
             )
+        return repos
 
     @classmethod
     def projects_by_status(cls, repo_status):
