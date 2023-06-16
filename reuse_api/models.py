@@ -91,7 +91,27 @@ class Repository(db.Model):
                 }
             )
 
-        return repos
+    @classmethod
+    def projects_by_status(cls, repo_status):
+        """
+        Produce a list of all repos in the database with some of their
+        information filtered by status
+        """
+        repos = []
+        for repo in cls.query.all():
+            repos.append(
+                {
+                    "url": repo.url,
+                    "status": repo.status,
+                    "hash": repo.hash,
+                    "lint_code": repo.lint_code,
+                    "last_access": repo.last_access,
+                }
+            )
+        filtered_repositories = [
+            repo for repo in repos if repo.status == repo_status
+        ]
+        return filtered_repositories
 
     def update(self, url, hash, status, lint_code, lint_output, spdx_output):
         """Update the database entry of a Repository"""

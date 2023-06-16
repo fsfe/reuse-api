@@ -274,4 +274,11 @@ def analytics(query):
     if query == "all_projects":
         return Repository.all_projects()
 
+    # Allow filtering repositories by status
+    if query == "projects_by_status":
+        repo_status = request.form.get("status")
+        if repo_status:
+            return Repository.filter_by_status(repo_status)
+        return {"error": "Status parameter is missing"}
+
     return {"error": "Invalid analytics URL"}
