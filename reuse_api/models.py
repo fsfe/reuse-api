@@ -110,7 +110,7 @@ class Repository(db.Model):
                 }
             )
         filtered_repositories = [
-            repo for repo in repos if repo.status == repo_status
+            repo for repo in repos if repo["status"] == repo_status
         ]
         return filtered_repositories
 
