@@ -20,7 +20,7 @@ class Repository(db.Model):
 
     url = db.Column(db.String, primary_key=True)
     hash = db.Column(db.String(40))
-    status = db.Column(db.String(13), default="checking")
+    status = db.Column(db.String(13), default="initialising")
     lint_code = db.Column(db.SmallInteger)
     lint_output = db.Column(db.Text)
     spdx_output = db.Column(db.Text)
