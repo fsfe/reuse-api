@@ -17,7 +17,11 @@ variable by the Drone CI's secret store. In the examples below, we assume the
 
 Get a JSON array of all projects that are handled by the REUSE API.
 
-Command: `curl -X POST -F "admin_key=4dm1nk3y" https://api.reuse.software/admin/analytics/all_projects.json`
+```bash
+curl -X POST \
+  -F "admin_key=4dm1nk3y" \
+  https://api.reuse.software/admin/analytics/all_projects.json
+```
 
 Exemplary output:
 
@@ -38,6 +42,15 @@ Exemplary output:
     "url": "github.com/user1/repo2"
   }
 ]
+```
+
+You can also list all projects filtered by a certain status:
+
+```bash
+curl -X POST \
+  -F "admin_key=4dm1nk3y" \
+  -F "status=non_compliant" \
+  https://api.reuse.software/admin/analytics/projects_by_status.json`
 ```
 
 
