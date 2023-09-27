@@ -34,7 +34,7 @@ services:
 
   reuse-db:
     container_name: reuse-db
-    image: bitnami/postgresql:13
+    image: bitnami/postgresql:16
     environment:
       POSTGRESQL_USERNAME: fsfe
       POSTGRESQL_PASSWORD: "${SECRET_KEY}"
