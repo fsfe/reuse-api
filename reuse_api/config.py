@@ -47,3 +47,6 @@ NB_RUNNER = int(os.environ.get("NB_RUNNER", "6"))
 NB_REPOSITORY_BY_PAGINATION = int(
     os.environ.get("NB_REPOSITORY_BY_PAGES", "10")
 )
+
+# Do not sort JSON output with jsonify()
+JSON_SORT_KEYS = False

@@ -23,6 +23,7 @@ class Repository(db.Model):
     status = db.Column(db.String(13), default="initialising")
     lint_code = db.Column(db.SmallInteger)
     lint_output = db.Column(db.Text)
+    lint_output_json = db.Column(db.Text)
     spdx_output = db.Column(db.Text)
     last_access = db.Column(db.DateTime())
 
@@ -114,13 +115,23 @@ class Repository(db.Model):
         ]
         return filtered_repositories
 
-    def update(self, url, hash, status, lint_code, lint_output, spdx_output):
+    def update(
+        self,
+        url,
+        hash,
+        status,
+        lint_code,
+        lint_output,
+        lint_output_json,
+        spdx_output,
+    ):
         """Update the database entry of a Repository"""
         self.url = url
         self.hash = hash
         self.status = status
         self.lint_code = lint_code
         self.lint_output = lint_output
+        self.lint_output_json = lint_output_json
         self.spdx_output = spdx_output
         self.last_access = datetime.utcnow()
         db.session.commit()

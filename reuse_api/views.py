@@ -5,10 +5,13 @@
 
 """Request handlers for all endpoints."""
 
+import json
+
 from flask import (
     Blueprint,
     abort,
     current_app,
+    jsonify,
     render_template,
     request,
     send_file,
@@ -179,9 +182,21 @@ def info(url):
             "html.info", url=row.url, _external=True, _scheme="https"
         ),
         info_internal=url_for("html.info", url=row.url, _external=False),
-        sbom=url_for("html.sbom", url=row.url, _external=False),
-        json=url_for("json.status", url=row.url, _external=False),
+        sbom_url=url_for("html.sbom", url=row.url, _external=False),
+        json_url=url_for("json.status", url=row.url, _external=False),
+        lint_json_url=url_for("json.lint_json", url=row.url, _external=False),
     )
+
+
+@json_blueprint.route("/lint/<path:url>.json")
+def lint_json(url):
+    """Lint result in JSON format"""
+    row = schedule_if_new_or_later(url, current_app.scheduler)
+
+    if row is None:
+        return render_template("unregistered.html", url=url), 404
+
+    return jsonify(json.loads(row.lint_output_json))
 
 
 @html_blueprint.route("/sbom/<path:url>.spdx")
@@ -212,20 +227,23 @@ def status(url):
         return {"url": url, "status": "unregistered"}
 
     # Return the current entry in the database.
-    return {
-        "url": row.url,
-        "hash": row.hash,
-        "status": row.status,
-        "lint_code": row.lint_code,
-        "lint_output": row.lint_output,
-        "spdx_output": row.spdx_output,
-        "last_access": row.last_access.isoformat()
-        if row.last_access
-        else None,
-        "badge": url_for(
-            "html.badge", url=row.url, _external=True, _scheme="https"
-        ),
-    }
+    return jsonify(
+        {
+            "url": row.url,
+            "hash": row.hash,
+            "status": row.status,
+            "lint_code": row.lint_code,
+            "lint_output": row.lint_output,
+            "lint_output_json": json.loads(row.lint_output_json),
+            "spdx_output": row.spdx_output,
+            "last_access": (
+                row.last_access.isoformat() if row.last_access else None
+            ),
+            "badge": url_for(
+                "html.badge", url=row.url, _external=True, _scheme="https"
+            ),
+        }
+    )
 
 
 @html_blueprint.route("/projects")

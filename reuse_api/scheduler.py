@@ -152,6 +152,11 @@ def hash_from_output(output):
     return None
 
 
+def sanitize_json(jsonstr: str):
+    """Return a clean version of a string containing JSON"""
+    return json.dumps(json.loads(jsonstr))
+
+
 def update_task(task, output):
     """Depending on the output, update the information of the repository:
     status, new hash, status, url, lint code/output, spdx output"""
@@ -172,6 +177,7 @@ def update_task(task, output):
         status=status,
         lint_code=output["exit_code"],
         lint_output=output["lint_output"],
+        lint_output_json=sanitize_json(output["lint_output_json"]),
         spdx_output=output["spdx_output"],
     )
 

@@ -44,10 +44,14 @@
     <ul>
       <li>
         All information about the latest compliance check can also be
-        accessed via a <a href="{{json}}">machine-parsable JSON file</a>.
+        accessed via a <a href="{{json_url}}">machine-parsable JSON file</a>.
       </li>
       <li>
-        You can gather the automatically generated <a href="{{sbom}}">SPDX
+        The <a href="{{lint_json_url}}">lint output in JSON format</a> is
+        available in addition to the plain text format below.
+      </li>
+      <li>
+        You can gather the automatically generated <a href="{{sbom_url}}">SPDX
         SBOM</a> in Tag:Value format, based on the <code>reuse spdx</code>
         command.
       </li>
