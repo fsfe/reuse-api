@@ -7,6 +7,11 @@ services:
   reuse-api:
     container_name: reuse-api
     image: reuse-api
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 100m
     build:
       context: .
       target: prod
