@@ -25,7 +25,6 @@ services:
       SSH_KNOW_HOST_PATH: "${SSH_KNOW_HOST_PATH:-~/.ssh/known_hosts}"
       SSH_PORT: 22
       SSH_USER: "root"
-    command: "flask --debug run"
     volumes:
       - ./reuse_api:/home/fsfe/reuse_api
       - ./api-worker/worker-setup/files:/home/fsfe/.ssh:rw
@@ -37,6 +36,7 @@ services:
     networks:
       - default
       - forms_default
+    command: "flask --debug run"
 
   reuse-db:
     container_name: reuse-db
