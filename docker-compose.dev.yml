@@ -51,10 +51,10 @@ services:
 
   reuse-api-worker:
     container_name: reuse-api-worker
-    build:
-      context: api-worker
     image: reuse-api-worker
     restart: always
+    build:
+      context: api-worker
     expose:
       - "22"
     # Docker in container uses the host's Docker socket
