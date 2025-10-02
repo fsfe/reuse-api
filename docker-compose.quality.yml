@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-version: '3'
 services:
   reuse-api-quality:
     image: reuse-api-quality
