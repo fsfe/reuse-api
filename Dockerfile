@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM bitnami/python:3.10 AS builder
+FROM python:3.10-alpine AS builder
 WORKDIR /root
 ENV PATH="$PATH:/root/.local/bin"
 
@@ -22,13 +22,15 @@ RUN pipenv requirements > requirements.txt
 
 
 # Development
-FROM bitnami/python:3.10 AS dev
+FROM python:3.10-alpine AS dev
 EXPOSE 8000
-RUN install_packages git openssh-client
 
 # Install Python development packages
 COPY --from=builder /root/requirements_all.txt ./
 RUN pip install -r requirements_all.txt
+
+# Instal native packages
+RUN apk add --no-cache git openssh-client-default
 
 # Switch to non-root user
 RUN adduser --uid 1000 --shell "/sbin/nologin" --disabled-password fsfe
@@ -37,13 +39,15 @@ WORKDIR /home/fsfe
 
 
 # Production
-FROM bitnami/python:3.10 AS prod
+FROM python:3.10-alpine AS prod
 EXPOSE 8000
-RUN install_packages git openssh-client pgloader
 
 # Install Python packages
 COPY --from=builder /root/requirements.txt ./
 RUN pip install -r requirements.txt
+
+# Install native packages
+RUN apk add --no-cache git openssh-client-default pgloader
 
 # Install the actual application
 COPY . .
