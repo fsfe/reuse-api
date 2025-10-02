@@ -13,7 +13,7 @@ steps:
       - reuse lint
 
   - name: quality-image
-    image: docker:20
+    image: docker:24
     environment:
       # Docker configuration
       XDG_RUNTIME_DIR: "/run/user/1001"
@@ -70,6 +70,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: 903d7edadd247e9498e60016a5d8b79361967fceca9980bc66bd26884cea96b5
+hmac: 94bf34ea118e1d3f55bb9425abb3c676cb5451fc2de917ebdd571e41c7e032f7
 
 ...
