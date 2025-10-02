@@ -6,6 +6,7 @@ services:
   reuse-api:
     container_name: reuse-api
     image: reuse-api
+    restart: always
     logging:
       driver: "json-file"
       options:
@@ -14,7 +15,6 @@ services:
     build:
       context: .
       target: prod
-    restart: always
     environment:
       FORMS_FILE: "/home/fsfe/repos.json"
       FORMS_URL: "https://forms.fsfe.org/email"
@@ -41,12 +41,12 @@ services:
   reuse-db:
     container_name: reuse-db
     image: bitnami/postgresql:13
+    restart: always
     environment:
       POSTGRESQL_USERNAME: fsfe
       POSTGRESQL_PASSWORD: "${SECRET_KEY}"
       POSTGRESQL_DATABASE: reuse
     expose:
       - "5432"
-    restart: always
     volumes:
       - "/srv/reuse-api/db:/bitnami/postgresql:rw"

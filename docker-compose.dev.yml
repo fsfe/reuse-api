@@ -6,10 +6,10 @@ services:
   reuse-api:
     container_name: reuse-api
     image: reuse-api
+    restart: always
     build:
       context: .
       target: dev
-    restart: always
     ports:
       - "27000:8000"
     environment:
@@ -41,13 +41,13 @@ services:
   reuse-db:
     container_name: reuse-db
     image: bitnami/postgresql:13
+    restart: always
     environment:
       POSTGRESQL_USERNAME: fsfe
       POSTGRESQL_PASSWORD: fsfe
       POSTGRESQL_DATABASE: reuse
     ports:
       - "27001:5432"
-    restart: always
 
   reuse-api-worker:
     container_name: reuse-api-worker
