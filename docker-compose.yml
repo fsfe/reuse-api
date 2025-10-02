@@ -30,6 +30,8 @@ services:
       SSH_USER: "reuse"
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
+    depends_on:
+      - reuse-db
     ports:
       - "6360:8000"
     labels:
