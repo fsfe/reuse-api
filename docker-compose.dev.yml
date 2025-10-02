@@ -10,8 +10,6 @@ services:
     build:
       context: .
       target: dev
-    ports:
-      - "27000:8000"
     environment:
       FLASK_APP: "/home/fsfe/reuse_api"
       FLASK_RUN_HOST: "0.0.0.0"
@@ -34,6 +32,8 @@ services:
       - ./forms/store/reuse-api/:/home/fsfe/forms/:ro
     depends_on:
       - reuse-db
+    ports:
+      - "27000:8000"
     networks:
       - default
       - forms_default
