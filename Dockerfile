@@ -31,7 +31,7 @@ COPY --from=builder /root/requirements_all.txt ./
 RUN pip install -r requirements_all.txt
 
 # Switch to non-root user
-RUN adduser --uid 1000 --gecos "FSFE" --shell "/sbin/nologin" --disabled-password fsfe
+RUN adduser --uid 1000 --shell "/sbin/nologin" --disabled-password fsfe
 USER fsfe
 WORKDIR /home/fsfe
 
@@ -50,7 +50,7 @@ COPY . .
 RUN ./setup.py install
 
 # Switch to non-root user
-RUN adduser --uid 1000 --gecos "FSFE" --shell "/sbin/nologin" --disabled-password fsfe
+RUN adduser --uid 1000 --shell "/sbin/nologin" --disabled-password fsfe
 USER fsfe
 WORKDIR /home/fsfe
 
