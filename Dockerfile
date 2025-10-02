@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM bitnami/python:3.10 AS builder
+FROM python:3.10 AS builder
 WORKDIR /root
 ENV PATH="$PATH:/root/.local/bin"
 
@@ -22,9 +22,9 @@ RUN pipenv requirements > requirements.txt
 
 
 # Development
-FROM bitnami/python:3.10 AS dev
+FROM python:3.10 AS dev
 EXPOSE 8000
-RUN install_packages git openssh-client
+RUN apt-get install git openssh-client
 
 # Install Python development packages
 COPY --from=builder /root/requirements_all.txt ./
@@ -37,9 +37,9 @@ WORKDIR /home/fsfe
 
 
 # Production
-FROM bitnami/python:3.10 AS prod
+FROM python:3.10 AS prod
 EXPOSE 8000
-RUN install_packages git openssh-client pgloader
+RUN apt-get install git openssh-client pgloader
 
 # Install Python packages
 COPY --from=builder /root/requirements.txt ./
