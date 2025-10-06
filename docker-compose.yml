@@ -40,7 +40,7 @@ services:
 
   reuse-db:
     container_name: reuse-db
-    image: postgres:13-alpine
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: fsfe
       POSTGRES_PASSWORD: "${SECRET_KEY}"
