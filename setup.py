@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from setuptools import find_namespace_packages, setup
+from setuptools import setup
 
 
 setup(
@@ -14,7 +14,7 @@ setup(
     author="Carmen Bianca Bakker",
     author_email="carmenbianca@fsfe.org",
     license="GPL-3.0-or-later",
-    packages=find_namespace_packages(),
+    packages=["reuse_api"],
     include_package_data=True,
     zip_safe=False,
 )
