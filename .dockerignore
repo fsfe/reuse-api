@@ -15,7 +15,6 @@ Dockerfile-quality
 .gitignore
 LICENSES
 Makefile
-plan.md
 pyproject.toml
 README.md
 
