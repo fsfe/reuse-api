@@ -51,7 +51,7 @@ RUN apk add --no-cache git openssh-client-default pgloader
 
 # Install the actual application
 COPY . .
-RUN ./setup.py install
+RUN python -m pip install .
 
 # Switch to non-root user
 RUN adduser --uid 1000 --shell "/sbin/nologin" --disabled-password fsfe
