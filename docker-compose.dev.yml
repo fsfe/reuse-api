@@ -40,11 +40,11 @@ services:
 
   reuse-db:
     container_name: reuse-db
-    image: bitnami/postgresql:13
+    image: postgres:13-alpine
     environment:
-      POSTGRESQL_USERNAME: fsfe
+      POSTGRESQL_USER: fsfe
       POSTGRESQL_PASSWORD: fsfe
-      POSTGRESQL_DATABASE: reuse
+      POSTGRESQL_DB: reuse
     ports:
       - "27001:5432"
     restart: always

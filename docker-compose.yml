@@ -40,13 +40,13 @@ services:
 
   reuse-db:
     container_name: reuse-db
-    image: bitnami/postgresql:13
+    image: postgres:13-alpine
     environment:
-      POSTGRESQL_USERNAME: fsfe
-      POSTGRESQL_PASSWORD: "${SECRET_KEY}"
-      POSTGRESQL_DATABASE: reuse
+      POSTGRES_USER: fsfe
+      POSTGRES_PASSWORD: "${SECRET_KEY}"
+      POSTGRES_DB: reuse
     expose:
       - "5432"
     restart: always
     volumes:
-      - "/srv/reuse-api/db:/bitnami/postgresql:rw"
+      - "/srv/reuse-api/db/data:/var/lib/postgresql/data"
