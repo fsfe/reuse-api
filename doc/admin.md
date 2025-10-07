@@ -82,7 +82,7 @@ curl -X POST -F "admin_key=${ADMIN_KEY}" https://api.reuse.software/admin/analyt
 
 # Loop reset for all repos
 while read line; do
-  curl -X POST -F "admin_key=${ADMIN_KEY} https://api.reuse.software/admin/reset/$line"
+  curl -X POST -F "admin_key=${ADMIN_KEY}" "https://api.reuse.software/admin/reset/$line"
 done < repos.txt
 
 # Delete temporary repo file
