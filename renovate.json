@@ -1,3 +1,0 @@
-{
-  "enabledManagers": ["dockerfile", "pipenv", "docker-compose"]
-}
