@@ -157,11 +157,8 @@ def update_task(task, output):
     status, new hash, status, url, lint code/output, spdx output"""
     # Output is JSON, convert to dict
     output = json.loads(output)
-    if output["exit_code"] == 0:
-        status = "compliant"
-    else:
-        status = "non-compliant"
-    new_hash = task.hash
+    status: str = "compliant" if output["exit_code"] == 0 else "non-compliant"
+    new_hash: str = task.hash
 
     # Here, we update the URL as well, since it could differ in case from
     # what's stored previously, and we want the info pages to display the URL
