@@ -6,12 +6,10 @@ services:
   reuse-api:
     container_name: reuse-api
     image: reuse-api
+    restart: always
     build:
       context: .
       target: dev
-    restart: always
-    ports:
-      - "27000:8000"
     environment:
       FLASK_APP: "/home/fsfe/reuse_api"
       FLASK_RUN_HOST: "0.0.0.0"
@@ -34,6 +32,8 @@ services:
       - ./forms/store/reuse-api/:/home/fsfe/forms/:ro
     depends_on:
       - reuse-db
+    ports:
+      - "27000:8000"
     networks:
       - default
       - forms_default
@@ -41,24 +41,24 @@ services:
   reuse-db:
     container_name: reuse-db
     image: postgres:17-alpine
+    restart: always
     environment:
       POSTGRES_USER: fsfe
       POSTGRES_PASSWORD: fsfe
       POSTGRES_DB: reuse
     ports:
       - "27001:5432"
-    restart: always
 
   reuse-api-worker:
     container_name: reuse-api-worker
-    build:
-      context: api-worker
     image: reuse-api-worker
     restart: always
+    build:
+      context: api-worker
     expose:
       - "22"
-    # Docker in container uses the host's Docker socket
     volumes:
+      # Docker in container uses the host's Docker socket
       - /var/run/docker.sock:/var/run/docker.sock
 
 networks:

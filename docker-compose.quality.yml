@@ -4,8 +4,8 @@
 
 services:
   reuse-api-quality:
-    image: reuse-api-quality
     container_name: reuse-api-quality
+    image: reuse-api-quality
     build:
       target: dev
       context: .

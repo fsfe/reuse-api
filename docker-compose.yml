@@ -6,15 +6,10 @@ services:
   reuse-api:
     container_name: reuse-api
     image: reuse-api
-    logging:
-      driver: "json-file"
-      options:
-        max-file: 5
-        max-size: 100m
+    restart: always
     build:
       context: .
       target: prod
-    restart: always
     environment:
       FORMS_FILE: "/home/fsfe/repos.json"
       FORMS_URL: "https://forms.fsfe.org/email"
@@ -37,16 +32,21 @@ services:
     labels:
       proxy.host: "api.reuse.software"
       proxy.port: "6360"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 100m
 
   reuse-db:
     container_name: reuse-db
     image: postgres:17-alpine
+    restart: always
     environment:
       POSTGRES_USER: fsfe
       POSTGRES_PASSWORD: "${SECRET_KEY}"
       POSTGRES_DB: reuse
     expose:
       - "5432"
-    restart: always
     volumes:
       - "/srv/reuse-api/db/data:/var/lib/postgresql/data"
