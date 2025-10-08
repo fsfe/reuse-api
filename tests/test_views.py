@@ -11,13 +11,14 @@ def test_root_url(client):
 
 PROJECT: str = "my_project"
 EMAIL: str = "my_email@fsfe.org"
+FSFE_URL: str = "fsfe.org/reuse/api"
 
 
 def test_register(client):
     data = {
         "name": PROJECT,
         "confirm": EMAIL,
-        "project": "git.fsfe.org/reuse/api",
+        "project": "git." + FSFE_URL,
     }
     r = client.post("/register", data=data)
 
@@ -29,7 +30,7 @@ def test_register_failed_due_to_schema(client):
     data = {
         "name": PROJECT,
         "confirm": EMAIL,
-        "project": "fsfe.org/reuse/api",
+        "project": FSFE_URL,
         "wantupdates": True,
     }
     r = client.post("/register", data=data)
