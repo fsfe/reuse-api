@@ -270,7 +270,7 @@ class Runner(Thread):
                     # SSH host (API worker), and its port
                     f"{SSH_USER}@{REUSE_API}",
                     "-p",
-                    SSH_PORT,
+                    str(SSH_PORT),
                     # Command with args (repo URL, verbosity)
                     "reuse_lint_repo",
                     "-r",
