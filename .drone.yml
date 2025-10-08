@@ -10,7 +10,7 @@ steps:
     image: fsfe/reuse
 
   - name: quality-image
-    image: docker:20
+    image: docker:28
     environment:
       # Docker configuration
       XDG_RUNTIME_DIR: "/run/user/1001"
@@ -35,7 +35,7 @@ steps:
 
   # Build and deploy Docker
   - name: deploy
-    image: docker:20
+    image: docker:28
     commands:
       - docker compose -p reuse-api up --build -d
     environment:
@@ -67,6 +67,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: 903d7edadd247e9498e60016a5d8b79361967fceca9980bc66bd26884cea96b5
+hmac: b5dcda27aabf94d8184634aa94807792d73fc185815bcf6e2348ca9a364e938e
 
 ...
