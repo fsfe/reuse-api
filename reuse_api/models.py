@@ -18,16 +18,16 @@ db = SQLAlchemy()
 class Repository(db.Model):
     """Repository database class"""
 
-    url = db.Column(db.String, primary_key=True)
-    hash = db.Column(db.String(40))
-    status = db.Column(db.String(13), default="initialising")
-    lint_code = db.Column(db.SmallInteger)
-    lint_output = db.Column(db.Text)
-    spdx_output = db.Column(db.Text)
+    url: str = db.Column(db.String, primary_key=True)
+    hash: str = db.Column(db.String(40))
+    status: str = db.Column(db.String(13), default="initialising")
+    lint_code: int = db.Column(db.SmallInteger)
+    lint_output: str = db.Column(db.Text)
+    spdx_output: str = db.Column(db.Text)
     last_access = db.Column(db.DateTime())
 
     @staticmethod
-    def is_registered(url):
+    def is_registered(url: str) -> bool:
         """
         Ensure the user is registered and has validated their email from the `forms` app
         """
@@ -53,7 +53,7 @@ class Repository(db.Model):
         return record
 
     @classmethod
-    def find(cls, url):
+    def find(cls, url: str):
         """
         Try to find database entry by URL
         """
@@ -62,7 +62,7 @@ class Repository(db.Model):
         ).one_or_none()
 
     @classmethod
-    def projects(cls, page=1):
+    def projects(cls, page: int = 1):
         """
         Produce a list of compliant repos, sorted by last_access, and paginate
         """
@@ -114,7 +114,15 @@ class Repository(db.Model):
         ]
         return filtered_repositories
 
-    def update(self, url, hash, status, lint_code, lint_output, spdx_output):
+    def update(
+        self,
+        url: str,
+        hash: str,
+        status: str,
+        lint_code: int,
+        lint_output: str,
+        spdx_output: str,
+    ) -> None:
         """Update the database entry of a Repository"""
         self.url = url
         self.hash = hash
