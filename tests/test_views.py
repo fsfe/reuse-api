@@ -29,7 +29,7 @@ def test_register_failed_due_to_schema(client):
     data = {
         "name": PROJECT,
         "confirm": EMAIL,
-        "project": "https://fsfe.org/reuse/api",
+        "project": "fsfe.org/reuse/api",
         "wantupdates": True,
     }
     r = client.post("/register", data=data)
