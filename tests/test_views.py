@@ -26,6 +26,18 @@ def test_register(client):
     assert "Registration successful" in r.data.decode()
 
 
+def test_register_double_with_protocol(client):
+    data = {
+        "name": PROJECT,
+        "confirm": EMAIL,
+        "project": "https://git." + FSFE_URL,
+    }
+    r = client.post("/register", data=data)
+
+    assert r.status_code == 200
+    assert "Registration successful" in r.data.decode()
+
+
 def test_register_failed_not_a_git_repository(client):
     data = {
         "name": PROJECT,
