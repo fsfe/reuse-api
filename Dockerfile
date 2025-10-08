@@ -33,7 +33,7 @@ RUN pip install -r requirements_all.txt
 RUN apk add --no-cache git openssh-client-default
 
 # Switch to non-root user
-RUN adduser --uid 1000 --shell "/sbin/nologin" --disabled-password fsfe
+RUN adduser --shell "/sbin/nologin" --disabled-password fsfe
 USER fsfe
 WORKDIR /home/fsfe
 
@@ -54,7 +54,7 @@ COPY . .
 RUN python -m pip install .
 
 # Switch to non-root user
-RUN adduser --uid 1000 --shell "/sbin/nologin" --disabled-password fsfe
+RUN adduser --shell "/sbin/nologin" --disabled-password fsfe
 USER fsfe
 WORKDIR /home/fsfe
 
