@@ -43,7 +43,7 @@ class TaskQueue(Queue):
     limit redundant execution
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.task_mutex = threading.Lock()
         self.task_urls = {}
@@ -71,7 +71,7 @@ class TaskQueue(Queue):
             return len(self.task_urls)
 
 
-def determine_protocol(url):
+def determine_protocol(url) -> str:
     """Determine the protocol."""
     # Try these protocols and use the first that works
     for protocol in ("https", "git", "http"):
@@ -84,7 +84,7 @@ def determine_protocol(url):
         raise NotARepository()
 
 
-def schedule_if_new_or_later(url, scheduler, force=False):
+def schedule_if_new_or_later(url: str, scheduler, force=False):
     """Check whether repo has a new commit and execute check accordingly"""
     protocol, latest = None, None
 
@@ -124,7 +124,7 @@ def schedule_if_new_or_later(url, scheduler, force=False):
     return repository
 
 
-def latest_hash(protocol, url):
+def latest_hash(protocol: str, url: str) -> str:
     """Find the latest hash of the given Git URL"""
     try:
         # pylint: disable=subprocess-run-check
@@ -139,7 +139,7 @@ def latest_hash(protocol, url):
 
     if result.returncode != 0:
         raise NotARepository()
-    output = result.stdout.decode("utf-8")
+    output: str = result.stdout.decode("utf-8")
     return output.split()[0]
 
 
@@ -158,10 +158,10 @@ def update_task(task, output):
     # Output is JSON, convert to dict
     output = json.loads(output)
     if output["exit_code"] == 0:
-        status = "compliant"
+        status: str = "compliant"
     else:
-        status = "non-compliant"
-    new_hash = task.hash
+        status: str = "non-compliant"
+    new_hash: str = task.hash
 
     # Here, we update the URL as well, since it could differ in case from
     # what's stored previously, and we want the info pages to display the URL
@@ -192,7 +192,7 @@ class Scheduler:
         self._runners = [
             Runner(self._queue, self._app) for _ in range(NB_RUNNER)
         ]
-        self._running = False
+        self._running: bool = False
 
     def add_task(self, task):
         """Add a repository to the check queue"""
@@ -203,13 +203,13 @@ class Scheduler:
                 "cannot add task to queue when scheduler is not running"
             )
 
-    def run(self):
+    def run(self) -> None:
         """Start scheduler"""
         self._running = True
         for runner in self._runners:
             runner.start()
 
-    def join(self):
+    def join(self) -> None:
         self._app.logger.debug("finishing the queue")
         self._queue.join()
         self._app.logger.debug("stopping all threads")
@@ -220,7 +220,7 @@ class Scheduler:
             runner.join()
         self._app.logger.debug("finished stopping all threads")
 
-    def contain_task(self, task):
+    def contain_task(self, task) -> bool:
         """Check if the given task is already queued"""
         return task in self._queue
 
@@ -313,10 +313,10 @@ class Runner(Thread):
             finally:
                 self._queue.done(task)
 
-    def join(self, *args, **kwargs):
+    def join(self, *args, **kwargs) -> None:
         self.stop()
         super().join(*args, **kwargs)
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop the tasks"""
         self._running = False
