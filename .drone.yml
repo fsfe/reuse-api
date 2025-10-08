@@ -3,6 +3,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 kind: pipeline
+type: docker
 name: default
 
 steps:
@@ -64,6 +65,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: 55c598c352392771445287ad0b9b5b8327ae33596b51331682cdd11e11482cd1
+hmac: 985f143609574c74e1d0625d0694f502227afb621d0394b870bec10c627b5388
 
 ...
