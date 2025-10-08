@@ -20,7 +20,6 @@ README.md
 .drone.yml
 LICENSES
 Makefile
-pyproject.toml
 
 # The following directories are created by the "quality" step in drone, which
 # runs before the docker image is built.

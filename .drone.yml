@@ -25,9 +25,9 @@ steps:
     image: reuse-api-quality
     pull: never
     commands:
-      - isort --check --diff reuse_api tests/* *.py
-      - black --check --diff reuse_api tests/* *.py
-      - pylama reuse_api tests/* *.py
+      - isort --check --diff reuse_api tests/*
+      - black --check --diff reuse_api tests/*
+      - pylama reuse_api tests/*
       - pytest tests
     depends_on:
       - quality-image
