@@ -11,17 +11,15 @@ steps:
 
   - name: quality-image
     image: docker:28
-    environment:
-      # Docker configuration
-      XDG_RUNTIME_DIR: "/run/user/1001"
-      DOCKER_HOST: "unix:///run/user/1001/docker.sock"
     volumes:
       - name: dockersock
         path: /run/user/1001/docker.sock
+    environment:
+      XDG_RUNTIME_DIR: "/run/user/1001"
+      DOCKER_HOST: "unix:///run/user/1001/docker.sock"
     commands:
       - docker compose -p reuse-api --file docker-compose.quality.yml build
 
-  # Run pytest
   - name: quality
     image: reuse-api-quality
     pull: never
@@ -33,11 +31,11 @@ steps:
     depends_on:
       - quality-image
 
-  # Build and deploy Docker
   - name: deploy
     image: docker:28
-    commands:
-      - docker compose -p reuse-api up --build -d
+    volumes:
+      - name: dockersock
+        path: /run/user/1001/docker.sock
     environment:
       XDG_RUNTIME_DIR: "/run/user/1001"
       DOCKER_HOST: "unix:///run/user/1001/docker.sock"
@@ -45,9 +43,8 @@ steps:
         from_secret: secret_key
       ADMIN_KEY:
         from_secret: admin_key
-    volumes:
-      - name: dockersock
-        path: /run/user/1001/docker.sock
+    commands:
+      - docker compose -p reuse-api up --build -d
     depends_on:
       - quality
     when:
@@ -67,6 +64,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: b5dcda27aabf94d8184634aa94807792d73fc185815bcf6e2348ca9a364e938e
+hmac: 55c598c352392771445287ad0b9b5b8327ae33596b51331682cdd11e11482cd1
 
 ...
