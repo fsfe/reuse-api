@@ -19,25 +19,11 @@ access to a [REUSE lint server](https://git.fsfe.org/reuse/api-worker). The
 file `repos.json` of the form server must be available in reuse-api's working
 directory.
 
-
-## Local install
-
-Run `./setup.py install` in the git checkout directory to install reuse-api
-on the local machine. There are a number of options to select the installation
-target, for example installing with a specific prefix, or installing in a home
-directory to be able to install without root permissions. Run `./setup.py
-install --help` for more information. Run `./setup.py --help-commands` for a
-list of other tasks you can do with `setup.py`.
-
-[`setup.py`] installs all Python files and uses [`MANIFEST.in`] to determine
-which additional files to install.
-
-
 ## Docker image build
 
 The [`Dockerfile`] contains build instructions for a Docker container in which
 reuse-api can run. After installing the requirements, it installs reuse-api
-using `setup.py install`, all as described in the previous sections.
+using `python -m pip install .`, all as described in the previous sections.
 
 Within the Docker container, reuse-api runs as non-privilleged user “fsfe” for
 security reasons.
