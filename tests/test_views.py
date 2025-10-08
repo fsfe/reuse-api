@@ -9,11 +9,14 @@ def test_root_url(client):
     assert r.status_code == 200
     assert "REUSE" in r.data.decode()
 
+PROJECT: str = "my_project"
+EMAIL: str = "my_email@fsfe.org"
+
 
 def test_register(client):
     data = {
-        "name": "my_project",
-        "confirm": "my_email@fsfe.org",
+        "name": PROJECT,
+        "confirm": EMAIL,
         "project": "git.fsfe.org/reuse/api",
     }
     r = client.post("/register", data=data)
@@ -24,8 +27,8 @@ def test_register(client):
 
 def test_register_failed_due_to_schema(client):
     data = {
-        "name": "my_project",
-        "confirm": "my_email@fsfe.org",
+        "name": PROJECT,
+        "confirm": EMAIL,
         "project": "https://fsfe.org/reuse/api",
         "wantupdates": True,
     }
@@ -37,8 +40,8 @@ def test_register_failed_due_to_schema(client):
 
 def test_register_failed_not_a_git_repository(client):
     data = {
-        "name": "my_project",
-        "confirm": "my_email@fsfe.org",
+        "name": PROJECT,
+        "confirm": EMAIL,
         "project": "git.fsfe.org:reuse/api",
         "wantupdates": True,
     }
