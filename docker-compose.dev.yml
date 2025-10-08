@@ -42,9 +42,9 @@ services:
     container_name: reuse-db
     image: postgres:17-alpine
     environment:
-      POSTGRESQL_USER: fsfe
-      POSTGRESQL_PASSWORD: fsfe
-      POSTGRESQL_DB: reuse
+      POSTGRES_USER: fsfe
+      POSTGRES_PASSWORD: fsfe
+      POSTGRES_DB: reuse
     ports:
       - "27001:5432"
     restart: always
