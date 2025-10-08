@@ -18,6 +18,7 @@ README.md
 .gitignore
 
 .drone.yml
+.renovaterc.json5
 LICENSES
 Makefile
 
