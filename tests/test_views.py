@@ -26,7 +26,7 @@ def test_register(client):
     assert "Registration successful" in r.data.decode()
 
 
-def test_register_failed_due_to_schema(client):
+def test_register_failed_not_a_git_repository(client):
     data = {
         "name": PROJECT,
         "confirm": EMAIL,
@@ -39,7 +39,7 @@ def test_register_failed_due_to_schema(client):
     assert "Not a Git repository" in r.data.decode()
 
 
-def test_register_failed_not_a_git_repository(client):
+def test_register_failed_due_to_schema(client):
     data = {
         "name": PROJECT,
         "confirm": EMAIL,
