@@ -39,9 +39,9 @@ json_blueprint = Blueprint("json", __name__)
 # Start page
 @html_blueprint.route("/")
 def index():
-    """Index page"""
-    compliant_repos = Repository.projects().total
-    return render_template("index.html", compliant_repos=compliant_repos)
+    return render_template(
+        "index.html", compliant_repos=Repository.projects().total
+    )
 
 
 # Filter for a project URL
