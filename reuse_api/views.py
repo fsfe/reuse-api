@@ -45,17 +45,14 @@ def index():
 
 
 # Filter for a project URL
-def sanitize_url(data):
-    """
-    Convert a repository URL to domain.tld/path, removing schema and extension
-    """
-    if data is not None:
-        scheme = data.find("://")
-        if scheme != -1:
-            data = data[scheme + 3 :]  # noqa
-        if data.lower().endswith(".git"):
-            data = data[:-4]
-    return data
+def sanitize_url(url: str) -> str:
+    """Remove schema and extension from an URL"""
+    if url:
+        if (scheme := url.find("://")) != -1:
+            url = url[scheme + 3 :]  # noqa: E203
+        if url.lower().endswith(".git"):
+            url = url[:-4]
+    return url
 
 
 # Validation of a project URL
