@@ -108,7 +108,7 @@ def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
         current_app.logger.debug("'%s' is outdated", url)
         scheduler.add_task(task_of_repository)
 
-    elif scheduler.contain_task(task_of_repository):
+    elif task_of_repository in scheduler:
         current_app.logger.debug("'%s' already in queue", url)
 
     elif force:
@@ -179,6 +179,9 @@ class Scheduler:
         ]
         self._running: bool = False
 
+    def __contains__(self, task: Task) -> bool:
+        return task in self._queue
+
     def add_task(self, task):
         """Add a repository to the check queue"""
         if self._running:
@@ -205,14 +208,10 @@ class Scheduler:
             runner.join()
         self._app.logger.debug("finished stopping all threads")
 
-    def contain_task(self, task) -> bool:
-        """Check if the given task is already queued"""
-        return task in self._queue
-
     def _add_task_if_not_already_enqueue(self, task) -> bool:
         """Add task to queue if not already in queue.
         Returns true if the task has been added"""
-        if self.contain_task(task):
+        if task in self:
             current_app.logger.debug("'%s' already in queue", task.url)
             return False
 
