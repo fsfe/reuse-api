@@ -2,16 +2,16 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+PROJECT: str = "my_project"
+EMAIL: str = "my_email@fsfe.org"
+FSFE_URL: str = "fsfe.org/reuse/api"
+
 
 def test_root_url(client):
     r = client.get("/")
 
     assert r.status_code == 200
     assert "REUSE" in r.data.decode()
-
-PROJECT: str = "my_project"
-EMAIL: str = "my_email@fsfe.org"
-FSFE_URL: str = "fsfe.org/reuse/api"
 
 
 def test_register(client):
