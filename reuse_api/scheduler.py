@@ -143,13 +143,6 @@ def latest_hash(protocol: str, url: str) -> str:
     return output.split()[0]
 
 
-def hash_from_output(output: str):
-    """Export the commit's SHA hashsum from the output"""
-    first_line = output.strip().split("\n")[0]
-    found = _HASH_PATTERN.search(first_line)
-    return found.groups()[0] if found else None
-
-
 def update_task(task, output):
     """Depending on the output, update the information of the repository:
     status, new hash, status, url, lint code/output, spdx output"""
