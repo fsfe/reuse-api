@@ -45,7 +45,7 @@ def index():
 
 
 # Validation of a project URL
-def validate_project_url(form, field):
+def validate_url(form, field):
     """Check if URL is a valid Git repo and already registered"""
     try:
         determine_protocol(field.data)
@@ -91,7 +91,7 @@ class RegisterForm(FlaskForm):
             "git://. We automatically try git, https, and http as schemas."
         ),
         filters=[__sanitize_url],
-        validators=[InputRequired(), validate_project_url],
+        validators=[InputRequired(), validate_url],
     )
     wantupdates = BooleanField(
         label=(
