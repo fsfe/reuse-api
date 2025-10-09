@@ -29,22 +29,6 @@ from .scheduler import (
 )
 
 
-# Blueprint for all endpoints delivering human-readable HTML/SVG content
-html_blueprint = Blueprint("html", __name__)
-
-# Blueprint for all endpoints delivering machine-readable JSON content
-json_blueprint = Blueprint("json", __name__)
-
-
-# Start page
-@html_blueprint.route("/")
-def index():
-    return render_template(
-        "index.html", compliant_repos=Repository.projects().total
-    )
-
-
-# Registration form
 class RegisterForm(FlaskForm):
     """Form class for repository registration page"""
 
@@ -100,6 +84,20 @@ class RegisterForm(FlaskForm):
             "I want to receive occasional information about REUSE and other "
             "FSFE activities"
         )
+    )
+
+
+# Blueprint for all endpoints delivering human-readable HTML/SVG content
+html_blueprint = Blueprint("html", __name__)
+
+# Blueprint for all endpoints delivering machine-readable JSON content
+json_blueprint = Blueprint("json", __name__)
+
+
+@html_blueprint.route("/")
+def index():
+    return render_template(
+        "index.html", compliant_repos=Repository.projects().total
     )
 
 
