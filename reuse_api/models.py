@@ -69,7 +69,7 @@ class Repository(db.Model):
         return (
             cls.query.order_by(cls.last_access.desc())
             .filter(cls.status == "compliant")
-            .options(orm.load_only("url"))
+            .options(orm.load_only(cls.url))
             .paginate(page=page, per_page=NB_REPOSITORY_BY_PAGINATION)
         )
 
