@@ -276,8 +276,7 @@ def analytics(query):
 
     # Allow filtering repositories by status
     if query == "projects_by_status":
-        repo_status = request.form.get("status")
-        if repo_status:
+        if repo_status := request.form.get("status"):
             return Repository.projects_by_status(repo_status)
         return {"error": "Status parameter is missing"}
 
