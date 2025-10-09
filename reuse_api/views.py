@@ -236,18 +236,13 @@ def projects(page=1):
 # ADMINISTRATIVE FUNCTIONS
 # Only accessible by providing the valid admin key via POST request
 # ------------------------------------------------------------------------------
-def check_admin(key):
-    """Check whether provided admin key is correct, otherwise abort with 401"""
-    if key != ADMIN_KEY:
-        abort(401)
-
-
 @html_blueprint.route("/admin/reset/<path:url>", methods=["POST"])
 def reset(url):
     """Unset the hash of a repository and trigger a new check"""
 
     # Check for valid admin credentials
-    check_admin(request.form.get("admin_key"))
+    if request.form.get("admin_key") != ADMIN_KEY:
+        abort(401)
     # Force re-check
     repository = schedule_if_new_or_later(
         url, current_app.scheduler, force=True
@@ -265,7 +260,8 @@ def analytics(query):
     """Show certain analytics, only accessible with admin key"""
 
     # Check for valid admin credentials
-    check_admin(request.form.get("admin_key"))
+    if request.form.get("admin_key") != ADMIN_KEY:
+        abort(401)
 
     if query == "all_projects":
         return Repository.all_projects()
