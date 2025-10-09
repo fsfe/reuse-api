@@ -155,10 +155,7 @@ def update_task(task, output):
     status, new hash, status, url, lint code/output, spdx output"""
     # Output is JSON, convert to dict
     output = json.loads(output)
-    if output["exit_code"] == 0:
-        status: str = "compliant"
-    else:
-        status: str = "non-compliant"
+    status: str = "compliant" if output["exit_code"] == 0 else "non-compliant"
     new_hash: str = task.hash
 
     # Here, we update the URL as well, since it could differ in case from
@@ -222,16 +219,17 @@ class Scheduler:
         """Check if the given task is already queued"""
         return task in self._queue
 
-    def _add_task_if_not_already_enqueue(self, task):
-        """Add task to queue if not already in queue"""
+    def _add_task_if_not_already_enqueue(self, task) -> bool:
+        """Add task to queue if not already in queue.
+        Returns true if the task has been added"""
         if self.contain_task(task):
             current_app.logger.debug("'%s' already in queue", task.url)
-        else:
-            current_app.logger.debug("adding '%s' to queue", task.url)
-            self._queue.put_nowait(task)
-            current_app.logger.debug(
-                "size of queue is %d", self._queue.qsize()
-            )
+            return False
+
+        current_app.logger.debug("adding '%s' to queue", task.url)
+        self._queue.put_nowait(task)
+        current_app.logger.debug("size of queue is %d", self._queue.qsize())
+        return True
 
 
 class Runner(Thread):

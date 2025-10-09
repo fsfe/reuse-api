@@ -39,9 +39,9 @@ json_blueprint = Blueprint("json", __name__)
 # Start page
 @html_blueprint.route("/")
 def index():
-    """Index page"""
-    compliant_repos = Repository.projects().total
-    return render_template("index.html", compliant_repos=compliant_repos)
+    return render_template(
+        "index.html", compliant_repos=Repository.projects().total
+    )
 
 
 # Filter for a project URL
@@ -219,9 +219,9 @@ def status(url):
         "lint_code": row.lint_code,
         "lint_output": row.lint_output,
         "spdx_output": row.spdx_output,
-        "last_access": row.last_access.isoformat()
-        if row.last_access
-        else None,
+        "last_access": (
+            row.last_access.isoformat() if row.last_access else None
+        ),
         "badge": url_for(
             "html.badge", url=row.url, _external=True, _scheme="https"
         ),
@@ -276,8 +276,7 @@ def analytics(query):
 
     # Allow filtering repositories by status
     if query == "projects_by_status":
-        repo_status = request.form.get("status")
-        if repo_status:
+        if repo_status := request.form.get("status"):
             return Repository.projects_by_status(repo_status)
         return {"error": "Status parameter is missing"}
 
