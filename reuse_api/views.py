@@ -219,9 +219,9 @@ def status(url):
         "lint_code": row.lint_code,
         "lint_output": row.lint_output,
         "spdx_output": row.spdx_output,
-        "last_access": row.last_access.isoformat()
-        if row.last_access
-        else None,
+        "last_access": (
+            row.last_access.isoformat() if row.last_access else None
+        ),
         "badge": url_for(
             "html.badge", url=row.url, _external=True, _scheme="https"
         ),

@@ -17,7 +17,7 @@ requests = "*"
 psycopg2-binary = "*"
 
 [dev-packages]
-black = "==22.12.0"
+black = "*"
 isort = "*"
 pylama = "*"
 pytest = "*"
