@@ -226,10 +226,11 @@ def status(url):
 
 @html_blueprint.route("/projects")
 @html_blueprint.route("/projects/page/<int:page>")
-def projects(page=1):
+def projects(page: int = 1):
     """Show paginated table of compliant registered repositories"""
-    registered_list = Repository.projects(page)
-    return render_template("projects.html", registered_list=registered_list)
+    return render_template(
+        "projects.html", registered_list=Repository.projects(page)
+    )
 
 
 # ------------------------------------------------------------------------------
