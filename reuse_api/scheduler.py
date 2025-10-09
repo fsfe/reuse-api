@@ -48,6 +48,15 @@ class TaskQueue(Queue):
         self.task_mutex = threading.Lock()
         self.task_urls = {}
 
+    def __contains__(self, task: Task) -> bool:
+        with self.task_mutex:
+            return task.url in self.task_urls
+
+    def __len__(self) -> int:
+        """Return the number of tasks in the queue"""
+        with self.task_mutex:
+            return len(self.task_urls)
+
     def put_nowait(self, task: Task, **kwargs) -> None:
         with self.task_mutex:
             self.task_urls[task.url] = True
@@ -57,15 +66,6 @@ class TaskQueue(Queue):
         with self.task_mutex:
             del self.task_urls[task.url]
         super().task_done()
-
-    def __len__(self) -> int:
-        """Return the number of tasks in the queue"""
-        with self.task_mutex:
-            return len(self.task_urls)
-
-    def __contains__(self, task: Task) -> bool:
-        with self.task_mutex:
-            return task.url in self.task_urls
 
 
 def determine_protocol(url: str) -> str:
