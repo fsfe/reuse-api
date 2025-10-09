@@ -44,17 +44,6 @@ def index():
     )
 
 
-# Filter for a project URL
-def sanitize_url(url: str) -> str:
-    """Remove schema and extension from an URL"""
-    if url:
-        if (scheme := url.find("://")) != -1:
-            url = url[scheme + 3 :]  # noqa: E203
-        if url.lower().endswith(".git"):
-            url = url[:-4]
-    return url
-
-
 # Validation of a project URL
 def validate_project_url(form, field):
     """Check if URL is a valid Git repo and already registered"""
@@ -74,6 +63,16 @@ def validate_project_url(form, field):
 class RegisterForm(FlaskForm):
     """Form class for repository registration page"""
 
+    @staticmethod
+    def __sanitize_url(url: str) -> str:
+        """Remove schema and extension from an URL"""
+        if url:
+            if (scheme := url.find("://")) != -1:
+                url = url[scheme + 3 :]  # noqa: E203
+            if url.lower().endswith(".git"):
+                url = url[:-4]
+        return url
+
     name = StringField(label="Your name", validators=[InputRequired()])
     confirm = StringField(
         label="Your email",
@@ -91,7 +90,7 @@ class RegisterForm(FlaskForm):
             "Please add your project URL without a schema like http:// or "
             "git://. We automatically try git, https, and http as schemas."
         ),
-        filters=[sanitize_url],
+        filters=[__sanitize_url],
         validators=[InputRequired(), validate_project_url],
     )
     wantupdates = BooleanField(
