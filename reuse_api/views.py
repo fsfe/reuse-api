@@ -45,15 +45,18 @@ def index():
 
 
 # Validation of a project URL
-def validate_url(form, field):
-    """Check if URL is a valid Git repo and already registered"""
+def validate_url(form, url_field) -> None:
+    """Check if URL is an unregistered git repository"""
     try:
-        determine_protocol(field.data)
+        determine_protocol(url_field.data)
     except NotARepository:
         raise ValidationError("Not a Git repository")
-    if Repository.is_registered(field.data):
-        info_page = url_for("html.info", url=field.data, _external=False)
-        info_page_url = f'<a href="{info_page}">here</a>'
+
+    if Repository.is_registered(url_field.data):
+        info_page: str = url_for(
+            "html.info", url=url_field.data, _external=False
+        )
+        info_page_url: str = f'<a href="{info_page}">here</a>'
         raise ValidationError(
             f"Project is already registered. See its REUSE status {info_page_url}."
         )
