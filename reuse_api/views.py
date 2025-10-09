@@ -45,7 +45,7 @@ def index():
 
 
 # Filter for a project URL
-def sanitize_project_url(data):
+def sanitize_url(data):
     """
     Convert a repository URL to domain.tld/path, removing schema and extension
     """
@@ -94,7 +94,7 @@ class RegisterForm(FlaskForm):
             "Please add your project URL without a schema like http:// or "
             "git://. We automatically try git, https, and http as schemas."
         ),
-        filters=[sanitize_project_url],
+        filters=[sanitize_url],
         validators=[InputRequired(), validate_project_url],
     )
     wantupdates = BooleanField(
