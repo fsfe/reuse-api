@@ -122,7 +122,7 @@ def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
 
 
 def latest_hash(protocol: str, url: str) -> str:
-    """Find the latest hash of the given Git URL"""
+    """Get the latest hash of the given Git URL using ls-remote"""
     try:
         # pylint: disable=subprocess-run-check
         result = subprocess.run(
@@ -136,8 +136,8 @@ def latest_hash(protocol: str, url: str) -> str:
 
     if result.returncode != 0:
         raise NotARepository()
-    output: str = result.stdout.decode("utf-8")
-    return output.split()[0]
+
+    return result.stdout.decode("utf-8").split()[0]
 
 
 def update_task(task, output):
