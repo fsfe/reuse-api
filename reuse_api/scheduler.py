@@ -71,7 +71,7 @@ class TaskQueue(Queue):
             return len(self.task_urls)
 
 
-def determine_protocol(url) -> str:
+def determine_protocol(url: str) -> str:
     """Determine the protocol."""
     # Try these protocols and use the first that works
     for protocol in ("https", "git", "http"):
@@ -84,7 +84,7 @@ def determine_protocol(url) -> str:
         raise NotARepository()
 
 
-def schedule_if_new_or_later(url: str, scheduler, force=False):
+def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
     """Check whether repo has a new commit and execute check accordingly"""
     protocol, latest = None, None
 
