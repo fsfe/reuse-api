@@ -58,17 +58,14 @@ class TaskQueue(Queue):
             del self.task_urls[task.url]
         super().task_done()
 
+    def __len__(self) -> int:
+        """Return the number of tasks in the queue"""
+        with self.task_mutex:
+            return len(self.task_urls)
+
     def __contains__(self, task: Task) -> bool:
         with self.task_mutex:
             return task.url in self.task_urls
-
-    def qsize(self) -> int:
-        """
-        Return the total number of elements that are being computed and waiting
-        to be computed
-        """
-        with self.task_mutex:
-            return len(self.task_urls)
 
 
 def determine_protocol(url: str) -> str:
@@ -221,7 +218,7 @@ class Scheduler:
 
         current_app.logger.debug("adding '%s' to queue", task.url)
         self._queue.put_nowait(task)
-        current_app.logger.debug("size of queue is %d", self._queue.qsize())
+        current_app.logger.debug("size of queue is %d", len(self._queue))
         return True
 
 
