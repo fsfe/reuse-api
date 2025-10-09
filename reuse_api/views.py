@@ -44,24 +44,6 @@ def index():
     )
 
 
-# Validation of a project URL
-def validate_url(form, url_field) -> None:
-    """Check if URL is an unregistered git repository"""
-    try:
-        determine_protocol(url_field.data)
-    except NotARepository:
-        raise ValidationError("Not a Git repository")
-
-    if Repository.is_registered(url_field.data):
-        info_page: str = url_for(
-            "html.info", url=url_field.data, _external=False
-        )
-        info_page_url: str = f'<a href="{info_page}">here</a>'
-        raise ValidationError(
-            f"Project is already registered. See its REUSE status {info_page_url}."
-        )
-
-
 # Registration form
 class RegisterForm(FlaskForm):
     """Form class for repository registration page"""
@@ -75,6 +57,23 @@ class RegisterForm(FlaskForm):
             if url.lower().endswith(".git"):
                 url = url[:-4]
         return url
+
+    @staticmethod
+    def __validate_url(form, url_field) -> None:
+        """Check if URL is an unregistered git repository"""
+        try:
+            determine_protocol(url_field.data)
+        except NotARepository:
+            raise ValidationError("Not a Git repository")
+
+        if Repository.is_registered(url_field.data):
+            info_page: str = url_for(
+                "html.info", url=url_field.data, _external=False
+            )
+            info_page_url: str = f'<a href="{info_page}">here</a>'
+            raise ValidationError(
+                f"Project is already registered. See its REUSE status {info_page_url}."
+            )
 
     name = StringField(label="Your name", validators=[InputRequired()])
     confirm = StringField(
@@ -94,7 +93,7 @@ class RegisterForm(FlaskForm):
             "git://. We automatically try git, https, and http as schemas."
         ),
         filters=[__sanitize_url],
-        validators=[InputRequired(), validate_url],
+        validators=[InputRequired(), __validate_url],
     )
     wantupdates = BooleanField(
         label=(
