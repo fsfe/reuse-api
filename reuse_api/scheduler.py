@@ -36,6 +36,26 @@ class Task(NamedTuple):
     url: str
     hash: str
 
+    def update_db(self, output) -> None:
+        """Depending on the output, update the information of the repository:
+        status, new hash, status, url, lint code/output, spdx output"""
+        # Output is JSON, convert to dict
+        output = json.loads(output)
+
+        # Here, we update the URL as well, since it could differ in case from
+        # what's stored previously, and we want the info pages to display the URL
+        # in the form it was used for the last check.
+        Repository.find(self.url).update(
+            url=self.url,
+            hash=self.hash,
+            status=(
+                "compliant" if output["exit_code"] == 0 else "non-compliant"
+            ),
+            lint_code=output["exit_code"],
+            lint_output=output["lint_output"],
+            spdx_output=output["spdx_output"],
+        )
+
 
 class TaskQueue(Queue):
     """
@@ -138,25 +158,6 @@ def latest_hash(protocol: str, url: str) -> str:
         raise NotARepository()
 
     return result.stdout.decode("utf-8").split()[0]
-
-
-def update_task(task, output) -> None:
-    """Depending on the output, update the information of the repository:
-    status, new hash, status, url, lint code/output, spdx output"""
-    # Output is JSON, convert to dict
-    output = json.loads(output)
-
-    # Here, we update the URL as well, since it could differ in case from
-    # what's stored previously, and we want the info pages to display the URL
-    # in the form it was used for the last check.
-    Repository.find(task.url).update(
-        url=task.url,
-        hash=task.hash,
-        status="compliant" if output["exit_code"] == 0 else "non-compliant",
-        lint_code=output["exit_code"],
-        lint_output=output["lint_output"],
-        spdx_output=output["spdx_output"],
-    )
 
 
 class Scheduler:
@@ -296,7 +297,7 @@ class Runner(Thread):
                             )
 
                         try:  # Update database entry with the results of this check
-                            update_task(task, output)
+                            task.update_db(output)
 
                         except json.JSONDecodeError as e:
                             self._app.logger.error(
