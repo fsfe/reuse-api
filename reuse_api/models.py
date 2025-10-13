@@ -43,9 +43,7 @@ class Repository(db.Model):
         Create a new database entry for the url if project is registered
         """
         if not cls.is_registered(kwargs.get("url")):
-            current_app.logger.debug(
-                "there is no valid registration for '%s'", kwargs.get("url")
-            )
+            current_app.logger.info("Entry created: '%s'", kwargs.get("url"))
             return None
         record = cls(**kwargs)
         db.session.add(record)
