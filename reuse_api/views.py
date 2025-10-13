@@ -128,7 +128,7 @@ def badge(url: str):
     if row is None:
         lint_status = "unregistered"
     else:
-        current_app.logger.info(f"sending badge for '{row.url}'")
+        current_app.logger.debug("Sending badge: %s", row.url)
         lint_status = row.status
 
     result = send_file(f"badges/{lint_status}.svg", mimetype="image/svg+xml")
