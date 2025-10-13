@@ -140,7 +140,7 @@ def latest_hash(protocol: str, url: str) -> str:
     return result.stdout.decode("utf-8").split()[0]
 
 
-def update_task(task, output):
+def update_task(task, output) -> None:
     """Depending on the output, update the information of the repository:
     status, new hash, status, url, lint code/output, spdx output"""
     # Output is JSON, convert to dict
