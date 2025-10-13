@@ -250,10 +250,10 @@ def reset(url):
     )
     # If re-check scheduled and repository actually exists
     if repository:
-        return f"Repository {url} has been scheduled for re-check\n"
+        return f"Repository scheduled for re-check: {url}"
 
     # Fall-back: repository does not exist and isn't registered
-    return f"Repository {url} is not registered"
+    return f"Repository not registered: {url}"
 
 
 @json_blueprint.route("/admin/analytics/<string:query>.json", methods=["POST"])
