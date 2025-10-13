@@ -121,7 +121,7 @@ def register():
 
 
 @html_blueprint.route("/badge/<path:url>")
-def badge(url):
+def badge(url: str):
     """The SVG badge for a repo"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
@@ -146,7 +146,7 @@ def badge(url):
 
 
 @html_blueprint.route("/info/<path:url>")
-def info(url):
+def info(url: str):
     """General info page for repo"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
@@ -181,7 +181,7 @@ def info(url):
 
 
 @html_blueprint.route("/sbom/<path:url>.spdx")
-def sbom(url):
+def sbom(url: str):
     """SPDX SBOM in tag:value format"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
@@ -200,7 +200,7 @@ def handle_error(err):
 
 @json_blueprint.route("/status/<path:url>")
 @json_blueprint.route("/status/<path:url>.json")
-def status(url):
+def status(url: str):
     """Machine-readable information about a repo in JSON format"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
