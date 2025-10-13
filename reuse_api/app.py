@@ -22,9 +22,7 @@ def create_app():
     app.config.from_object(config)
 
     # TODO: Make this configurable
-    logging.basicConfig(
-        format="[%(asctime)s] (%(name)s) %(levelname)s: %(message)s"
-    )
+    logging.basicConfig(format="[%(asctime)s] %(levelname)s: %(message)s")
 
     app.logger.setLevel(logging.DEBUG)
 
