@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM python:3.10-alpine AS builder
+FROM python:3.11-alpine AS builder
 WORKDIR /root
 ENV PATH="$PATH:/root/.local/bin"
 
@@ -22,7 +22,7 @@ RUN pipenv requirements > requirements.txt
 
 
 # Development
-FROM python:3.10-alpine AS dev
+FROM python:3.11-alpine AS dev
 EXPOSE 8000
 
 # Install Python development packages
@@ -39,7 +39,7 @@ WORKDIR /home/fsfe
 
 
 # Production
-FROM python:3.10-alpine AS prod
+FROM python:3.11-alpine AS prod
 EXPOSE 8000
 
 # Install Python packages
