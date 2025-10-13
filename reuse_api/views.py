@@ -264,13 +264,14 @@ def analytics(query):
     if request.form.get("admin_key") != ADMIN_KEY:
         abort(401)
 
-    if query == "all_projects":
-        return Repository.all_projects()
+    match query:
+        case "all_projects":
+            return Repository.all_projects()
 
-    # Allow filtering repositories by status
-    if query == "projects_by_status":
-        if repo_status := request.form.get("status"):
-            return Repository.projects_by_status(repo_status)
-        return {"error": "Status parameter is missing"}
+        case "projects_by_status":
+            if repo_status := request.form.get("status"):
+                return Repository.projects_by_status(repo_status)
+            return {"error": "Status parameter is missing"}
 
-    return {"error": "Invalid analytics URL"}
+        case _:
+            return {"error": "Invalid analytics URL"}
