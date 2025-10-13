@@ -148,7 +148,6 @@ def latest_hash(protocol: str, url: str) -> str:
         result = subprocess.run(
             ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
             timeout=5,
         )
     except subprocess.TimeoutExpired:
