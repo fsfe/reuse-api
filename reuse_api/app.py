@@ -6,7 +6,7 @@
 
 import atexit
 import logging
-import os
+from os import environ
 
 from flask import Flask
 
@@ -28,7 +28,7 @@ def create_app():
 
     app.logger.setLevel(logging.DEBUG)
 
-    os.environ["GIT_TERMINAL_PROMPT"] = "0"
+    environ["GIT_TERMINAL_PROMPT"] = "0"
 
     # Initialize database
     db.init_app(app)
