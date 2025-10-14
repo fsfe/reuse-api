@@ -24,7 +24,7 @@ services:
       SSH_PORT: 11122
       SSH_USER: "reuse"
     volumes:
-      - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}:rw"
+      - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/home/fsfe}"
     depends_on:
       - reuse-db
     ports:

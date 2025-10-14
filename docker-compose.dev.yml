@@ -27,7 +27,7 @@ services:
       SSH_USER: "root"
     volumes:
       - ./reuse_api:/home/fsfe/reuse_api
-      - ./api-worker/worker-setup/files:/home/fsfe/.ssh:rw
+      - ./api-worker/worker-setup/files:/home/fsfe/.ssh
       - ./forms/store/reuse-api/:/home/fsfe/forms/:ro
     depends_on:
       - reuse-db
