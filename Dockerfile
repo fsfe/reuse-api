@@ -30,9 +30,9 @@ RUN pip install -r requirements_all.txt
 RUN apk add --no-cache git openssh-client-default
 
 # Switch to non-root user
-RUN adduser --system fsfe --home=/var/lib/reuse-api --uid=1000
+RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
 WORKDIR /var/lib/reuse-api
-USER fsfe
+USER reuse-api
 
 
 # Production
@@ -53,9 +53,9 @@ RUN apk add --no-cache git openssh-client-default pgloader
 RUN python -m pip install .
 
 # Switch to non-root user
-RUN adduser --system fsfe --home=/var/lib/reuse-api --uid=1000
+RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
 WORKDIR /var/lib/reuse-api
-USER fsfe
+USER reuse-api
 
 # Run the WSGI server
 CMD gunicorn --bind=0.0.0.0:8000 --workers=4 "reuse_api:create_app()"
