@@ -6,15 +6,14 @@ FROM python:3.11-alpine AS builder
 WORKDIR /root
 ENV PATH="$PATH:/root/.local/bin"
 
+COPY Pipfile Pipfile.lock ./
+
 # Upgrade / install pipx
 RUN python3 -m pip install --user pipx
 RUN python3 -m pipx ensurepath
 
 # Install pipenv with pipx
 RUN python3 -m pipx install pipenv
-
-# Import Python packages
-COPY Pipfile Pipfile.lock ./
 
 # Install pipenv with pipx
 RUN pipenv requirements --dev > requirements_all.txt
@@ -42,15 +41,17 @@ WORKDIR /home/fsfe
 FROM python:3.11-alpine AS prod
 EXPOSE 8000
 
-# Install Python packages
+# Copy requirements & application files
 COPY --from=builder /root/requirements.txt ./
+COPY . .
+
+# Install Python packages
 RUN pip install -r requirements.txt
 
 # Install native packages
 RUN apk add --no-cache git openssh-client-default pgloader
 
 # Install the actual application
-COPY . .
 RUN python -m pip install .
 
 # Switch to non-root user
