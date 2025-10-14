@@ -31,8 +31,8 @@ RUN apk add --no-cache git openssh-client-default
 
 # Switch to non-root user
 RUN adduser --shell "/sbin/nologin" --disabled-password fsfe
-USER fsfe
 WORKDIR /home/fsfe
+USER fsfe
 
 
 # Production
@@ -54,8 +54,8 @@ RUN python -m pip install .
 
 # Switch to non-root user
 RUN adduser --shell "/sbin/nologin" --disabled-password fsfe
-USER fsfe
 WORKDIR /home/fsfe
+USER fsfe
 
 # Run the WSGI server
 CMD gunicorn --bind=0.0.0.0:8000 --workers=4 "reuse_api:create_app()"
