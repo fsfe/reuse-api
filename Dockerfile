@@ -4,18 +4,16 @@
 
 FROM python:3.11-alpine AS builder
 WORKDIR /root
-ENV PATH="$PATH:/root/.local/bin"
 
+# Copy pipfile for pipenv
 COPY Pipfile Pipfile.lock ./
 
-# Upgrade / install pipx
-RUN python3 -m pip install --user pipx
-RUN python3 -m pipx ensurepath
+# Install pipenv
+RUN apk add --no-cache pipx
+ENV PATH="$PATH:/root/.local/bin"
+RUN pipx install pipenv
 
-# Install pipenv with pipx
-RUN python3 -m pipx install pipenv
-
-# Install pipenv with pipx
+# Generate requirements using pipenv
 RUN pipenv requirements --dev > requirements_all.txt
 RUN pipenv requirements > requirements.txt
 
