@@ -11,7 +11,7 @@ services:
       context: .
       target: dev
     environment:
-      FLASK_APP: "/home/fsfe/reuse_api"
+      FLASK_APP: "/var/lib/reuse-api/reuse_api"
       FLASK_RUN_HOST: "0.0.0.0"
       FLASK_RUN_PORT: "8000"
       FORMS_FILE: "${FORMS_FILE:-repos.json}"
@@ -26,9 +26,9 @@ services:
       SSH_PORT: 22
       SSH_USER: "root"
     volumes:
-      - ./reuse_api:/home/fsfe/reuse_api
-      - ./api-worker/worker-setup/files:/home/fsfe/.ssh
-      - ./forms/store/reuse-api/:/home/fsfe/forms/:ro
+      - ./reuse_api:/var/lib/reuse-api/reuse_api
+      - ./api-worker/worker-setup/files:/var/lib/reuse-api/.ssh
+      - ./forms/store/reuse-api/:/var/lib/reuse-api/forms/:ro
     depends_on:
       - reuse-db
     ports:

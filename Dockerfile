@@ -30,8 +30,8 @@ RUN pip install -r requirements_all.txt
 RUN apk add --no-cache git openssh-client-default
 
 # Switch to non-root user
-RUN adduser --system fsfe --home=/home/fsfe --uid=1000
-WORKDIR /home/fsfe
+RUN adduser --system fsfe --home=/var/lib/reuse-api --uid=1000
+WORKDIR /var/lib/reuse-api
 USER fsfe
 
 
@@ -53,8 +53,8 @@ RUN apk add --no-cache git openssh-client-default pgloader
 RUN python -m pip install .
 
 # Switch to non-root user
-RUN adduser --system fsfe --home=/home/fsfe --uid=1000
-WORKDIR /home/fsfe
+RUN adduser --system fsfe --home=/var/lib/reuse-api --uid=1000
+WORKDIR /var/lib/reuse-api
 USER fsfe
 
 # Run the WSGI server
