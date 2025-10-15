@@ -8,8 +8,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 ## Requirements
 
-The file [`Pipfile`] lists all Python dependencies of reuse-api, and
-[`Pipfile.lock`] contains information about the actual versions of these
+The file `Pipfile` lists all Python dependencies of reuse-api, and
+`Pipfile.lock` contains information about the actual versions of these
 dependencies recommended for use. You can use `pipenv install --system` to
 download and install all these dependencies on your computer.
 
@@ -21,11 +21,11 @@ directory.
 
 ## Docker image build
 
-The [`Dockerfile`] contains build instructions for a Docker container in which
+The `Dockerfile` contains build instructions for a Docker container in which
 reuse-api can run. After installing the requirements, it installs reuse-api
 using `python -m pip install .`, all as described in the previous sections.
 
-Within the Docker container, reuse-api runs as non-privilleged user “fsfe” for
+Within the Docker container, reuse-api runs as non-privilleged user for
 security reasons.
 
 
@@ -36,20 +36,20 @@ to the production server.
 
 Upon each push to the master branch of the git repository, drone creates a
 temporary clone of the repository and then sequentially executes the following
-steps defined in [`.drone.yml`]:
+steps defined in `.drone.yml`:
 
-1. *build-quality*: use [`docker-compose`] with [`docker-compose-quality.yml`]
-   as a wrapper around [`Dockerfile-quality`] to create a docker image for
+1. *build-quality*: use `docker-compose` with `docker-compose-quality.yml`
+   as a wrapper around `Dockerfile-quality` to create a docker image for
    automatic quality checks.
 
 2. *quality*: in a container with the previously created image, run a number of
    quality checks to ensure no obviously broken code is deployed to the
    production server.
 
-3. *deploy*: again, use [`docker-compose`], this time to create the actual
+3. *deploy*: again, use `docker-compose`, this time to create the actual
    docker image and start the corresponding container. The file
-   [`docker-compose.yml`] defines the parameters for this step, referring to
-   the [`Dockerfile`] described in the previous section.
+   `docker-compose.yml` defines the parameters for this step, referring to
+   the `Dockerfile` described in the previous section.
 
 
 ## Secrets
@@ -73,15 +73,3 @@ The following secrets are [managed in drone](http://docs.drone.io/manage-secrets
     <td>Should be strong enough to not be guessable, and known to admins of the REUSE API</td>
   </tr>
 </table>
-
-
-[`Pipfile`]: ../Pipfile
-[`Pipfile.lock`]: ../Pipfile.lock
-[`setup.py`]: ../setup.py
-[`MANIFEST.in`]: ../MANIFEST.in
-[`Dockerfile`]: ../Dockerfile
-[`Dockerfile-quality`]: ../Dockerfile-quality
-[`docker-compose`]: https://docs.docker.com/compose/
-[`docker-compose.yml`]: ../docker-compose.yml
-[`docker-compose-quality.yml`]: ../docker-compose-quality.yml
-[`.drone.yml`]: ../.drone.yml
