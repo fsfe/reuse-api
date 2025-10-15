@@ -56,20 +56,7 @@ steps defined in `.drone.yml`:
 
 The following secrets are [managed in drone](http://docs.drone.io/manage-secrets/):
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Requirement</th>
-  </tr>
-  <tr>
-    <th>secret_key</th>
-    <td>Secret key used by flask for various purposes</td>
-    <td>Can be arbitarily assigned, but should remain constant over server rebuilds</td>
-  </tr>
-  <tr>
-    <th>admin_key</th>
-    <td>Admin key used to access some protected functions</td>
-    <td>Should be strong enough to not be guessable, and known to admins of the REUSE API</td>
-  </tr>
-</table>
+| Name         | Used by             | Requirement                                                      |
+|--------------|---------------------|------------------------------------------------------------------|
+| `secret_key` | Flask               | Arbitarily assigned. Should remain constant over server rebuilds |
+| `admin_key`  | Protected functions | Strong enough, known to REUSE API admins                         |
