@@ -39,3 +39,8 @@ path = "reuse_api/static/img/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2019 Free Software Foundation Europe <https://fsfe.org>"
 SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]] # Computer-generated files
+path = "Pipfile.lock"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"
