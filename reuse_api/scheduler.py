@@ -240,7 +240,7 @@ class Runner(Thread):
 
             self._app.logger.debug("linting '%s'", task.url)
             try:
-                cmd = [
+                cmd: list[str] = [
                     "ssh",
                     # SSH private key
                     "-i",
