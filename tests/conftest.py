@@ -41,7 +41,6 @@ def mocked_forms_app(tmp_repos):
 
 @pytest.fixture
 def tmp_repos():
-    repos = tempfile.NamedTemporaryFile("w", delete=False)
-    repos.write(json.dumps({}))
-    repos.close()
-    return repos.name
+    with tempfile.NamedTemporaryFile("w", delete=False) as repos:
+        repos.write(json.dumps({}))
+        return repos.name
