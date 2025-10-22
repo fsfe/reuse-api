@@ -39,7 +39,7 @@ select = [
   "N",     # pep 8 naming
   "PERF",  # SOme performance stuff
   "PIE",   # Some extra checks
-  # "PL",    # Pylint
+  "PL",    # Pylint
   # "PTH",   # Use pathlib
   "PT",    # Pytest style
   "Q",     # flake 8 quotes

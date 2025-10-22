@@ -103,7 +103,8 @@ class Repository(db.Model):
         """
         return [r for r in cls.all_projects() if r["status"] == repo_status]
 
-    def update(
+    # we need it to be this long
+    def update(  # noqa: PLR0913
         self,
         url: str,
         hash: str,
