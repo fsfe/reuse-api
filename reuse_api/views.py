@@ -42,8 +42,8 @@ class RegisterForm(FlaskForm):
                 url = url[:-4]
         return url
 
-    @staticmethod
-    def __validate_url(form, url_field) -> None:
+    @staticmethod  # noqa as form is required
+    def __validate_url(form, url_field) -> None:  # noqa: ARG004
         """Check if URL is an unregistered git repository"""
         try:
             determine_protocol(url_field.data)

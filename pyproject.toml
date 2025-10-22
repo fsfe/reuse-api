@@ -24,7 +24,7 @@ include-package-data = true
 select = [
   # "ANN",   # Flake 8 type annotations
   # "A",     # prevent using keywords that clobber python builtins
-  # "ARG",   # Unused arguments
+  "ARG",   # Unused arguments
   "ASYNC", # Flake 8 aysnc
   # "B",     # bugbear: security warnings
   "C4",    # Comprehensions
