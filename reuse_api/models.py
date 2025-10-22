@@ -114,10 +114,7 @@ class Repository(db.Model):
                     "last_access": repo.last_access,
                 }
             )
-        filtered_repositories = [
-            repo for repo in repos if repo["status"] == repo_status
-        ]
-        return filtered_repositories
+        return [r for r in repos if r["status"] == repo_status]
 
     def update(
         self,
