@@ -18,7 +18,6 @@ psycopg2-binary = "*"
 
 [dev-packages]
 black = "*"
-isort = "*"
 pylama = "*"
 pytest = "*"
 pytest-cov = "*"

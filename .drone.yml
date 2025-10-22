@@ -26,7 +26,6 @@ steps:
     pull: never
     commands:
       - ruff check --no-cache
-      - isort --check --diff reuse_api tests/*
       - black --check --diff reuse_api tests/*
       - pylama reuse_api tests/*
       - pytest tests
@@ -66,6 +65,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: 70f2e49b5e5d3409805406e0ea316cd35604ed79073b8386af13d544392255a7
+hmac: ff68e5f366482d2b38334942caabab532e9640e74f2a93d2e28e790a542acd2d
 
 ...

@@ -35,11 +35,6 @@ exclude = '''
 )\
 '''
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-lines_after_imports = 2
-
 [tool.ruff.lint]
 #  See https://docs.astral.sh/ruff/rules/ for information
 select = [
