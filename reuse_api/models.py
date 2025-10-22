@@ -19,7 +19,7 @@ class Repository(db.Model):
     """Repository database class"""
 
     url: str = db.Column(db.String, primary_key=True)
-    hash: str = db.Column(db.String(40), default=None)
+    hash: str = db.Column(db.String(40))
     status: str = db.Column(db.String(13), default="initialising")
     lint_code: int = db.Column(db.SmallInteger)
     lint_output: str = db.Column(db.Text)
