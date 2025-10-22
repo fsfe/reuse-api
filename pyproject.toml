@@ -43,7 +43,7 @@ select = [
   # "PTH",   # Use pathlib
   "PT",    # Pytest style
   "Q",     # flake 8 quotes
-  # "RET",   # Return types
+  "RET",   # Return types
   "RSE",   # Unneeded exception parentheses
   # "RUF",   # the ruff developer's own rules
   "SIM",   # Simplify
