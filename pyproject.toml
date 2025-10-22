@@ -44,7 +44,7 @@ select = [
   "PT",    # Pytest style
   "Q",     # flake 8 quotes
   # "RET",   # Return types
-  # "RSE",   # Unneeded exception parentheses
+  "RSE",   # Unneeded exception parentheses
   # "RUF",   # the ruff developer's own rules
   # "SIM",   # Simplify
   "T20",   # Warn about prints
