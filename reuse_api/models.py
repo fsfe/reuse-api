@@ -101,18 +101,7 @@ class Repository(db.Model):
         Produce a list of all repos in the database with some of their
         information filtered by status
         """
-        repos = []
-        for repo in cls.query.all():
-            repos.append(
-                {
-                    "url": repo.url,
-                    "status": repo.status,
-                    "hash": repo.hash,
-                    "lint_code": repo.lint_code,
-                    "last_access": repo.last_access,
-                }
-            )
-        return [r for r in repos if r["status"] == repo_status]
+        return [r for r in cls.all_projects() if r["status"] == repo_status]
 
     def update(
         self,
