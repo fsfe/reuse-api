@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from http import HTTPStatus
+
+
 PROJECT: str = "my_project"
 EMAIL: str = "my_email@fsfe.org"
 FSFE_URL: str = "fsfe.org/reuse/api"
@@ -10,7 +13,7 @@ FSFE_URL: str = "fsfe.org/reuse/api"
 def test_root_url(client):
     response = client.get("/")
 
-    assert response.status_code == 200
+    assert response.status_code == HTTPStatus.OK
     assert "REUSE" in response.data.decode()
 
 
@@ -22,7 +25,7 @@ def test_register(client):
     }
     response = client.post("/register", data=data)
 
-    assert response.status_code == 200
+    assert response.status_code == HTTPStatus.OK
     assert "Registration successful" in response.data.decode()
 
 
@@ -34,7 +37,7 @@ def test_register_double_with_protocol(client):
     }
     response = client.post("/register", data=data)
 
-    assert response.status_code == 200
+    assert response.status_code == HTTPStatus.OK
     assert "Registration successful" in response.data.decode()
 
 
@@ -47,7 +50,7 @@ def test_register_failed_not_a_git_repository(client):
     }
     response = client.post("/register", data=data)
 
-    assert response.status_code == 200
+    assert response.status_code == HTTPStatus.OK
     assert "Not a Git repository" in response.data.decode()
 
 
@@ -60,5 +63,5 @@ def test_register_failed_due_to_schema(client):
     }
     response = client.post("/register", data=data)
 
-    assert response.status_code == 200
+    assert response.status_code == HTTPStatus.OK
     assert "Not a Git repository" in response.data.decode()
