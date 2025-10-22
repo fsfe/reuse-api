@@ -277,7 +277,8 @@ class Runner(Thread):
                 # assume that the SSH connection failed. In this case, we do
                 # not update the repository, neither the hash nor the status.
                 # Instead, we write a warning that should be monitored.
-                if result.returncode == 255:
+                error_code: int = 255
+                if result.returncode == error_code:
                     self._app.logger.warning(
                         "SSH connection failed when checking '%s'. Not "
                         "updating database. STDERR was: %s",
