@@ -25,6 +25,7 @@ pytest-cov = "*"
 pytest-flask = "*"
 pytest-mock = "*"
 requests-mock = "*"
+ruff = "*"
 
 [requires]
 python_version = "3.11"

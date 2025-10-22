@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "24226f7eb8f8928cbb7216642b00edc501d2f324c1354656914d0adf93d30115"
+            "sha256": "52aab19c346c51561554950184b3377ec0548e7378562386b1e27b799dcb3198"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1143,6 +1143,32 @@
             "index": "PyPi",
             "markers": "python_version >= '3.5'",
             "version": "==1.12.1"
+        },
+        "ruff": {
+            "hashes": [
+                "sha256:0826b8764f94229604fa255918d1cc45e583e38c21c203248b0bfc9a0e930be5",
+                "sha256:083bfc1f30f4a391ae09c6f4f99d83074416b471775b59288956f5bc18e82f8b",
+                "sha256:0ea6a864d2fb41a4b6d5b456ed164302a0d96f4daac630aeba829abfb059d020",
+                "sha256:1dd86253060c4772867c61791588627320abcb6ed1577a90ef432ee319729b69",
+                "sha256:39f1c392244e338b21d42ab29b8a6392a722c5090032eb49bb4d6defcdb34345",
+                "sha256:59d599cdff9c7f925a017f6f2c256c908b094e55967f93f2821b1439928746a1",
+                "sha256:5a6e74c0efd78515a1d13acbfe6c90f0f5bd822aa56b4a6d43a9ffb2ae6e56cd",
+                "sha256:5c9e6cf6cd4acae0febbce29497accd3632fe2025c0c583c8b87e8dbdeae5f61",
+                "sha256:7382fa12a26cce1f95070ce450946bec357727aaa428983036362579eadcc5cf",
+                "sha256:747d583400f6125ec11a4c14d1c8474bf75d8b419ad22a111a537ec1a952d192",
+                "sha256:a6fa2458527794ecdfbe45f654e42c61f2503a230545a91af839653a0a93dbc6",
+                "sha256:cabcaa9ccf8089fb4fdb78d17cc0e28241520f50f4c2e88cb6261ed083d85151",
+                "sha256:cbc52160465913a1a3f424c81c62ac8096b6a491468e7d872cb9444a860bc33d",
+                "sha256:d6191903d39ac156921398e9c86b7354d15e3c93772e7dbf26c9fcae59ceccd5",
+                "sha256:dd0bf2be3ae8521e1093a487c4aa3b455882f139787770698530d28ed3fbb37c",
+                "sha256:e037ea374aaaff4103240ae79168c0945ae3d5ae8db190603de3b4012bd1def6",
+                "sha256:e3b443c4c9f16ae850906b8d0a707b2a4c16f8d2f0a7fe65c475c5886665ce44",
+                "sha256:ed04f0e04f7a4587244e5c9d7df50e6b5bf2705d75059f409a6421c593a35896",
+                "sha256:f6fa757cd717f791009f7669fefb09121cc5f7d9bd0ef211371fad68c2b8b224"
+            ],
+            "index": "PyPi",
+            "markers": "python_version >= '3.7'",
+            "version": "==0.14.1"
         },
         "snowballstemmer": {
             "hashes": [
