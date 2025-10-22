@@ -19,22 +19,6 @@ packages = ["reuse_api"]
 include-package-data = true
 
 # Tools config
-[tool.black]
-line-length = 79
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)\
-'''
-
 [tool.ruff.lint]
 #  See https://docs.astral.sh/ruff/rules/ for information
 select = [
