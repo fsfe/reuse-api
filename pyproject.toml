@@ -37,7 +37,7 @@ select = [
   "ISC",   # implicit string concatenation
   "LOG",   # Logging stuff
   "N",     # pep 8 naming
-  # "PERF",  # SOme performance stuff
+  "PERF",  # SOme performance stuff
   "PIE",   # Some extra checks
   # "PL",    # Pylint
   # "PTH",   # Use pathlib
