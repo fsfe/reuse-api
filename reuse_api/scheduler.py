@@ -91,14 +91,13 @@ class TaskQueue(Queue):
 def determine_protocol(url: str) -> str:
     """Determine the protocol."""
     # Try these protocols and use the first that works
-    for protocol in ("https", "git", "http"):
-        try:
+    try:
+        for protocol in ("https", "git", "http"):
             latest_hash(protocol, url)
             return protocol
-        except InvalidRepositoryError:
-            pass
-    else:
-        raise InvalidRepositoryError
+    except InvalidRepositoryError:
+        pass
+    raise InvalidRepositoryError
 
 
 def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
