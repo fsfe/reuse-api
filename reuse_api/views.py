@@ -107,8 +107,7 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         params = {"appid": "reuse-api", **form.data}
-        if "csrf_token" in params:
-            del params["csrf_token"]
+        params.pop("csrf_token", None)
         response = post(
             url=current_app.config["FORMS_URL"],
             data=params,
