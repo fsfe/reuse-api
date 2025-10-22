@@ -26,7 +26,6 @@ steps:
     pull: never
     commands:
       - ruff check --no-cache
-      - pylama reuse_api tests/*
       - pytest tests
     depends_on:
       - quality-image
@@ -64,6 +63,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: f3edd0fc739c7ab11b7ce5395507280ea47f9c59ff610db3700564b01de2f724
+hmac: 5edbbff50941e732c73cffe30cfdbe539969e175aaba5d043761f0602cda9ca1
 
 ...
