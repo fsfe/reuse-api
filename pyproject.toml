@@ -17,7 +17,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 packages = ["reuse_api"]
 include-package-data = true
-zip-safe = false
 
 # Tools config
 [tool.black]
