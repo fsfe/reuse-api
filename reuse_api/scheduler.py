@@ -148,6 +148,7 @@ def latest_hash(protocol: str, url: str) -> str:
             ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
             stdout=subprocess.PIPE,
             timeout=5,
+            check=False,
         )
     except subprocess.TimeoutExpired:
         raise InvalidRepositoryError
@@ -264,6 +265,7 @@ class Runner(Thread):
                     cmd,
                     capture_output=True,
                     timeout=900,
+                    check=False,
                 )
             except subprocess.TimeoutExpired:
                 self._app.logger.warning("linting of '%s' timed out", task.url)
