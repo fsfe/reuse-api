@@ -98,7 +98,7 @@ def determine_protocol(url: str) -> str:
         except NotARepository:
             pass
     else:
-        raise NotARepository()
+        raise NotARepository
 
 
 def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
@@ -151,10 +151,10 @@ def latest_hash(protocol: str, url: str) -> str:
             timeout=5,
         )
     except subprocess.TimeoutExpired:
-        raise NotARepository()
+        raise NotARepository
 
     if result.returncode != 0:
-        raise NotARepository()
+        raise NotARepository
 
     return result.stdout.decode("utf-8").split()[0]
 
