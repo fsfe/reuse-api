@@ -8,10 +8,10 @@ FSFE_URL: str = "fsfe.org/reuse/api"
 
 
 def test_root_url(client):
-    r = client.get("/")
+    response = client.get("/")
 
-    assert r.status_code == 200
-    assert "REUSE" in r.data.decode()
+    assert response.status_code == 200
+    assert "REUSE" in response.data.decode()
 
 
 def test_register(client):
@@ -20,10 +20,10 @@ def test_register(client):
         "confirm": EMAIL,
         "project": "git." + FSFE_URL,
     }
-    r = client.post("/register", data=data)
+    response = client.post("/register", data=data)
 
-    assert r.status_code == 200
-    assert "Registration successful" in r.data.decode()
+    assert response.status_code == 200
+    assert "Registration successful" in response.data.decode()
 
 
 def test_register_double_with_protocol(client):
@@ -32,10 +32,10 @@ def test_register_double_with_protocol(client):
         "confirm": EMAIL,
         "project": "https://git." + FSFE_URL,
     }
-    r = client.post("/register", data=data)
+    response = client.post("/register", data=data)
 
-    assert r.status_code == 200
-    assert "Registration successful" in r.data.decode()
+    assert response.status_code == 200
+    assert "Registration successful" in response.data.decode()
 
 
 def test_register_failed_not_a_git_repository(client):
@@ -45,10 +45,10 @@ def test_register_failed_not_a_git_repository(client):
         "project": FSFE_URL,
         "wantupdates": True,
     }
-    r = client.post("/register", data=data)
+    response = client.post("/register", data=data)
 
-    assert r.status_code == 200
-    assert "Not a Git repository" in r.data.decode()
+    assert response.status_code == 200
+    assert "Not a Git repository" in response.data.decode()
 
 
 def test_register_failed_due_to_schema(client):
@@ -58,7 +58,7 @@ def test_register_failed_due_to_schema(client):
         "project": "git.fsfe.org:reuse/api",
         "wantupdates": True,
     }
-    r = client.post("/register", data=data)
+    response = client.post("/register", data=data)
 
-    assert r.status_code == 200
-    assert "Not a Git repository" in r.data.decode()
+    assert response.status_code == 200
+    assert "Not a Git repository" in response.data.decode()
