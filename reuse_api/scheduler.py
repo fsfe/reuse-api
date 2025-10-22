@@ -119,7 +119,7 @@ def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
     if repository is None:
         # Create a new entry.
         current_app.logger.debug("no database entry found for '%s'", url)
-        repository = Repository.create(url=url, hash=None)
+        repository = Repository.create(url=url)
         if repository:
             scheduler.add_task(task_of_repository)
 
