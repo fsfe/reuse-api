@@ -29,7 +29,7 @@ select = [
   # "B",     # bugbear: security warnings
   "C4",    # Comprehensions
   "E",     # pycodestyle
-  # "ERA",   # Commented out code
+  "ERA",   # Commented out code
   "F",     # pyflakes
   "FURB",  # More upgrades to newer styles
   "G",     # Logging Formatting
