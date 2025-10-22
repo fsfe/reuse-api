@@ -23,7 +23,7 @@ from wtforms.validators import Email, InputRequired
 from .config import ADMIN_KEY
 from .models import Repository
 from .scheduler import (
-    NotARepository,
+    InvalidRepositoryError,
     determine_protocol,
     schedule_if_new_or_later,
 )
@@ -47,7 +47,7 @@ class RegisterForm(FlaskForm):
         """Check if URL is an unregistered git repository"""
         try:
             determine_protocol(url_field.data)
-        except NotARepository:
+        except InvalidRepositoryError:
             raise ValidationError("Not a Git repository")
 
         if Repository.is_registered(url_field.data):

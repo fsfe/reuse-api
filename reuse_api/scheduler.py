@@ -27,7 +27,7 @@ from .models import Repository
 _HASH_PATTERN = re.compile(r"commit (.*):")
 
 
-class NotARepository(Exception):
+class InvalidRepositoryError(Exception):
     pass
 
 
@@ -95,10 +95,10 @@ def determine_protocol(url: str) -> str:
         try:
             latest_hash(protocol, url)
             return protocol
-        except NotARepository:
+        except InvalidRepositoryError:
             pass
     else:
-        raise NotARepository
+        raise InvalidRepositoryError
 
 
 def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
@@ -110,7 +110,7 @@ def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
         # TODO: This is an additional request that also happens inside of
         # determine_protocol.
         latest = latest_hash(protocol, url)
-    except NotARepository:
+    except InvalidRepositoryError:
         abort(400, "Not a Git repository")
 
     repository = Repository.find(url)
@@ -151,10 +151,10 @@ def latest_hash(protocol: str, url: str) -> str:
             timeout=5,
         )
     except subprocess.TimeoutExpired:
-        raise NotARepository
+        raise InvalidRepositoryError
 
     if result.returncode != 0:
-        raise NotARepository
+        raise InvalidRepositoryError
 
     return result.stdout.decode("utf-8").split()[0]
 
