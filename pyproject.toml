@@ -36,7 +36,7 @@ select = [
   "I",     # ordered import
   "ISC",   # implicit string concatenation
   "LOG",   # Logging stuff
-  # "N",     # pep 8 naming
+  "N",     # pep 8 naming
   # "PERF",  # SOme performance stuff
   "PIE",   # Some extra checks
   # "PL",    # Pylint
