@@ -42,12 +42,19 @@ class Repository(db.Model):
         """
         Create a new database entry for the url if project is registered
         """
+        # If project is not registered, log that and exit
         if not cls.is_registered(kwargs.get("url")):
-            current_app.logger.info("Entry created: '%s'", kwargs.get("url"))
+            # Error as breaks the pipeline & should not happen
+            current_app.logger.error(
+                "Project not registered, not creating an entry: '%s'",
+                kwargs.get("url"),
+            )
             return None
+        # The project is registered, add a record to the database
         record = cls(**kwargs)
         db.session.add(record)
         db.session.commit()
+        current_app.logger.info("Entry created: '%s'", kwargs.get("url"))
         return record
 
     @classmethod
