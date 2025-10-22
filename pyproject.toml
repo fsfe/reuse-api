@@ -46,7 +46,7 @@ select = [
   # "RET",   # Return types
   "RSE",   # Unneeded exception parentheses
   # "RUF",   # the ruff developer's own rules
-  # "SIM",   # Simplify
+  "SIM",   # Simplify
   "T20",   # Warn about prints
   "TC",    # Type checking
   # "TRY",   # Error handling stuff
