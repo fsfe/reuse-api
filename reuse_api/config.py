@@ -36,16 +36,14 @@ SSH_KEY_PATH: str = getenv("SSH_KEY_PATH", default="~/.ssh/reuse_ed25519")
 SSH_KNOW_HOST_PATH: str = getenv(
     "SSH_KNOW_HOST_PATH", default="~/.ssh/known_hosts"
 )
-SSH_PORT: int = int(getenv("SSH_PORT", default=22))
+SSH_PORT: int = int(getenv("SSH_PORT", default="22"))
 SSH_USER: str = getenv("SSH_USER", "reuse")
 
 # Servername
 REUSE_API: str = getenv("REUSE_API", "wrk1.api.reuse.software")
 
 # Number of maximum checks in queue
-NB_RUNNER: int = int(getenv("NB_RUNNER", default=6))
+NB_RUNNER: int = int(getenv("NB_RUNNER", default="6"))
 
 # Number of repository return during pagination
-NB_REPOSITORY_BY_PAGINATION: int = int(
-    getenv("NB_REPOSITORY_BY_PAGES", default=10)
-)
+NB_REPOSITORY_BY_PAGINATION: int = int(getenv("NB_REPOSITORY_BY_PAGES", default="10"))
