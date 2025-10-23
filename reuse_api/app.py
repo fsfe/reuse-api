@@ -6,7 +6,7 @@
 
 import atexit
 import logging
-from os import W_OK, access, environ, path
+from os import R_OK, access, environ, path
 
 from flask import Flask
 
@@ -17,9 +17,9 @@ from .views import html_blueprint, json_blueprint
 
 
 def create_app():
-    if not access(config.FORMS_FILE, W_OK):
+    if not access(config.FORMS_FILE, R_OK):
         raise PermissionError(
-            "FORMS_FILE is not writable:", path.abspath(config.FORMS_FILE)
+            "FORMS_FILE is not readable:", path.abspath(config.FORMS_FILE)
         )
 
     # create and configure the app
