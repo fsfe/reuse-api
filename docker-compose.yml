@@ -11,7 +11,7 @@ services:
       context: .
       target: prod
     environment:
-      FORMS_FILE: "/var/lib/reuse-api/repos.json"
+      FORMS_FILE: "/var/lib/reuse-api/forms/repos.json"
       FORMS_URL: "https://forms.fsfe.org/email"
       NB_REPOSITORY_BY_PAGINATION: 10
       NB_RUNNER: 6
@@ -25,6 +25,7 @@ services:
       SSH_USER: "reuse"
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/var/lib/reuse-api}"
+      - "/srv/forms/reuse-api:/var/lib/reuse-api/forms:ro" # this file gets updated by forms
     depends_on:
       - reuse-db
     ports:
