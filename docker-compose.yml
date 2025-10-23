@@ -11,6 +11,7 @@ services:
       context: .
       target: prod
     environment:
+      FORMS_FILE: "/var/lib/reuse-api/repos.json"
       FORMS_URL: "https://forms.fsfe.org/email"
       NB_REPOSITORY_BY_PAGINATION: 10
       NB_RUNNER: 6
