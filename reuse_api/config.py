@@ -4,7 +4,7 @@
 
 """Configuration for the REUSE API service"""
 
-from os import getenv, path
+from os import getenv
 
 
 # Configuration for Flask
@@ -26,10 +26,6 @@ SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 # Configuration for the form server used for registration
 FORMS_URL: str = getenv("FORMS_URL", default="https://forms.fsfe.org/email")
 FORMS_FILE: str = getenv("FORMS_FILE", default="repos.json")
-if not path.isfile(FORMS_FILE):
-    raise FileNotFoundError(
-        "Can't run without access to the '%s' file", FORMS_FILE
-    )
 
 # SSH configurations
 SSH_KEY_PATH: str = getenv("SSH_KEY_PATH", default="~/.ssh/reuse_ed25519")
