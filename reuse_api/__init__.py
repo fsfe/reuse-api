@@ -2,8 +2,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# pylama:ignore=W0611
-
 """A web server that handles REUSE badges."""
 
-from .app import create_app
+from .app import create_app as create_app

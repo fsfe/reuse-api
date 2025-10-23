@@ -23,7 +23,7 @@ from wtforms.validators import Email, InputRequired
 from .config import ADMIN_KEY
 from .models import Repository
 from .scheduler import (
-    NotARepository,
+    InvalidRepositoryError,
     determine_protocol,
     schedule_if_new_or_later,
 )
@@ -42,12 +42,12 @@ class RegisterForm(FlaskForm):
                 url = url[:-4]
         return url
 
-    @staticmethod
-    def __validate_url(form, url_field) -> None:
+    @staticmethod  # noqa as form is required
+    def __validate_url(form, url_field) -> None:  # noqa: ARG004
         """Check if URL is an unregistered git repository"""
         try:
             determine_protocol(url_field.data)
-        except NotARepository:
+        except InvalidRepositoryError:
             raise ValidationError("Not a Git repository")
 
         if Repository.is_registered(url_field.data):
@@ -107,8 +107,7 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         params = {"appid": "reuse-api", **form.data}
-        if "csrf_token" in params:
-            del params["csrf_token"]
+        params.pop("csrf_token", None)
         response = post(
             url=current_app.config["FORMS_URL"],
             data=params,

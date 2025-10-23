@@ -25,9 +25,7 @@ steps:
     image: reuse-api-quality
     pull: never
     commands:
-      - isort --check --diff reuse_api tests/*
-      - black --check --diff reuse_api tests/*
-      - pylama reuse_api tests/*
+      - ruff check --no-cache
       - pytest tests
     depends_on:
       - quality-image
@@ -65,6 +63,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: 82c86ce910c8e417e526f6f1b041ff209c0319384701237077f190f4f84d9c69
+hmac: 5edbbff50941e732c73cffe30cfdbe539969e175aaba5d043761f0602cda9ca1
 
 ...

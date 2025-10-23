@@ -29,7 +29,7 @@ def _mock_forms_url(requests_mock):
 def mocked_forms_app(tmp_repos):
     os.environ["FORMS_FILE"] = tmp_repos
 
-    from reuse_api import create_app
+    from reuse_api import create_app  # noqa: PLC0415
 
     app = create_app()
 
@@ -41,7 +41,6 @@ def mocked_forms_app(tmp_repos):
 
 @pytest.fixture
 def tmp_repos():
-    repos = tempfile.NamedTemporaryFile("w", delete=False)
-    repos.write(json.dumps({}))
-    repos.close()
-    return repos.name
+    with tempfile.NamedTemporaryFile("w", delete=False) as repos:
+        repos.write(json.dumps({}))
+        return repos.name

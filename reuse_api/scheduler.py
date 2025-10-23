@@ -27,7 +27,7 @@ from .models import Repository
 _HASH_PATTERN = re.compile(r"commit (.*):")
 
 
-class NotARepository(Exception):
+class InvalidRepositoryError(Exception):
     pass
 
 
@@ -91,14 +91,13 @@ class TaskQueue(Queue):
 def determine_protocol(url: str) -> str:
     """Determine the protocol."""
     # Try these protocols and use the first that works
-    for protocol in ("https", "git", "http"):
-        try:
+    try:
+        for protocol in ("https", "git", "http"):
             latest_hash(protocol, url)
             return protocol
-        except NotARepository:
-            pass
-    else:
-        raise NotARepository()
+    except InvalidRepositoryError:
+        pass
+    raise InvalidRepositoryError
 
 
 def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
@@ -110,7 +109,7 @@ def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
         # TODO: This is an additional request that also happens inside of
         # determine_protocol.
         latest = latest_hash(protocol, url)
-    except NotARepository:
+    except InvalidRepositoryError:
         abort(400, "Not a Git repository")
 
     repository = Repository.find(url)
@@ -149,12 +148,13 @@ def latest_hash(protocol: str, url: str) -> str:
             ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
             stdout=subprocess.PIPE,
             timeout=5,
+            check=False,
         )
     except subprocess.TimeoutExpired:
-        raise NotARepository()
+        raise InvalidRepositoryError
 
     if result.returncode != 0:
-        raise NotARepository()
+        raise InvalidRepositoryError
 
     return result.stdout.decode("utf-8").split()[0]
 
@@ -263,9 +263,9 @@ class Runner(Thread):
                 # pylint: disable=subprocess-run-check
                 result = subprocess.run(
                     cmd,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
+                    capture_output=True,
                     timeout=900,
+                    check=False,
                 )
             except subprocess.TimeoutExpired:
                 self._app.logger.warning("linting of '%s' timed out", task.url)
@@ -279,7 +279,8 @@ class Runner(Thread):
                 # assume that the SSH connection failed. In this case, we do
                 # not update the repository, neither the hash nor the status.
                 # Instead, we write a warning that should be monitored.
-                if result.returncode == 255:
+                error_code: int = 255
+                if result.returncode == error_code:
                     self._app.logger.warning(
                         "SSH connection failed when checking '%s'. Not "
                         "updating database. STDERR was: %s",

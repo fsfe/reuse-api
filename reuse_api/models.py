@@ -84,18 +84,16 @@ class Repository(db.Model):
         Produce a list of all repos in the database with some of their
         information
         """
-        repos = []
-        for repo in cls.query.all():
-            repos.append(
-                {
-                    "url": repo.url,
-                    "status": repo.status,
-                    "hash": repo.hash,
-                    "lint_code": repo.lint_code,
-                    "last_access": repo.last_access,
-                }
-            )
-        return repos
+        return [
+            {
+                "url": r.url,
+                "status": r.status,
+                "hash": r.hash,
+                "lint_code": r.lint_code,
+                "last_access": r.last_access,
+            }
+            for r in cls.query.all()
+        ]
 
     @classmethod
     def projects_by_status(cls, repo_status):
@@ -103,23 +101,10 @@ class Repository(db.Model):
         Produce a list of all repos in the database with some of their
         information filtered by status
         """
-        repos = []
-        for repo in cls.query.all():
-            repos.append(
-                {
-                    "url": repo.url,
-                    "status": repo.status,
-                    "hash": repo.hash,
-                    "lint_code": repo.lint_code,
-                    "last_access": repo.last_access,
-                }
-            )
-        filtered_repositories = [
-            repo for repo in repos if repo["status"] == repo_status
-        ]
-        return filtered_repositories
+        return [r for r in cls.all_projects() if r["status"] == repo_status]
 
-    def update(
+    # we need it to be this long
+    def update(  # noqa: PLR0913
         self,
         url: str,
         hash: str,
