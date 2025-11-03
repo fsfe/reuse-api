@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM python:3.11-alpine AS builder
+FROM python:3.12-alpine AS builder
 WORKDIR /root
 
 # Copy pipfile for pipenv
@@ -19,7 +19,7 @@ RUN pipenv requirements > requirements.txt
 
 
 # Development
-FROM python:3.11-alpine AS dev
+FROM python:3.12-alpine AS dev
 EXPOSE 8000
 
 # Install Python development packages
@@ -36,7 +36,7 @@ USER reuse-api
 
 
 # Production
-FROM python:3.11-alpine AS prod
+FROM python:3.12-alpine AS prod
 EXPOSE 8000
 
 # Copy requirements & application files
