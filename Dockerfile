@@ -22,12 +22,12 @@ RUN pipenv requirements > requirements.txt
 FROM python:3.13-alpine AS dev
 EXPOSE 8000
 
+# Instal native packages
+RUN apk add --no-cache git openssh-client-default
+
 # Install Python development packages
 COPY --from=builder /root/requirements_all.txt ./
 RUN pip install -r requirements_all.txt
-
-# Instal native packages
-RUN apk add --no-cache git openssh-client-default
 
 # Switch to non-root user
 RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
@@ -43,11 +43,11 @@ EXPOSE 8000
 COPY --from=builder /root/requirements.txt ./
 COPY . .
 
-# Install Python packages
-RUN pip install -r requirements.txt
-
 # Install native packages
 RUN apk add --no-cache git openssh-client-default pgloader
+
+# Install Python packages
+RUN pip install -r requirements.txt
 
 # Install the actual application
 RUN python -m pip install .
