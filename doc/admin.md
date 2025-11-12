@@ -32,14 +32,14 @@ Exemplary output:
     "last_access": "Wed, 10 May 2023 09:07:04 GMT",
     "lint_code": 0,
     "status": "compliant",
-    "url": "github.com/org1/repo1"
+    "url": "codeberg.org/org1/repo1"
   },
   {
     "hash": "c753c9affa3d1ce8259ffeb2ee0886b8e921ba97",
     "last_access": "Wed, 26 Feb 2020 19:52:05 GMT",
     "lint_code": 1,
     "status": "non-compliant",
-    "url": "github.com/user1/repo2"
+    "url": "codeberg.org/user1/repo2"
   }
 ]
 ```
@@ -92,6 +92,6 @@ rm repos.txt
 Exemplary output:
 
 ```
-Repository github.com/org1/repo1 has been scheduled for re-check
-Repository github.com/user1/repo2 has been scheduled for re-check
+Repository codeberg.org/org1/repo1 has been scheduled for re-check
+Repository codeberg.org/user1/repo2 has been scheduled for re-check
 ```
