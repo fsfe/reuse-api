@@ -41,10 +41,6 @@ virtualenv:  ##@development Set up the virtual environment with the Python depen
 	@pipenv install --dev
 .PHONY: virtualenv
 
-applyisort:  ##@development Apply a correct Python import sort inline.
-	@pipenv run isort $(QUALITY_TARGETS)
-.PHONY: applyisort
-
 applyblack:  ##@development Apply source code formatting with black.
 	@pipenv run black $(QUALITY_TARGETS)
 .PHONY: applyblack
@@ -56,10 +52,6 @@ flask:  ##@development Run the Flask built-in web server.
 gunicorn:  ##@development Run the Gunicorn based web server.
 	@pipenv run gunicorn --bind $$FLASK_RUN_HOST:$$FLASK_RUN_PORT "$$FLASK_APP:create_app()"
 .PHONY: gunicorn
-
-isort:  ##@quality Check the Python source code for import sorting.
-	@pipenv run isort --check --diff $(QUALITY_TARGETS)
-.PHONY: isort
 
 black:  ##@quality Check the Python source code formatting with black.
 	@pipenv run black --check --diff $(QUALITY_TARGETS)
@@ -100,5 +92,5 @@ dev.reset: ##@development Prune some configs to test the API from scratch
 	@rm -f ./api-worker/worker-setup/files/known_hosts
 .PHONY: dev.reset
 
-quality: isort black pylama pytest  ##@quality Run all quality checks.
+quality: black pylama pytest  ##@quality Run all quality checks.
 .PHONY: quality
