@@ -11,7 +11,7 @@ steps:
     image: fsfe/reuse
 
   - name: quality-image
-    image: docker:28
+    image: docker:29
     volumes:
       - name: dockersock
         path: /run/user/1001/docker.sock
@@ -31,7 +31,7 @@ steps:
       - quality-image
 
   - name: deploy
-    image: docker:28
+    image: docker:29
     volumes:
       - name: dockersock
         path: /run/user/1001/docker.sock
@@ -63,6 +63,6 @@ volumes:
       path: /run/user/1001/docker.sock
 ---
 kind: signature
-hmac: 5edbbff50941e732c73cffe30cfdbe539969e175aaba5d043761f0602cda9ca1
+hmac: 4cb6c034e2405000ff60928157525046c889f51a3b573c4beb3fb2461840054a
 
 ...
