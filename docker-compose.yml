@@ -12,8 +12,6 @@ services:
       target: prod
     environment:
       FORMS_FILE: "/var/lib/reuse-api/forms/repos.json"
-      FORMS_URL: "https://forms.fsfe.org/email"
-      REUSE_API: "wrk1.api.reuse.software"
       SECRET_KEY: "${SECRET_KEY}"
       ADMIN_KEY: "${ADMIN_KEY}"
       SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:${SECRET_KEY}@reuse-db/reuse"
