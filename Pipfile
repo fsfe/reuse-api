@@ -12,7 +12,6 @@ verify_ssl = true
 
 [packages]
 email-validator = "*"
-flask = "*"
 flask-sqlalchemy = "*"
 flask-wtf = "*"
 gunicorn = "*"
