@@ -17,7 +17,6 @@ flask-sqlalchemy = "*"
 flask-wtf = "*"
 gunicorn = "*"
 requests = "*"
-psycopg2-binary = "*"
 
 [dev-packages]
 pytest = "*"
