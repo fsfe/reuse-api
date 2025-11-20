@@ -72,7 +72,7 @@ The following commands are available for automatic quality checks:
 
 * `make isort` to verify the correct sorting of imports.
 * `make black` to verify the correct formatting of source code.
-* `make pylama` to verify the compliance with coding standards.
+* `ruff` to verify the compliance with coding standards.
 * `make pytest` to run the functional tests defined in the [tests](../tests)
   directory. Please note that you may need to delete/rename your `.env`
   temporarily to avoid tests to fail.

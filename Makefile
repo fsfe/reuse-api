@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 SOURCE_DIR = reuse_api
-# Files/dirs to be checked by pylama/black/isort
+# Files/dirs to be checked
 QUALITY_TARGETS = $(SOURCE_DIR) tests/* *.py
 
 export FLASK_SKIP_DOTENV = 1
@@ -57,10 +57,6 @@ black:  ##@quality Check the Python source code formatting with black.
 	@pipenv run black --check --diff $(QUALITY_TARGETS)
 .PHONY: black
 
-pylama:  ##@quality Check the Python source code for coding standards compliance.
-	@pipenv run pylama $(QUALITY_TARGETS)
-.PHONY: pylama
-
 pytest:  ##@quality Run the functional tests.
 	@pipenv run pytest --cov=$(SOURCE_DIR) tests
 .PHONY: pytest
@@ -92,5 +88,5 @@ dev.reset: ##@development Prune some configs to test the API from scratch
 	@rm -f ./api-worker/worker-setup/files/known_hosts
 .PHONY: dev.reset
 
-quality: black pylama pytest  ##@quality Run all quality checks.
+quality: black pytest  ##@quality Run all quality checks.
 .PHONY: quality
