@@ -12,7 +12,8 @@ verify_ssl = true
 
 [packages]
 flask-wtf = "*" # WTForms plugin for Flask
-flask-sqlalchemy = "*" # ORM wrapper
+flask-sqlalchemy = "*" # ORM wrapper interface
+psycopg2-binary = "*" # Postgres implementation of the interface
 email-validator = "*" # Email validation for flask-wtf
 requests = "*" # HTTP library
 gunicorn = "*" # WSGI HTTP server
