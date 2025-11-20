@@ -182,6 +182,8 @@ def info(url: str):
 @html_blueprint.route("/sbom/<path:url>.spdx")
 def sbom(url: str):
     """SPDX SBOM in tag:value format"""
+    # NOTE: This is here temporarily to see if sbom is used
+    current_app.logger.info("ASKED FOR SBOM: %s", row.url)
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
