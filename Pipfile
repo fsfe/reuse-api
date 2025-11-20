@@ -19,7 +19,6 @@ gunicorn = "*"
 requests = "*"
 
 [dev-packages]
-pytest = "*"
 pytest-cov = "*"
 requests-mock = "*"
 ruff = "*"
