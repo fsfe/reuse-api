@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+[requires]
+python_version = "3.14"
+
 [[source]]
 name = "PyPi"
 url = "https://pypi.org/simple"
@@ -23,6 +26,3 @@ pytest-flask = "*"
 pytest-mock = "*"
 requests-mock = "*"
 ruff = "*"
-
-[requires]
-python_version = "3.14"
