@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [requires]
-python_version = "3.14"
+python_version = "3.12" # latest supported by Alpine
 
 [[source]]
 name = "PyPi"

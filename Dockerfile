@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM python:3.14-alpine AS builder
+FROM python:3.12-alpine AS builder
 WORKDIR /root
 
 # Copy pipfile for pipenv
@@ -19,7 +19,7 @@ RUN pipenv requirements > requirements.txt
 
 
 # Development
-FROM python:3.14-alpine AS dev
+FROM python:3.12-alpine AS dev
 EXPOSE 8000
 
 # Instal native packages
@@ -36,14 +36,11 @@ USER reuse-api
 
 
 # Production
-FROM python:3.14-alpine AS prod
+FROM python:3.12-alpine AS prod
 EXPOSE 8000
 
 # Instal native packages
 RUN apk add --no-cache git openssh-client-default
-
-# Needed for greenlet install with python 3.14
-RUN apk add --no-cache g++
 
 # Copy requirements & application files
 WORKDIR /root
