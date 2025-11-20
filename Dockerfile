@@ -29,7 +29,7 @@ RUN apk add --no-cache git openssh-client-default
 COPY --from=builder /root/requirements_all.txt ./
 RUN pip install -r requirements_all.txt
 
-# Switch to non-root user
+# Switch to non-privilleged user for security
 RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
 WORKDIR /var/lib/reuse-api
 USER reuse-api
@@ -55,7 +55,7 @@ RUN pip install -r requirements.txt
 # Install the actual application
 RUN python -m pip install .
 
-# Switch to non-root user
+# Switch to non-privilleged user for security
 RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
 WORKDIR /var/lib/reuse-api
 USER reuse-api

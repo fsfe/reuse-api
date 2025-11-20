@@ -25,10 +25,6 @@ The `Dockerfile` contains build instructions for a Docker container in which
 reuse-api can run. After installing the requirements, it installs reuse-api
 using `python -m pip install .`, all as described in the previous sections.
 
-Within the Docker container, reuse-api runs as non-privilleged user for
-security reasons.
-
-
 ## Automatic deployment
 
 reuse-api uses [drone](https://drone.fsfe.org) to automatically deploy updates
