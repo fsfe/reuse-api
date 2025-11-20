@@ -4,4 +4,4 @@
 
 """A web server that handles REUSE badges."""
 
-from .app import create_app as create_app
+from .app import create_app as create_app  # noqa: PLC0414
