@@ -6,24 +6,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # How to install reuse-api
 
-## Requirements
-
-The file `Pipfile` lists all Python dependencies of reuse-api, and
-`Pipfile.lock` contains information about the actual versions of these
-dependencies recommended for use. You can use `pipenv install --system` to
-download and install all these dependencies on your computer.
-
-Please note that reuse-api requires a running
-[FSFE form server](https://git.fsfe.org/fsfe-system-hackers/forms) and SSH
-access to a [REUSE lint server](https://git.fsfe.org/reuse/api-worker). The
-file `repos.json` of the form server must be available in reuse-api's working
-directory.
-
-## Docker image build
-
 The `Dockerfile` contains build instructions for a Docker container in which
-reuse-api can run. After installing the requirements, it installs reuse-api
-using `python -m pip install .`, all as described in the previous sections.
+reuse-api can run.
 
 ## Automatic deployment
 
