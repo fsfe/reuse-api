@@ -2,27 +2,23 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+[requires]
+python_version = "3.14"
+
 [[source]]
 name = "PyPi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-email-validator = "*"
-flask = "*"
-flask-sqlalchemy = "*"
-flask-wtf = "*"
-gunicorn = "*"
-requests = "*"
-psycopg2-binary = "*"
+flask-wtf = "*" # WTForms plugin for Flask
+flask-sqlalchemy = "*" # ORM wrapper
+email-validator = "*" # Email validation for flask-wtf
+requests = "*" # HTTP library
+gunicorn = "*" # WSGI HTTP server
 
 [dev-packages]
-pytest = "*"
+ruff = "*" # Linter & formatter
+# Testing packages
 pytest-cov = "*"
-pytest-flask = "*"
-pytest-mock = "*"
 requests-mock = "*"
-ruff = "*"
-
-[requires]
-python_version = "3.14"
