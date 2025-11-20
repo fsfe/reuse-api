@@ -44,7 +44,7 @@ COPY --from=builder /root/requirements.txt ./
 COPY . .
 
 # Install native packages
-RUN apk add --no-cache git openssh-client-default pgloader \
+RUN apk add --no-cache git openssh-client-default \
   # greenlet install with python 3.14
   g++
 
