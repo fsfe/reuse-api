@@ -21,6 +21,5 @@ requests = "*"
 [dev-packages]
 pytest = "*"
 pytest-cov = "*"
-pytest-mock = "*"
 requests-mock = "*"
 ruff = "*"
