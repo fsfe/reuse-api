@@ -51,9 +51,7 @@ class RegisterForm(FlaskForm):
             raise ValidationError("Not a Git repository")
 
         if Repository.is_registered(url_field.data):
-            info_page: str = url_for(
-                "html.info", url=url_field.data, _external=False
-            )
+            info_page: str = url_for("html.info", url=url_field.data, _external=False)
             info_page_url: str = f'<a href="{info_page}">here</a>'
             raise ValidationError(
                 f"Project is already registered. See its REUSE status {info_page_url}."
@@ -96,9 +94,7 @@ json_blueprint = Blueprint("json", __name__)
 
 @html_blueprint.route("/")
 def index():
-    return render_template(
-        "index.html", compliant_repos=Repository.projects().total
-    )
+    return render_template("index.html", compliant_repos=Repository.projects().total)
 
 
 @html_blueprint.route("/register", methods=["GET", "POST"])
@@ -162,9 +158,7 @@ def info(url: str):
         lint_output=row.lint_output,
         spdx_output=row.spdx_output,
         last_access=(
-            row.last_access.strftime("%d %b %Y %X")
-            if row.last_access
-            else None
+            row.last_access.strftime("%d %b %Y %X") if row.last_access else None
         ),
         badge_external=url_for(
             "html.badge", url=row.url, _external=True, _scheme="https"
@@ -214,12 +208,8 @@ def status(url: str):
         "lint_code": row.lint_code,
         "lint_output": row.lint_output,
         "spdx_output": row.spdx_output,
-        "last_access": (
-            row.last_access.isoformat() if row.last_access else None
-        ),
-        "badge": url_for(
-            "html.badge", url=row.url, _external=True, _scheme="https"
-        ),
+        "last_access": (row.last_access.isoformat() if row.last_access else None),
+        "badge": url_for("html.badge", url=row.url, _external=True, _scheme="https"),
     }
 
 
@@ -227,9 +217,7 @@ def status(url: str):
 @html_blueprint.route("/projects/page/<int:page>")
 def projects(page: int = 1):
     """Show paginated table of compliant registered repositories"""
-    return render_template(
-        "projects.html", registered_list=Repository.projects(page)
-    )
+    return render_template("projects.html", registered_list=Repository.projects(page))
 
 
 # ------------------------------------------------------------------------------
@@ -244,9 +232,7 @@ def reset(url):
     if request.form.get("admin_key") != ADMIN_KEY:
         abort(401)
     # Force re-check
-    repository = schedule_if_new_or_later(
-        url, current_app.scheduler, force=True
-    )
+    repository = schedule_if_new_or_later(url, current_app.scheduler, force=True)
     # If re-check scheduled and repository actually exists
     if repository:
         return f"Repository scheduled for re-check: {url}"

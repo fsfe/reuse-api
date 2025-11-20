@@ -29,9 +29,7 @@ FORMS_FILE: str = getenv("FORMS_FILE", default="repos.json")
 
 # SSH configurations
 SSH_KEY_PATH: str = getenv("SSH_KEY_PATH", default="~/.ssh/reuse_ed25519")
-SSH_KNOW_HOST_PATH: str = getenv(
-    "SSH_KNOW_HOST_PATH", default="~/.ssh/known_hosts"
-)
+SSH_KNOW_HOST_PATH: str = getenv("SSH_KNOW_HOST_PATH", default="~/.ssh/known_hosts")
 SSH_PORT: int = int(getenv("SSH_PORT", default="22"))
 SSH_USER: str = getenv("SSH_USER", "reuse")
 

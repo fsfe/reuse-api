@@ -48,9 +48,7 @@ class Task(NamedTuple):
         Repository.find(self.url).update(
             url=self.url,
             hash=self.hash,
-            status=(
-                "compliant" if output["exit_code"] == 0 else "non-compliant"
-            ),
+            status=("compliant" if output["exit_code"] == 0 else "non-compliant"),
             lint_code=output["exit_code"],
             lint_output=output["lint_output"],
             spdx_output=output["spdx_output"],
@@ -172,9 +170,7 @@ class Scheduler:
     def __init__(self, app):
         self._app = app
         self._queue = TaskQueue()
-        self._runners = [
-            Runner(self._queue, self._app) for _ in range(NB_RUNNER)
-        ]
+        self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
         self._running: bool = False
 
     def __contains__(self, task: Task) -> bool:
@@ -300,9 +296,7 @@ class Runner(Thread):
                             task.update_db(output)
 
                         except json.JSONDecodeError as e:
-                            self._app.logger.error(
-                                "Failed to parse JSON output: %s", e
-                            )
+                            self._app.logger.error("Failed to parse JSON output: %s", e)
             finally:
                 self._queue.done(task)
 
