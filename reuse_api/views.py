@@ -177,6 +177,8 @@ def info(url: str):
 def sbom(url: str):
     """SPDX SBOM in tag:value format"""
     row = schedule_if_new_or_later(url, current_app.scheduler)
+    # NOTE: This is a temporary measure to see if this feature is used
+    current_app.logger.info("ASKED FOR SBOM: %s", row.url)
 
     if row is None:
         return render_template("unregistered.html", url=url), 404
