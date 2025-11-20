@@ -39,14 +39,15 @@ USER reuse-api
 FROM python:3.14-alpine AS prod
 EXPOSE 8000
 
+# Instal native packages
+RUN apk add --no-cache git openssh-client-default
+
+# Needed for greenlet install with python 3.14
+RUN apk add --no-cache g++
+
 # Copy requirements & application files
 COPY --from=builder /root/requirements.txt ./
 COPY . .
-
-# Install native packages
-RUN apk add --no-cache git openssh-client-default \
-  # greenlet install with python 3.14
-  g++
 
 # Install Python packages
 RUN pip install -r requirements.txt
