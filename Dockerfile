@@ -46,6 +46,7 @@ RUN apk add --no-cache git openssh-client-default
 RUN apk add --no-cache g++
 
 # Copy requirements & application files
+WORKDIR /root
 COPY --from=builder /root/requirements.txt ./
 COPY . .
 
