@@ -12,6 +12,7 @@ Dockerfile*
 # Documentation
 doc
 README.md
+REUSE.toml
 
 # Git
 .git
