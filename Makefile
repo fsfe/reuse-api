@@ -37,28 +37,24 @@ help:
 	@perl -e '$(HELPME)' $(MAKEFILE_LIST)
 .PHONY: help
 
-virtualenv:  ##@development Set up the virtual environment with the Python dependencies.
-	@pipenv install --dev
-.PHONY: virtualenv
-
 applyblack:  ##@development Apply source code formatting with black.
-	@pipenv run black $(QUALITY_TARGETS)
+	@black $(QUALITY_TARGETS)
 .PHONY: applyblack
 
 flask:  ##@development Run the Flask built-in web server.
-	@pipenv run flask run
+	@flask run
 .PHONY: flask
 
 gunicorn:  ##@development Run the Gunicorn based web server.
-	@pipenv run gunicorn --bind $$FLASK_RUN_HOST:$$FLASK_RUN_PORT "$$FLASK_APP:create_app()"
+	@gunicorn --bind $$FLASK_RUN_HOST:$$FLASK_RUN_PORT "$$FLASK_APP:create_app()"
 .PHONY: gunicorn
 
 black:  ##@quality Check the Python source code formatting with black.
-	@pipenv run black --check --diff $(QUALITY_TARGETS)
+	@black --check --diff $(QUALITY_TARGETS)
 .PHONY: black
 
 pytest:  ##@quality Run the functional tests.
-	@pipenv run pytest --cov=$(SOURCE_DIR) tests
+	@pytest --cov=$(SOURCE_DIR) tests
 .PHONY: pytest
 
 dev.prep: ##@development Initially build the docker image that the API worker executes

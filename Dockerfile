@@ -2,64 +2,43 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM python:3.14-alpine AS builder
-WORKDIR /root
+FROM alpine:3.22 AS base
+# Add a system user for the service and switch CWD to his HOME
+RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
+WORKDIR /var/lib/reuse-api
+COPY . .
+# Install base dependencies
+RUN apk add --no-cache \
+    # Flask with WTForms & email-validator for it
+    py3-flask-wtf py3-email-validator \
+    # ORM wrapper interface & postgres implementation
+    py3-flask-sqlalchemy py3-psycopg2 \
+    # HTTP library
+    py3-requests \
+    # WSGI HTTP server
+    py3-gunicorn \
+    # Required for the scripts to work
+    git openssh-client-default \
+    # For installing the application
+    py3-pip py3-setuptools
+# We do not break system packages as this is an original
+# package and the dependencies are installed from the system
+RUN pip install --break-system-packages .
 
-# Copy pipfile for pipenv
-COPY Pipfile Pipfile.lock ./
-
-# Install pipenv
-RUN apk add --no-cache pipx
-ENV PATH="$PATH:/root/.local/bin"
-RUN pipx install pipenv
-
-# Generate requirements using pipenv
-RUN pipenv requirements --dev > requirements_all.txt
-RUN pipenv requirements > requirements.txt
 
 
 # Development
-FROM python:3.14-alpine AS dev
-EXPOSE 8000
-
-# Instal native packages
-RUN apk add --no-cache git openssh-client-default
-
-# Install Python development packages
-COPY --from=builder /root/requirements_all.txt ./
-RUN pip install -r requirements_all.txt
-
-# Switch to non-privilleged user for security
-RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
-WORKDIR /var/lib/reuse-api
-USER reuse-api
+FROM base AS dev
+# Instal linter & testing packages
+RUN apk add --no-cache \
+    ruff \
+    py3-pytest-cov \
+    py3-requests-mock
 
 
 # Production
-FROM python:3.14-alpine AS prod
+FROM base AS prod
+# Run the WSGI server as non-privleged user for security
 EXPOSE 8000
-
-# Instal native packages
-RUN apk add --no-cache git openssh-client-default
-
-# Needed for greenlet install with python 3.14
-RUN apk add --no-cache g++
-
-# Copy requirements & application files
-WORKDIR /root
-COPY --from=builder /root/requirements.txt ./
-COPY . .
-
-# Install Python packages
-RUN pip install -r requirements.txt
-
-# Install the actual application
-RUN python -m pip install .
-
-# Switch to non-privilleged user for security
-RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
-WORKDIR /var/lib/reuse-api
 USER reuse-api
-
-# Run the WSGI server
 CMD gunicorn --bind=0.0.0.0:8000 --workers=4 "reuse_api:create_app()"

@@ -8,15 +8,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 ## Development environment setup
 
-The (strongly) recommended way of developing, testing and debugging reuse-api
-is to set up an isolated Python environment, called a *virtual environment* or
-*venv*, to make development independent from the operating system provided
-version of the required Python libraries. To make this as easy as possible,
-reuse-api uses [Pipenv](https://docs.pipenv.org/en/latest/).
-
-After cloning the git repository, just run `make virtualenv` in the git
-checkout directory and the virtual environment will be completely set up.
-
+Development should be done in the same container that it runs in for
+maximum reproducibility. Please check the `Dockerfile` to find out
+what image is used.
 
 ## Coding style
 
