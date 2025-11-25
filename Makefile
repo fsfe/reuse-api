@@ -25,12 +25,12 @@ HELPME = \
 	%help; \
 	while(<>) { push @{$$help{$$2 // 'options'}}, [$$1, $$3] if /^([a-zA-Z\-\.]+)\s*:.*\#\#(?:@([a-zA-Z\-]+))?\s(.*)$$/ }; \
 	for (sort keys %help) { \
-	print "${WHITE}$$_:${RESET}\n"; \
-	for (@{$$help{$$_}}) { \
-	$$sep = " " x (20 - length $$_->[0]); \
-	print "  ${YELLOW}$$_->[0]${RESET}$$sep${GREEN}$$_->[1]${RESET}\n"; \
-	}; \
-	print "\n"; }
+	  print "${WHITE}$$_:${RESET}\n"; \
+	  for (@{$$help{$$_}}) { \
+	    $$sep = " " x (20 - length $$_->[0]); \
+	    print "  ${YELLOW}$$_->[0]${RESET}$$sep${GREEN}$$_->[1]${RESET}\n"; \
+	  }; \
+	  print "\n"; }
 
 
 help:
