@@ -1,6 +1,6 @@
 """Configuration for the REUSE API service"""
 
-from os import getenv
+from os import getenv, makedirs
 
 
 # Configuration for Flask
@@ -37,3 +37,6 @@ NB_RUNNER: int = int(getenv("NB_RUNNER", default="6"))
 
 # Number of repository return during pagination
 NB_REPOSITORY_BY_PAGINATION: int = int(getenv("NB_REPOSITORY_BY_PAGES", default="10"))
+
+REUSE_DB_PATH: str = getenv("REUSE_DB_PATH", default="/var/lib/reuse/db/")
+makedirs(REUSE_DB_PATH, exist_ok=True)
