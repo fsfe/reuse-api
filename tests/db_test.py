@@ -1,0 +1,72 @@
+import pytest
+
+from os.path import isfile
+from shutil import rmtree
+
+import reuse_api.db as db
+
+TEST_REPO: str = "git.fsfe.org/reuse/api"
+
+
+@pytest.fixture
+def clean_db() -> None:
+    db.drop(really=True)
+
+
+@pytest.fixture
+def registered(clean_db) -> None:
+    db.register(TEST_REPO)
+
+
+@pytest.fixture
+def updated(registered) -> None:
+    db.update(TEST_REPO)
+
+
+def test_registration(clean_db) -> None:
+    my_repo: str = "beka.ovh/fkobi/emacs-config"
+    # test not registered
+    assert not db.is_registered(my_repo)
+    # test registration
+    db.register(my_repo)
+    assert db.is_registered(my_repo)
+    # test unregistration
+    db.unregister(my_repo)
+    assert not db.is_registered(my_repo)
+
+
+def test_lock(registered) -> None:
+    # lock
+    assert db.__lock(TEST_REPO)
+    assert not db.__lock(TEST_REPO)
+    # unlock
+    db.__unlock(TEST_REPO)
+    assert db.__lock(TEST_REPO)
+
+
+def test_lock_with_update(registered) -> None:
+    assert db.__lock(TEST_REPO)
+    assert not db.update(TEST_REPO)
+
+
+def test_unregistered_lock(clean_db) -> None:
+    assert not db.__lock(TEST_REPO)
+
+
+def test_all_files_present(updated) -> None:
+    assert isfile(db._path_rval(TEST_REPO))
+    assert isfile(db._path_lint(TEST_REPO))
+    assert isfile(db._path_spdx(TEST_REPO))
+    assert isfile(db._path_head(TEST_REPO))
+
+
+def test_isok(updated) -> None:
+    assert db.lint_isok(TEST_REPO)
+
+
+def test_drop(registered) -> None:
+    assert db.is_registered(TEST_REPO)
+    db.drop()
+    assert db.is_registered(TEST_REPO)
+    db.drop(really=True)
+    assert not db.is_registered(TEST_REPO)
