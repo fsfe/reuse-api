@@ -35,22 +35,23 @@ def test_registration(clean_db) -> None:
     assert not db.is_registered(my_repo)
 
 
-def test_lock(registered) -> None:
-    # lock
+def test_lock(clean_db) -> None:
+    # Unregistered is not lockable
+    assert not db.is_lockable(TEST_REPO)
+
+    # Registered success
+    db.register(TEST_REPO)
     assert db.__lock(TEST_REPO)
-    assert not db.__lock(TEST_REPO)
-    # unlock
+
+    # Locked is not lockable
+    assert not db.is_lockable(TEST_REPO)
+
+    # Timed-out lock is lockable
+    assert db.is_lockable(TEST_REPO, timeout=-1)
+
+    # Relock success
     db.__unlock(TEST_REPO)
     assert db.__lock(TEST_REPO)
-
-
-def test_lock_with_update(registered) -> None:
-    assert db.__lock(TEST_REPO)
-    assert not db.update(TEST_REPO)
-
-
-def test_unregistered_lock(clean_db) -> None:
-    assert not db.__lock(TEST_REPO)
 
 
 def test_all_files_present(updated) -> None:
