@@ -1,12 +1,13 @@
 """This file hosts the functions responsible managing the filesystem database."""
 
-from os import mkdir, makedirs, remove
-from os.path import join, isdir, exists, getmtime
+from os import makedirs, mkdir, remove
+from os.path import exists, getmtime, isdir, join
 from shutil import rmtree
-from subprocess import run, CompletedProcess
+from subprocess import CompletedProcess, run
 from time import time
 
 from .config import REUSE_DB_PATH as DB_ROOT
+
 
 # filenames
 __HEAD_FILE: str = "HEAD"
@@ -50,7 +51,7 @@ def _path_lock(repo: str) -> str:
 
 # Content functions
 def lint_rval(repo: str) -> int:
-    with open(_path_rval(repo), "r") as f:
+    with open(_path_rval(repo)) as f:
         return int(f.read())
 
 
@@ -60,13 +61,13 @@ def lint_isok(repo: str) -> bool:
 
 def lint(repo: str) -> str:  # pragma: no cover
     """Returns the `reuse lint` output"""
-    with open(_path_lint(repo), "r") as f:
+    with open(_path_lint(repo)) as f:
         return f.read()
 
 
 def spdx(repo: str) -> str:  # pragma: no cover
     """Returns the `reuse spdx` output"""
-    with open(_path_spdx(repo), "r") as f:
+    with open(_path_spdx(repo)) as f:
         return f.read()
 
 
