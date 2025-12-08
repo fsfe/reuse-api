@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM alpine:3.22 AS base
+FROM alpine:3.23 AS base
 # Add a system user for the service and switch CWD to his HOME
 RUN adduser --system reuse-api --home=/var/lib/reuse-api --uid=1000
 WORKDIR /var/lib/reuse-api
