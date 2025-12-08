@@ -1,9 +1,10 @@
 """This file hosts the functions responsible managing the filesystem database."""
 
 from os import mkdir, makedirs, remove
-from os.path import join, isdir, exists
+from os.path import join, isdir, exists, getmtime
 from shutil import rmtree
 from subprocess import run, CompletedProcess
+from time import time
 
 from .config import REUSE_DB_PATH as DB_ROOT
 
@@ -14,6 +15,8 @@ __LINT_RVAL: str = "return-value"
 __LINT_OUTPUT: str = "lint"
 __SPDX_OUTPUT: str = "spdx"
 __LOCKFILE: str = ".locked"
+
+UPDATE_TIMEOUT: int = 300  # seconds
 
 
 # Properties
@@ -80,16 +83,26 @@ def is_registered(repo: str) -> bool:
     return isdir(__repopath(repo))
 
 
-def __lock(repo: str) -> bool:
-    """Locks the repository. Works only if the project is registered"""
+# Lock functions
+def is_lockable(repo: str, timeout: int = UPDATE_TIMEOUT) -> bool:
+    """Checks if the repo is registered AND
+    if the lock is not there or timed-out."""
     if not is_registered(repo):
         return False
+    lockfile = _path_lock(repo)
+    # If not locked
+    if not exists(lockfile):
+        return True
+    # If lock timed out
+    age: float = time() - getmtime(lockfile)
+    return age >= timeout
 
-    if not exists(lockfile := _path_lock(repo)):
-        with open(lockfile, "w"):
+
+def __lock(repo: str) -> bool:
+    """Locks the file if it can. Reports True if suceeeds."""
+    if is_lockable(repo):
+        with open(_path_lock(repo), "w"):
             return True
-        # else, the file is there
-        # TODO implement some timeout
     return False
 
 
@@ -112,6 +125,8 @@ def update(repo: str) -> int:
             f"{script_name} {repo} > {__repopath(repo)}/{__LOG_FILE}",
         ],
         cwd=DB_ROOT,
+        timeout=UPDATE_TIMEOUT,
+        check=False,  # It can fail
     )
     print("LOG: done")
     __unlock(repo)
