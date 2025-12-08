@@ -1,9 +1,11 @@
+# ruff: noqa: ARG001
+# function argumens are used to implement fixture dependencies
+from os.path import isfile
+
 import pytest
 
-from os.path import isfile
-from shutil import rmtree
+from reuse_api import db
 
-import reuse_api.db as db
 
 TEST_REPO: str = "git.fsfe.org/reuse/api"
 
