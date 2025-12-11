@@ -4,25 +4,8 @@ from os.path import isfile
 
 import pytest
 
+from .conftest import TEST_REPO
 from reuse_api import db
-
-
-TEST_REPO: str = "git.fsfe.org/reuse/api"
-
-
-@pytest.fixture
-def db_empty() -> None:
-    db.drop(really=True)
-
-
-@pytest.fixture
-def db_registered(db_empty) -> None:
-    db.register(TEST_REPO)
-
-
-@pytest.fixture
-def db_updated(db_registered) -> None:
-    db.update(TEST_REPO)
 
 
 def test_registration(db_empty) -> None:

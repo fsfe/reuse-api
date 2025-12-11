@@ -2,6 +2,8 @@ from os import environ
 
 import pytest
 
+TEST_REPO: str = "git.fsfe.org/reuse/api"
+
 
 @pytest.fixture
 def tmp_json(tmp_path) -> str:
@@ -37,3 +39,22 @@ def app(requests_mock, tmp_json):
 def client(app):
     """A test client for the app."""
     return app.test_client()
+
+
+# Database fixtures
+from reuse_api import db
+
+
+@pytest.fixture
+def db_empty() -> None:
+    db.drop(really=True)
+
+
+@pytest.fixture
+def db_registered(db_empty) -> None:
+    db.register(TEST_REPO)
+
+
+@pytest.fixture
+def db_updated(db_registered) -> None:
+    db.update(TEST_REPO)
