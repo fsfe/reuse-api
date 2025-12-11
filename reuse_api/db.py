@@ -72,6 +72,10 @@ def spdx(repo: str) -> str:  # pragma: no cover
 
 
 # registration functions
+def is_registered(repo: str) -> bool:
+    return isdir(__repopath(repo))
+
+
 def register(repo: str) -> bool:
     """Register a repository. Returns False if project is already registered."""
     if is_registered(repo):
@@ -83,10 +87,6 @@ def register(repo: str) -> bool:
 
 def unregister(repo: str) -> None:
     rmtree(__repopath(repo), ignore_errors=True)
-
-
-def is_registered(repo: str) -> bool:
-    return isdir(__repopath(repo))
 
 
 # Lock functions
