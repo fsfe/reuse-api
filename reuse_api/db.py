@@ -72,8 +72,13 @@ def spdx(repo: str) -> str:  # pragma: no cover
 
 
 # registration functions
-def register(repo: str) -> None:
+def register(repo: str) -> bool:
+    """Register a repository. Returns False if project is already registered."""
+    if is_registered(repo):
+        return False
+    # else is not registered
     makedirs(__repopath(repo), exist_ok=True)
+    return True
 
 
 def unregister(repo: str) -> None:
