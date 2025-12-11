@@ -16,12 +16,12 @@ def db_empty() -> None:
 
 
 @pytest.fixture
-def registered(db_empty) -> None:
+def db_registered(db_empty) -> None:
     db.register(TEST_REPO)
 
 
 @pytest.fixture
-def updated(registered) -> None:
+def updated(db_registered) -> None:
     db.update(TEST_REPO)
 
 
@@ -67,7 +67,7 @@ def test_isok(updated) -> None:
     assert db.lint_isok(TEST_REPO)
 
 
-def test_drop(registered) -> None:
+def test_drop(db_registered) -> None:
     assert db.is_registered(TEST_REPO)
     db.drop()
     assert db.is_registered(TEST_REPO)
