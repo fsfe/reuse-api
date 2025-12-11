@@ -21,7 +21,7 @@ def db_registered(db_empty) -> None:
 
 
 @pytest.fixture
-def updated(db_registered) -> None:
+def db_updated(db_registered) -> None:
     db.update(TEST_REPO)
 
 
@@ -56,14 +56,14 @@ def test_lock(db_empty) -> None:
     assert db.__lock(TEST_REPO)
 
 
-def test_all_files_present(updated) -> None:
+def test_all_files_present(db_updated) -> None:
     assert isfile(db._path_rval(TEST_REPO))
     assert isfile(db._path_lint(TEST_REPO))
     assert isfile(db._path_spdx(TEST_REPO))
     assert isfile(db._path_head(TEST_REPO))
 
 
-def test_isok(updated) -> None:
+def test_isok(db_updated) -> None:
     assert db.lint_isok(TEST_REPO)
 
 
