@@ -11,12 +11,12 @@ TEST_REPO: str = "git.fsfe.org/reuse/api"
 
 
 @pytest.fixture
-def clean_db() -> None:
+def db_empty() -> None:
     db.drop(really=True)
 
 
 @pytest.fixture
-def registered(clean_db) -> None:
+def registered(db_empty) -> None:
     db.register(TEST_REPO)
 
 
@@ -25,7 +25,7 @@ def updated(registered) -> None:
     db.update(TEST_REPO)
 
 
-def test_registration(clean_db) -> None:
+def test_registration(db_empty) -> None:
     my_repo: str = "beka.ovh/fkobi/emacs-config"
     # test not registered
     assert not db.is_registered(my_repo)
@@ -37,7 +37,7 @@ def test_registration(clean_db) -> None:
     assert not db.is_registered(my_repo)
 
 
-def test_lock(clean_db) -> None:
+def test_lock(db_empty) -> None:
     # Unregistered is not lockable
     assert not db.is_lockable(TEST_REPO)
 
