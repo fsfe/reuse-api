@@ -30,7 +30,7 @@ JSON: Blueprint = Blueprint("json", __name__)
 
 @HTML.get("/")
 def index() -> str:
-    return render_template("index.html", compliant_repos=Repository.projects().total)
+    return render_template("index.html", compliant_repos=len(getall()))
 
 
 @HTML.get("/register")
