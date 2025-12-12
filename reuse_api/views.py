@@ -94,7 +94,7 @@ json_blueprint = Blueprint("json", __name__)
 
 @html_blueprint.route("/")
 def index():
-    return render_template("index.html", compliant_repos=Repository.projects().total)
+    return render_template("index.jinja2", compliant_repos=Repository.projects().total)
 
 
 @html_blueprint.route("/register", methods=["GET", "POST"])
@@ -111,8 +111,8 @@ def register():
         )
         if not response.ok:
             return response.text, response.status_code
-        return render_template("register-success.html", **form.data)
-    return render_template("register.html", form=form)
+        return render_template("register-success.jinja2", **form.data)
+    return render_template("register.jinja2", form=form)
 
 
 @html_blueprint.route("/badge/<path:url>")
@@ -146,10 +146,10 @@ def info(url: str):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
-        return render_template("unregistered.html", url=url), 404
+        return render_template("unregistered.jinja2", url=url), 404
 
     return render_template(
-        "info.html",
+        "info.jinja2",
         url=row.url,
         project_name="/".join(row.url.split("/")[-2:]),
         hash=row.hash,
@@ -181,7 +181,7 @@ def sbom(url: str):
     current_app.logger.info("ASKED FOR SBOM: %s", row.url)
 
     if row is None:
-        return render_template("unregistered.html", url=url), 404
+        return render_template("unregistered.jinja2", url=url), 404
 
     return row.spdx_output
 
@@ -219,7 +219,7 @@ def status(url: str):
 @html_blueprint.route("/projects/page/<int:page>")
 def projects(page: int = 1):
     """Show paginated table of compliant repositories"""
-    return render_template("projects.html", compliant_list=Repository.projects(page))
+    return render_template("projects.jinja2", compliant_list=Repository.projects(page))
 
 
 # ------------------------------------------------------------------------------
