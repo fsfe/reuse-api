@@ -117,6 +117,15 @@ def __unlock(repo: str) -> None:
     remove(_repo_file(repo, __LOCKFILE))
 
 
+def getall() -> list[str]:
+    """Returns all the repositories that have been registered to the database"""
+    return [
+        relpath(dirpath, DB_ROOT)
+        for dirpath, dirnames, filenames in walk(DB_ROOT)
+        if dirpath.count("/") - DB_ROOT.count("/") == 2
+    ]
+
+
 def __not_updated() -> list[str]:
     """Lists the registered repos that have empty database entries"""
     return [
