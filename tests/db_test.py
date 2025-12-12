@@ -57,6 +57,14 @@ def test_update_locked(db_registered) -> None:
     assert db.update(TEST_REPO) == 0  # NOTE: maybe it should be enumed
 
 
+def test_check_date(db_updated) -> None:
+    repo: str = "a/b/c"
+    db.register(repo)
+    with open(db._path_head(repo), "w"):
+        pass
+    assert db.check_date(repo) > db.check_date(TEST_REPO)
+
+
 def test_all_files_present(db_updated) -> None:
     assert isfile(db._path_rval(TEST_REPO))
     assert isfile(db._path_lint(TEST_REPO))
