@@ -18,25 +18,25 @@
       <th>Details</th>
       <th>Repository</th>
     </tr>
-    {%  for project in compliant_list.items %}
+    {%  for url in compliant_list %}
       <tr>
-        <td>{{ project.url }}</td>
-        <td><a href="/info/{{ project.url }}"><i class="fas fa-info-circle"></i></a></td>
+        <td>{{ url }}</td>
+        <td><a href="/info/{{ url }}"><i class="fas fa-info-circle"></i></a></td>
         <td>
-          <a href="https://{{ project.url }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+          <a href="https://{{ url }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
         </td>
       </tr>
     {% endfor %}
       <tr>
         <td></td>
         <td>
-          {% if compliant_list.has_prev %}
-            <a href="{{ url_for('html.projects', page=compliant_list.prev_num) }}">Previous</a>
+          {% if pg != 1 %}
+            <a href="{{ url_for('html.projects', page=pg-1) }}">Previous</a>
           {% endif %}
         </td>
         <td>
-          {% if compliant_list.has_next %}
-            <a href="{{ url_for('html.projects', page=compliant_list.next_num) }}">Next</a>
+          {% if has_next == True %}
+            <a href="{{ url_for('html.projects', page=pg+1) }}">Next</a>
           {% endif %}
         </td>
       </tr>
