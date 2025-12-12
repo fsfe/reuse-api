@@ -126,7 +126,7 @@ def getall() -> list[str]:
     ]
 
 
-def __not_updated() -> list[str]:
+def _not_updated() -> list[str]:
     """Lists the registered repos that have empty database entries"""
     return [
         relpath(dirpath, DB_ROOT)
@@ -135,7 +135,7 @@ def __not_updated() -> list[str]:
     ]
 
 
-def __outdated(age_in_seconds: int = 24 * 60 * 60) -> list[str]:
+def _outdated(age_in_seconds: int = 24 * 60 * 60) -> list[str]:
     """Lists the updated repos that are outdated"""
     return [
         relpath(dirpath, DB_ROOT)
