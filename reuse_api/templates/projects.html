@@ -14,24 +14,14 @@
 
   <table class="table table-striped registered">
     <tr>
-      <th>
-        Repository URL
-      </th>
-      <th>
-        Details
-      </th>
-      <th>
-        Repository
-      </th>
+      <th>Repository URL</th>
+      <th>Details</th>
+      <th>Repository</th>
     </tr>
     {%  for project in registered_list.items %}
       <tr>
-        <td>
-          {{ project.url }}
-        </td>
-        <td>
-          <a href="/info/{{ project.url }}"><i class="fas fa-info-circle"></i></a>
-        </td>
+        <td>{{ project.url }}</td>
+        <td><a href="/info/{{ project.url }}"><i class="fas fa-info-circle"></i></a></td>
         <td>
           <a href="https://{{ project.url }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
         </td>
