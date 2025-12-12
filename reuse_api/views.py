@@ -28,6 +28,8 @@ from .scheduler import (
     schedule_if_new_or_later,
 )
 
+from reuse_api.db import getall
+
 
 class RegisterForm(FlaskForm):
     """Form class for repository registration page"""
@@ -94,7 +96,7 @@ json_blueprint = Blueprint("json", __name__)
 
 @html_blueprint.route("/")
 def index():
-    return render_template("index.jinja2", compliant_repos=Repository.projects().total)
+    return render_template("index.jinja2", compliant_repos=len(getall()))
 
 
 @html_blueprint.route("/register", methods=["GET", "POST"])
