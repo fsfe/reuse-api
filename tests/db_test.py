@@ -39,10 +39,16 @@ def test_lock(db_empty) -> None:
     assert db.__lock(TEST_REPO)
 
 
-def test_not_updated(db_empty) -> None:
-    assert not db.__not_updated()
+def test_get_all(db_empty) -> None:
+    assert not db.getall()
     db.register(TEST_REPO)
+    assert db.getall() == [TEST_REPO]
+
+
+def test_not_updated(db_registered) -> None:
     assert db.__not_updated() == [TEST_REPO]
+    db.__lock(TEST_REPO)
+    assert not db.__not_updated()
 
 
 def test_update_locked(db_registered) -> None:
