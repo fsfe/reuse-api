@@ -146,7 +146,7 @@ def info(url: str):
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
     if row is None:
-        return render_template("unregistered.html", url=url), 404
+        return render_template("unregistered.jinja2", url=url), 404
 
     return render_template(
         "info.jinja2",
@@ -181,7 +181,7 @@ def sbom(url: str):
     current_app.logger.info("ASKED FOR SBOM: %s", row.url)
 
     if row is None:
-        return render_template("unregistered.html", url=url), 404
+        return render_template("unregistered.jinja2", url=url), 404
 
     return row.spdx_output
 
