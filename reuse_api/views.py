@@ -23,6 +23,7 @@ from reuse_api import models as db
 from reuse_api.forms import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
+from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
 from .models import Repository
 from .scheduler import schedule_if_new_or_later
 
@@ -156,7 +157,12 @@ def status(url: str) -> dict:
 @html_blueprint.route("/projects/page/<int:page>")
 def projects(page: int = 1) -> str:
     """Show paginated table of compliant repositories"""
-    return render_template("projects.jinja2", compliant_list=Repository.projects(page))
+    repos: list[str] = compliant_paged(page)
+    print("repos len", len(repos))
+    has_next: bool = len(repos) == PAGE_SIZE  # HACK: will fail if len(repos)%10
+    return render_template(
+        "projects.jinja2", compliant_list=repos, pg=page, has_next=has_next
+    )
 
 
 # ------------------------------------------------------------------------------
