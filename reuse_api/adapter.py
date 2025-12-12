@@ -54,10 +54,10 @@ def __register_repos(urls: list[str]) -> bool:
     return all_good
 
 
-def move_registrations() -> bool:
+# no-cover as we assume that if the functions work this will also do
+def move_registrations() -> list[str]:  # pragma: no cover
     """Adds `~` to the filename, extracts the URLs and registers them.
     If all of the registrations are new returns True."""
-    # no-cover as we assume that if the functions work this will also do
-    return __register_repos(
-        __contents_to_strings(__move_and_read())
-    )  # pragma: no cover
+    repos: list[str] = __contents_to_strings(__move_and_read())
+    __register_repos(repos)
+    return repos
