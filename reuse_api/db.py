@@ -154,15 +154,10 @@ def compliant() -> list[str]:
 def compliant_paged(page: int, page_size: int = PAGE_SIZE) -> list[str]:
     """Pages the compliant repositories sorted by check date"""
     start: int = (page - 1) * page_size
-
-    repo_with_mtime: list[tuple[str, float]] = [
-        (repo, check_date(repo)) for repo in compliant()
-    ]
-    mtime_sorted: list[tuple[str, float]] = sorted(
-        repo_with_mtime, key=lambda x: x[1], reverse=True
+    repos: list[str] = sorted(
+        compliant(), reverse=True, key=lambda repo: check_date(repo)
     )
-
-    return mtime_sorted[start : start + page_size][0][:1]  # pick only the first column
+    return repos[start : start + page_size]
 
 
 def _not_updated() -> list[str]:
