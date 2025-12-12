@@ -8,6 +8,7 @@ from subprocess import CompletedProcess, run
 from time import time
 
 from .config import REUSE_DB_PATH as DB_ROOT
+from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
 
 
 # filenames
@@ -143,6 +144,20 @@ def getall() -> list[str]:
 def compliant() -> list[str]:
     """Returns all the compliant repositories"""
     return [r for r in getall() if lint_isok(r)]
+
+
+def compliant_paged(page: int, page_size: int = PAGE_SIZE) -> list[str]:
+    """Pages the compliant repositories sorted by check date"""
+    start: int = (page - 1) * page_size
+
+    repo_with_mtime: list[tuple[str, float]] = [
+        (repo, check_date(repo)) for repo in compliant()
+    ]
+    mtime_sorted: list[tuple[str, float]] = sorted(
+        repo_with_mtime, key=lambda x: x[1], reverse=True
+    )
+
+    return mtime_sorted[start : start + page_size][0][:1]  # pick only the first column
 
 
 def _not_updated() -> list[str]:
