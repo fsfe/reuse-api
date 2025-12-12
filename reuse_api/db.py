@@ -1,7 +1,7 @@
 """This file hosts the functions responsible managing the filesystem database."""
 
-from os import makedirs, mkdir, remove
-from os.path import exists, getmtime, isdir, join
+from os import makedirs, mkdir, remove, walk
+from os.path import exists, getmtime, isdir, join, relpath
 from shutil import rmtree
 from subprocess import CompletedProcess, run
 from time import time
@@ -117,7 +117,15 @@ def __unlock(repo: str) -> None:
     remove(_repo_file(repo, __LOCKFILE))
 
 
-# Update
+def __not_updated() -> list[str]:
+    """Lists the registered repos that have empty database entries"""
+    return [
+        relpath(dirpath, DB_ROOT)
+        for dirpath, dirnames, filenames in walk(DB_ROOT)
+        if dirpath.count("/") - DB_ROOT.count("/") == 2 and not (filenames or dirnames)
+    ]
+
+
 def update(repo: str) -> int:
     # Also checks for registration
     if not __lock(repo):  # could not lock, another process is doing that
