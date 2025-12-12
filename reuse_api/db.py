@@ -84,6 +84,8 @@ def is_registered(repo: str) -> bool:
 # wrapper for mtime
 def check_date(repo: str) -> float:  # pragma: no cover
     """Returns the checked date if the last check"""
+    if not isfile(_path_head(repo)):
+        return 0
     return getmtime(_path_head(repo))
 
 
