@@ -21,6 +21,7 @@ from wtforms import BooleanField, StringField, ValidationError
 from wtforms.validators import Email, InputRequired
 
 from .config import ADMIN_KEY
+from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
 from .models import Repository
 from .scheduler import (
     InvalidRepositoryError,
@@ -28,7 +29,7 @@ from .scheduler import (
     schedule_if_new_or_later,
 )
 
-from reuse_api.db import getall
+from reuse_api.db import getall, compliant_paged
 
 
 class RegisterForm(FlaskForm):
@@ -221,7 +222,12 @@ def status(url: str):
 @html_blueprint.route("/projects/page/<int:page>")
 def projects(page: int = 1):
     """Show paginated table of compliant repositories"""
-    return render_template("projects.jinja2", compliant_list=Repository.projects(page))
+    repos: list[str] = compliant_paged(page)
+    print("repos len", len(repos))
+    has_next: bool = len(repos) == PAGE_SIZE  # HACK: will fail if len(repos)%10
+    return render_template(
+        "projects.jinja2", compliant_list=repos, pg=page, has_next=has_next
+    )
 
 
 # ------------------------------------------------------------------------------
