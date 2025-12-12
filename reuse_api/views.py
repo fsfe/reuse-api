@@ -21,6 +21,7 @@ from reuse_api import models as db
 from reuse_api.form import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
+from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
 from .models import Repository
 
 
@@ -165,7 +166,11 @@ def status(url: str) -> dict:
 @HTML.get("/projects/page/<int:page>")
 def projects(page: int = 1) -> str:
     """Show paginated table of compliant repositories"""
-    return render_template("projects.html", compliant_list=Repository.projects(page))
+    repos: list[str] = compliant_paged(page)
+    has_next: bool = len(repos) == PAGE_SIZE  # HACK: will fail if len(repos)%10
+    return render_template(
+        "projects.html", compliant_list=repos, pg=page, has_next=has_next
+    )
 
 
 # ------------------------------------------------------------------------------
