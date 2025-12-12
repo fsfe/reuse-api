@@ -149,6 +149,11 @@ def _outdated(age_in_seconds: int = 24 * 60 * 60) -> list[str]:
     )
 
 
+def get_tasks() -> list[str]:  # pragma: no cover
+    """Returns the list of the repositories that should be updated."""
+    return _not_updated() + _outdated()
+
+
 def update(repo: str) -> int:
     # Also checks for registration
     if not __lock(repo):  # could not lock, another process is doing that
