@@ -149,7 +149,7 @@ def info(url: str):
         return render_template("unregistered.html", url=url), 404
 
     return render_template(
-        "info.html",
+        "info.jinja2",
         url=row.url,
         project_name="/".join(row.url.split("/")[-2:]),
         hash=row.hash,
