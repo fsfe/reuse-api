@@ -94,7 +94,7 @@ json_blueprint = Blueprint("json", __name__)
 
 @html_blueprint.route("/")
 def index():
-    return render_template("index.html", compliant_repos=Repository.projects().total)
+    return render_template("index.jinja2", compliant_repos=Repository.projects().total)
 
 
 @html_blueprint.route("/register", methods=["GET", "POST"])
