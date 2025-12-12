@@ -39,6 +39,11 @@ def test_lock(db_empty) -> None:
     assert db.__lock(TEST_REPO)
 
 
+def test_update_locked(db_registered) -> None:
+    assert db.__lock(TEST_REPO)
+    assert db.update(TEST_REPO) == 0  # NOTE: maybe it should be enumed
+
+
 def test_all_files_present(db_updated) -> None:
     assert isfile(db._path_rval(TEST_REPO))
     assert isfile(db._path_lint(TEST_REPO))
