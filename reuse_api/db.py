@@ -77,6 +77,12 @@ def is_registered(repo: str) -> bool:
     return isdir(__repopath(repo))
 
 
+# wrapper for mtime
+def check_date(repo: str) -> float:  # pragma: no cover
+    """Returns the checked date if the last check"""
+    return getmtime(_path_head(repo))
+
+
 def register(repo: str) -> bool:
     """Register a repository. Returns False if project is already registered."""
     if is_registered(repo):
