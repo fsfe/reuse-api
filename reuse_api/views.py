@@ -111,7 +111,7 @@ def register():
         )
         if not response.ok:
             return response.text, response.status_code
-        return render_template("register-success.html", **form.data)
+        return render_template("register-success.jinja2", **form.data)
     return render_template("register.jinja2", form=form)
 
 
