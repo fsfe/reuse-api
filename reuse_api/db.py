@@ -117,33 +117,35 @@ def __unlock(repo) -> None:
     remove(_repo_file(repo, __LOCKFILE))
 
 
-def getall() -> list[str]:
-    """Returns all the repositories that have been registered to the database"""
+# Query functions
+def _get_registered_repos(filter_func) -> list[str]:
+    """Helper function to return repositories based on a given filter."""
     return [
         relpath(dirpath, DB_ROOT)
         for dirpath, dirnames, filenames in walk(DB_ROOT)
         if dirpath.count("/") - DB_ROOT.count("/") == 2
+        and filter_func(dirpath, dirnames, filenames)
     ]
+
+
+def getall() -> list[str]:
+    """Returns all the repositories that have been registered to the database."""
+    return _get_registered_repos(lambda _, __, ___: True)
 
 
 def _not_updated() -> list[str]:
-    """Lists the registered repos that have empty database entries"""
-    return [
-        relpath(dirpath, DB_ROOT)
-        for dirpath, dirnames, filenames in walk(DB_ROOT)
-        if dirpath.count("/") - DB_ROOT.count("/") == 2 and not (filenames or dirnames)
-    ]
+    """Lists the registered repos that have empty database entries."""
+    return _get_registered_repos(
+        lambda _, dirnames, filenames: not (filenames or dirnames)
+    )
 
 
 def _outdated(age_in_seconds: int = 24 * 60 * 60) -> list[str]:
-    """Lists the updated repos that are outdated"""
-    return [
-        relpath(dirpath, DB_ROOT)
-        for dirpath, dirnames, filenames in walk(DB_ROOT)
-        if dirpath.count("/") - DB_ROOT.count("/") == 2
-        and isfile(f"{dirpath}/{__HEAD_FILE}")
+    """Lists the updated repos that are outdated."""
+    return _get_registered_repos(
+        lambda dirpath, _, __: isfile(f"{dirpath}/{__HEAD_FILE}")
         and time() - getmtime(f"{dirpath}/{__HEAD_FILE}") >= age_in_seconds
-    ]
+    )
 
 
 def update(repo: str) -> int:
