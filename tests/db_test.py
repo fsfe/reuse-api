@@ -51,6 +51,13 @@ def test_not_updated(db_registered) -> None:
     assert not db.__not_updated()
 
 
+def test_outdated(db_registered) -> None:
+    assert not db.__outdated()  # Not registered so not outdated
+    db.update(TEST_REPO)
+    assert not db.__outdated()  # Freshly registered
+    assert db.__outdated(age_in_seconds=-1) == [TEST_REPO]
+
+
 def test_update_locked(db_registered) -> None:
     assert db.__lock(TEST_REPO)
     assert db.update(TEST_REPO) == 0  # NOTE: maybe it should be enumed
