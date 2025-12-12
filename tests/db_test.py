@@ -39,6 +39,12 @@ def test_lock(db_empty) -> None:
     assert db.__lock(TEST_REPO)
 
 
+def test_not_updated(db_empty) -> None:
+    assert not db.__not_updated()
+    db.register(TEST_REPO)
+    assert db.__not_updated() == [TEST_REPO]
+
+
 def test_update_locked(db_registered) -> None:
     assert db.__lock(TEST_REPO)
     assert db.update(TEST_REPO) == 0  # NOTE: maybe it should be enumed
@@ -53,6 +59,12 @@ def test_all_files_present(db_updated) -> None:
 
 def test_isok(db_updated) -> None:
     assert db.lint_isok(TEST_REPO)
+
+
+def test_not_updated(db_registered) -> None:
+    assert db.__not_updated() == [TEST_REPO]
+    assert db.__lock(TEST_REPO)
+    assert db.__not_updated() == []
 
 
 def test_drop(db_registered) -> None:
