@@ -58,6 +58,9 @@ def lint_rval(repo: str) -> int:
 
 
 def lint_isok(repo: str) -> bool:
+    if not isfile(_path_rval(repo)):
+        return False
+
     return lint_rval(repo) == 0
 
 
