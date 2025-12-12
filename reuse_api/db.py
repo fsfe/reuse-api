@@ -1,7 +1,7 @@
 """This file hosts the functions responsible managing the filesystem database."""
 
 from os import makedirs, mkdir, remove, walk
-from os.path import exists, getmtime, isdir, join, relpath
+from os.path import exists, getmtime, isdir, isfile, join, relpath
 from shutil import rmtree
 from subprocess import CompletedProcess, run
 from time import time
@@ -132,6 +132,17 @@ def __not_updated() -> list[str]:
         relpath(dirpath, DB_ROOT)
         for dirpath, dirnames, filenames in walk(DB_ROOT)
         if dirpath.count("/") - DB_ROOT.count("/") == 2 and not (filenames or dirnames)
+    ]
+
+
+def __outdated(age_in_seconds: int = 24 * 60 * 60) -> list[str]:
+    """Lists the updated repos that are outdated"""
+    return [
+        relpath(dirpath, DB_ROOT)
+        for dirpath, dirnames, filenames in walk(DB_ROOT)
+        if dirpath.count("/") - DB_ROOT.count("/") == 2
+        and isfile(f"{dirpath}/{__HEAD_FILE}")
+        and time() - getmtime(f"{dirpath}/{__HEAD_FILE}") >= age_in_seconds
     ]
 
 
