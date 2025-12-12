@@ -112,7 +112,7 @@ def register():
         if not response.ok:
             return response.text, response.status_code
         return render_template("register-success.html", **form.data)
-    return render_template("register.html", form=form)
+    return render_template("register.jinja2", form=form)
 
 
 @html_blueprint.route("/badge/<path:url>")
