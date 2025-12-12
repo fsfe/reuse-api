@@ -134,6 +134,11 @@ def getall() -> list[str]:
     return _get_registered_repos(lambda _, __, ___: True)
 
 
+def compliant() -> list[str]:
+    """Returns all the compliant repositories"""
+    return [r for r in getall() if lint_isok(r)]
+
+
 def _not_updated() -> list[str]:
     """Lists the registered repos that have empty database entries."""
     return _get_registered_repos(
