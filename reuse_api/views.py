@@ -37,7 +37,7 @@ json_blueprint = Blueprint("json", __name__)
 
 @html_blueprint.route("/")
 def index() -> str:
-    return render_template("index.jinja2", compliant_repos=len(getall()))
+    return render_template("index.jinja2", compliant_repos=len(db.getall()))
 
 
 @html_blueprint.route("/register", methods=["GET", "POST"])
@@ -157,7 +157,7 @@ def status(url: str) -> dict:
 @html_blueprint.route("/projects/page/<int:page>")
 def projects(page: int = 1) -> str:
     """Show paginated table of compliant repositories"""
-    repos: list[str] = compliant_paged(page)
+    repos: list[str] = db.compliant_paged(page)
     print("repos len", len(repos))
     has_next: bool = len(repos) == PAGE_SIZE  # HACK: will fail if len(repos)%10
     return render_template(
