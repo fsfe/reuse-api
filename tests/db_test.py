@@ -8,6 +8,11 @@ from .conftest import TEST_REPO
 from reuse_api import db
 
 
+def test_name() -> None:
+    url: str = "hosting/user/repo"
+    assert db.name(url) == "user/repo"
+
+
 def test_registration(db_empty) -> None:
     my_repo: str = "beka.ovh/fkobi/emacs-config"
     # test not registered

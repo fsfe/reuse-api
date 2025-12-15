@@ -76,6 +76,11 @@ def spdx(repo: str) -> str:  # pragma: no cover
         return f.read()
 
 
+def name(url: str) -> str:
+    """Cuts out the hosting from the repository url."""
+    return "/".join(url.split("/")[-2:])
+
+
 # registration functions
 def is_registered(repo: str) -> bool:
     return isdir(__repopath(repo))
