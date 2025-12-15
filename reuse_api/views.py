@@ -31,7 +31,7 @@ JSON: Blueprint = Blueprint("json", __name__)
 
 @HTML.get("/")
 def index() -> str:
-    return render_template("index.html", compliant_repos=len(getall()))
+    return render_template("index.html", compliant_repos=len(db.getall()))
 
 
 @HTML.get("/register")
@@ -166,7 +166,7 @@ def status(url: str) -> dict:
 @HTML.get("/projects/page/<int:page>")
 def projects(page: int = 1) -> str:
     """Show paginated table of compliant repositories"""
-    repos: list[str] = compliant_paged(page)
+    repos: list[str] = db.compliant_paged(page)
     has_next: bool = len(repos) == PAGE_SIZE  # HACK: will fail if len(repos)%10
     return render_template(
         "projects.html", compliant_list=repos, pg=page, has_next=has_next
