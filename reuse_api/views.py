@@ -143,7 +143,7 @@ def badge(url: str) -> str:
     result.cache_control.public = False
     result.headers["Expires"] = "Thu, 01 Jan 1970 00:00:00 UTC"
 
-    current_app.logger.debug("Sending badge: %s", row.url)
+    current_app.logger.debug("Sending badge: %s", url)
     return result
 
 
@@ -183,7 +183,7 @@ def info(url: str) -> str:
 def sbom(url: str) -> str:
     """SPDX SBOM in tag:value format"""
     # NOTE: This is a temporary measure to see if this feature is used
-    current_app.logger.info("ASKED FOR SBOM: %s", row.url)
+    current_app.logger.info("ASKED FOR SBOM: %s", url)
 
     if not Repository.is_initialised(url):
         abort(HTTPStatus.NOT_FOUND)
@@ -209,14 +209,14 @@ def status(url: str) -> dict:
     row = schedule_if_new_or_later(url, current_app.scheduler)
     # Return the current entry in the database.
     return {
-        "url": row.url,
+        "url": url,
         "hash": row.hash,
         "status": row.status,
         "lint_code": row.lint_code,
         "lint_output": row.lint_output,
         "spdx_output": row.spdx_output,
         "last_access": (row.last_access.isoformat() if row.last_access else None),
-        "badge": url_for("html.badge", url=row.url, _external=True, _scheme="https"),
+        "badge": url_for("html.badge", url=url, _external=True, _scheme="https"),
     }
 
 
