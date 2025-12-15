@@ -198,11 +198,10 @@ def handle_error(err) -> dict:
 @json_blueprint.route("/status/<path:url>.json")
 def status(url: str) -> dict:
     """Machine-readable information about a repo in JSON format"""
-    row = schedule_if_new_or_later(url, current_app.scheduler)
-
-    if row is None:
+    if not Repository.is_registered(url):
         return {"url": url, "status": "unregistered"}
 
+    row = schedule_if_new_or_later(url, current_app.scheduler)
     # Return the current entry in the database.
     return {
         "url": row.url,
