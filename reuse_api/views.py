@@ -122,11 +122,10 @@ def register() -> str:
 @html_blueprint.route("/badge/<path:url>")
 def badge(url: str) -> str:
     """The SVG badge for a repo"""
+    lint_status: str = "unregistered"
     row = schedule_if_new_or_later(url, current_app.scheduler)
 
-    if row is None:
-        lint_status = "unregistered"
-    else:
+    if row is not None:
         lint_status = row.status
 
     result = send_file(f"badges/{lint_status}.svg", mimetype="image/svg+xml")
