@@ -5,6 +5,8 @@
 
 """Request handlers for all endpoints."""
 
+from http import HTTPStatus
+
 from flask import (
     Blueprint,
     abort,
@@ -151,9 +153,12 @@ def info(url: str) -> str:
 
     # Handle unregistered & uninitialised
     if not Repository.is_registered(url):
-        return render_template("unregistered.jinja2", url=url), 404
+        return render_template("unregistered.jinja2", url=url), HTTPStatus.NOT_FOUND
     if not Repository.is_initialised(url):
-        return render_template("uninitialised.jinja2", url=url), 424
+        return (
+            render_template("uninitialised.jinja2", url=url),
+            HTTPStatus.FAILED_DEPENDENCY,
+        )
 
     # Handle normal records
     row = schedule_if_new_or_later(url, current_app.scheduler)
@@ -182,7 +187,7 @@ def sbom(url: str) -> str:
     current_app.logger.info("ASKED FOR SBOM: %s", row.url)
 
     if row is None:
-        return render_template("unregistered.jinja2", url=url), 404
+        return render_template("unregistered.jinja2", url=url), HTTPStatus.NOT_FOUND
 
     return row.spdx_output
 
@@ -232,7 +237,7 @@ def reset(url) -> str:
 
     # Check for valid admin credentials
     if request.form.get("admin_key") != ADMIN_KEY:
-        abort(401)
+        abort(HTTPStatus.UNAUTHORIZED)
     # Force re-check
     repository = schedule_if_new_or_later(url, current_app.scheduler, force=True)
     # If re-check scheduled and repository actually exists
@@ -249,7 +254,7 @@ def analytics(query) -> dict:
 
     # Check for valid admin credentials
     if request.form.get("admin_key") != ADMIN_KEY:
-        abort(401)
+        abort(HTTPStatus.UNAUTHORIZED)
 
     match query:
         case "all_projects":
