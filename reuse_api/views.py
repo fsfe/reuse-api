@@ -158,23 +158,19 @@ def info(url: str):
     row = schedule_if_new_or_later(url, current_app.scheduler)
     return render_template(
         "info.jinja2",
-        url=row.url,
-        project_name="/".join(row.url.split("/")[-2:]),
+        url=url,
+        project_name="/".join(url.split("/")[-2:]),
         head_hash=row.hash,
         lint_code=row.lint_code,
         lint_output=row.lint_output,
         spdx_output=row.spdx_output,
         last_access=row.last_access.strftime("%d %b %Y %X"),
-        badge_external=url_for(
-            "html.badge", url=row.url, _external=True, _scheme="https"
-        ),
-        badge_internal=url_for("html.badge", url=row.url, _external=False),
-        info_external=url_for(
-            "html.info", url=row.url, _external=True, _scheme="https"
-        ),
-        info_internal=url_for("html.info", url=row.url, _external=False),
-        sbom=url_for("html.sbom", url=row.url, _external=False),
-        json=url_for("json.status", url=row.url, _external=False),
+        badge_external=url_for("html.badge", url=url, _external=True, _scheme="https"),
+        badge_internal=url_for("html.badge", url=url, _external=False),
+        info_external=url_for("html.info", url=url, _external=True, _scheme="https"),
+        info_internal=url_for("html.info", url=url, _external=False),
+        sbom=url_for("html.sbom", url=url, _external=False),
+        json=url_for("json.status", url=url, _external=False),
     )
 
 
