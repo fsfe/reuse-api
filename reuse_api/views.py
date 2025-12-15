@@ -165,11 +165,11 @@ def info(url: str):
         lint_output=row.lint_output,
         spdx_output=row.spdx_output,
         last_access=row.last_access.strftime("%d %b %Y %X"),
-        badge_external=url_for("html.badge", url=url, _external=True, _scheme="https"),
-        badge=url_for("html.badge", url=url, _external=False),
-        info_external=url_for("html.info", url=url, _external=True, _scheme="https"),
         sbom=url_for("html.sbom", url=url, _external=False),
         json=url_for("json.status", url=url, _external=False),
+        badge=url_for("html.badge", url=url, _external=False),
+        badge_external=url_for("html.badge", url=url, _external=True, _scheme="https"),
+        info_external=url_for("html.info", url=url, _external=True, _scheme="https"),
     )
 
 
