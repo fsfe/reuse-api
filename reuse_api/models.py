@@ -44,6 +44,12 @@ class Repository(db.Model):
         return row.last_access is not None
 
     @classmethod
+    def is_compliant(cls, url: str) -> bool:
+        row = cls.query.filter_by(url=url).first()
+
+        return row.status == "compliant"
+
+    @classmethod
     def create(cls, **kwargs):
         """
         Create a new database entry for the url if project is registered
