@@ -74,7 +74,7 @@ def test_all_files_present(db_updated) -> None:
 
 def test_compliance(db_updated) -> None:
     """Assumes that the project itself is compliant"""
-    assert db.lint_isok(TEST_REPO)
+    assert db.is_compliant(TEST_REPO)
     assert db.compliant() == [TEST_REPO]
 
 

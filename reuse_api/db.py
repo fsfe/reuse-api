@@ -56,7 +56,7 @@ def lint_rval(repo: str) -> int:
         return int(f.read())
 
 
-def lint_isok(repo: str) -> bool:
+def is_compliant(repo: str) -> bool:
     if not isfile(_path_rval(repo)):
         return False
 
@@ -148,7 +148,7 @@ def getall() -> list[str]:
 
 def compliant() -> list[str]:
     """Returns all the compliant repositories"""
-    return [r for r in getall() if lint_isok(r)]
+    return [r for r in getall() if is_compliant(r)]
 
 
 def compliant_paged(page: int, page_size: int = PAGE_SIZE) -> list[str]:
