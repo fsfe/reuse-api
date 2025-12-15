@@ -101,6 +101,10 @@ def index():
 def register():
     """Registration form for new projects"""
     form = RegisterForm()
+    # Extract project's url from the request
+    if request.args.get("url"):
+        form.project.data = request.args.get("url")
+
     if form.validate_on_submit():
         params = {"appid": "reuse-api", **form.data}
         params.pop("csrf_token", None)
