@@ -3,61 +3,55 @@
 {% block title %}{{project_name}} | REUSE API{% endblock %}
 
 {% block content %}
-    <h1>REUSE compliance of {{project_name}}</h1>
-  {% if status == "initialising" %}
-    <p>
-      The initial check for REUSE compliance has not yet been finished.
-      Please refresh the page in a few seconds.
-    </p>
-  {% else %}
-    <p class="lead">
-      {% if lint_code == 0 %}
-        Congratulations, <em>{{url}}</em> is REUSE compliant! This
-        project adopts <a href="https://reuse.software/">the
-        recommendations</a> to make software licensing easy for humans
-        and machines alike.
-      {% else %}
-        Unfortunately, <em>{{url}}</em> is <strong>not</strong> REUSE
-        compliant and does not fully adopt <a
-        href="https://reuse.software/">the recommendations</a> to make
-        software licensing easy for humans and machines alike. Have a
-        look at <a href="https://reuse.software/tutorial">our
-        tutorial</a> to learn about the three simple steps to become
-        REUSE compliant.
-      {% endif %}
-    </p>
+  <h1>REUSE compliance of {{project_name}}</h1>
 
-    <h2>Badge</h2>
-    <p>
-      <img src="{{badge_internal}}"/>
-    </p>
-    <p>
-      To add the badge to your project's <code>README.md</code> file,
-      use the following snippet:
-    </p>
-    <pre>[![REUSE status]({{badge_external}})]({{info_external}})</pre>
+  <p class="lead">
+    {% if lint_code == 0 %}
+      Congratulations, <em>{{url}}</em> is REUSE compliant! This
+      project adopts <a href="https://reuse.software/">the
+      recommendations</a> to make software licensing easy for humans
+      and machines alike.
+    {% else %}
+      Unfortunately, <em>{{url}}</em> is <strong>not</strong> REUSE
+      compliant and does not fully adopt <a
+      href="https://reuse.software/">the recommendations</a> to make
+      software licensing easy for humans and machines alike. Have a
+      look at <a href="https://reuse.software/tutorial">our
+      tutorial</a> to learn about the three simple steps to become
+      REUSE compliant.
+    {% endif %}
+  </p>
 
-    <h2>Machine-readable information</h2>
-    <p>
-      The API provides machine-readable artifacts for automatic analysis.
-    </p>
-    <ul>
-      <li>
-        All information about the latest compliance check can also be
-        accessed via a <a href="{{json}}">machine-parsable JSON file</a>.
-      </li>
-      <li>
-        You can gather the automatically generated <a href="{{sbom}}">SPDX
-        SBOM</a> in Tag:Value format, based on the <code>reuse spdx</code>
-        command.
-      </li>
-    </ul>
+  <h2>Badge</h2>
+  <p>
+    <img src="{{badge_internal}}"/>
+  </p>
+  <p>
+    To add the badge to your project's <code>README.md</code> file,
+    use the following snippet:
+  </p>
+  <pre>[![REUSE status]({{badge_external}})]({{info_external}})</pre>
 
-    <h2>Last lint output</h2>
-    <p>
-      Commit <code>{{head_hash}}</code> was checked on {{last_access}} UTC
-      with the following result:
-    </p>
-    <pre class="pre-scrollable">{{lint_output}}</pre>
-  {% endif %}
+  <h2>Machine-readable information</h2>
+  <p>
+    The API provides machine-readable artifacts for automatic analysis.
+  </p>
+  <ul>
+    <li>
+      All information about the latest compliance check can also be
+      accessed via a <a href="{{json}}">machine-parsable JSON file</a>.
+    </li>
+    <li>
+      You can gather the automatically generated <a href="{{sbom}}">SPDX
+      SBOM</a> in Tag:Value format, based on the <code>reuse spdx</code>
+      command.
+    </li>
+  </ul>
+
+  <h2>Last lint output</h2>
+  <p>
+    Commit <code>{{head_hash}}</code> was checked on {{last_access}} UTC
+    with the following result:
+  </p>
+  <pre class="pre-scrollable">{{lint_output}}</pre>
 {% endblock %}

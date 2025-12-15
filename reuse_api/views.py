@@ -148,23 +148,23 @@ def badge(url: str):
 def info(url: str):
     """General info page for repo"""
 
+    # Handle unregistered & uninitialised
     if not Repository.is_registered(url):
         return render_template("unregistered.jinja2", url=url), 404
+    if not Repository.is_initialised(url):
+        return render_template("uninitialised.jinja2", url=url), 424
 
+    # Handle normal records
     row = schedule_if_new_or_later(url, current_app.scheduler)
-
     return render_template(
         "info.jinja2",
         url=row.url,
         project_name="/".join(row.url.split("/")[-2:]),
         head_hash=row.hash,
-        status=row.status,
         lint_code=row.lint_code,
         lint_output=row.lint_output,
         spdx_output=row.spdx_output,
-        last_access=(
-            row.last_access.strftime("%d %b %Y %X") if row.last_access else None
-        ),
+        last_access=row.last_access.strftime("%d %b %Y %X"),
         badge_external=url_for(
             "html.badge", url=row.url, _external=True, _scheme="https"
         ),
