@@ -50,6 +50,10 @@ def test_getall(db_empty) -> None:
     assert db.getall() == [TEST_REPO]
 
 
+def test_is_initialised(db_empty) -> None:
+    assert not db.is_initialised(TEST_REPO)
+
+
 def test_outdated(db_registered) -> None:
     assert not db._outdated()  # Not registered so not outdated
     db.update(TEST_REPO)

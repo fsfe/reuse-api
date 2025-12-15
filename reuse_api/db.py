@@ -95,6 +95,12 @@ def check_date(repo: str) -> float:  # pragma: no cover
     return getmtime(_path_head(repo))
 
 
+# wrapper for check_date
+def is_initialised(repo: str) -> bool:
+    "Returns True if HEAD exists"
+    return check_date(repo) != 0
+
+
 def register(repo: str) -> bool:
     """Register a repository. Returns False if project is already registered."""
     if is_registered(repo):
