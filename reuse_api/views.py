@@ -182,13 +182,13 @@ def info(url: str) -> str:
 @html_blueprint.route("/sbom/<path:url>.spdx")
 def sbom(url: str) -> str:
     """SPDX SBOM in tag:value format"""
-    row = schedule_if_new_or_later(url, current_app.scheduler)
     # NOTE: This is a temporary measure to see if this feature is used
     current_app.logger.info("ASKED FOR SBOM: %s", row.url)
 
-    if row is None:
-        return render_template("unregistered.jinja2", url=url), HTTPStatus.NOT_FOUND
+    if not Repository.is_initialised(url):
+        abort(HTTPStatus.NOT_FOUND)
 
+    row = schedule_if_new_or_later(url, current_app.scheduler)
     return row.spdx_output
 
 
