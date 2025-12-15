@@ -167,7 +167,7 @@ def info(url: str) -> str:
         url=url,
         project_name="/".join(url.split("/")[-2:]),
         head_hash=row.hash,
-        lint_code=row.lint_code,
+        compliant=Repository.is_compliant(url),
         lint_output=row.lint_output,
         spdx_output=row.spdx_output,
         last_access=row.last_access.strftime("%d %b %Y %X"),
