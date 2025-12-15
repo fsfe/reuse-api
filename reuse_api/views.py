@@ -3,6 +3,7 @@
 """Request handlers for all endpoints."""
 
 from http import HTTPStatus
+from datetime import datetime
 
 from flask import (
     Blueprint,
@@ -90,27 +91,27 @@ def info(url: str) -> tuple[str, HTTPStatus]:
     """General info page for repo"""
 
     # Handle unregistered & uninitialised
-    if not Repository.is_registered(url):
+    if not db.is_registered(url):
         return render_template("unregistered.html", url=url), HTTPStatus.NOT_FOUND
 
-    row = current_app.scheduler.schedule(url)
-
-    if not Repository.is_initialised(url):
+    if not db.is_initialised(url):
+        # WARN: The original scheduled here, I have removed it
         return (
             render_template("uninitialised.html", project_name=db.name(url)),
             HTTPStatus.FAILED_DEPENDENCY,
         )
 
+    timestr: str = datetime.fromtimestamp(db.check_date(url)).strftime("%d %b %Y %X")
     # Handle normal records
     return (
         render_template(
             "info.html",
             url=url,
             project_name=db.name(url),
-            head_hash=row.hash,
-            compliant=Repository.is_compliant(url),
-            lint_output=row.lint_output,
-            last_access=row.last_access.strftime("%d %b %Y %X"),
+            head_hash=db.head(url),
+            compliant=db.is_compliant(url),
+            lint_output=db.lint(url),
+            last_access=timestr,
             sbom=url_for("html.sbom", url=url, _external=False),
             json=url_for("json.status", url=url, _external=False),
             badge=url_for("html.badge", url=url, _external=False),
