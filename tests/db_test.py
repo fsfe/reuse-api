@@ -50,6 +50,10 @@ def test_get_all(db_empty) -> None:
     assert db.getall() == [TEST_REPO]
 
 
+def test_is_initialised(db_empty) -> None:
+    assert not db.is_initialised(TEST_REPO)
+
+
 def test_not_updated(db_registered) -> None:
     assert db._not_updated() == [TEST_REPO]
     db.__lock(TEST_REPO)
