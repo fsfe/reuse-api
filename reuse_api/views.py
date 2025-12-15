@@ -157,7 +157,7 @@ def info(url: str):
         "info.jinja2",
         url=row.url,
         project_name="/".join(row.url.split("/")[-2:]),
-        hash=row.hash,
+        head_hash=row.hash,
         status=row.status,
         lint_code=row.lint_code,
         lint_output=row.lint_output,
