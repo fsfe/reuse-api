@@ -83,7 +83,8 @@ def is_registered(repo: str) -> bool:
 
 # wrapper for mtime
 def check_date(repo: str) -> float:  # pragma: no cover
-    """Returns the checked date if the last check"""
+    """Returns the checked date if the last check.
+    Will return 0 if the repository is not initialised."""
     if not isfile(_path_head(repo)):
         return 0
     return getmtime(_path_head(repo))
