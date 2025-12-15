@@ -22,6 +22,8 @@ from werkzeug.exceptions import HTTPException
 from wtforms import BooleanField, StringField, ValidationError
 from wtforms.validators import Email, InputRequired
 
+from reuse_api import models as db
+
 from .config import ADMIN_KEY
 from .models import Repository
 from .scheduler import (
@@ -156,7 +158,7 @@ def info(url: str) -> str:
         return render_template("unregistered.jinja2", url=url), HTTPStatus.NOT_FOUND
     if not Repository.is_initialised(url):
         return (
-            render_template("uninitialised.jinja2", url=url),
+            render_template("uninitialised.jinja2", project_name=db.name(url)),
             HTTPStatus.FAILED_DEPENDENCY,
         )
 
@@ -165,7 +167,7 @@ def info(url: str) -> str:
     return render_template(
         "info.jinja2",
         url=url,
-        project_name="/".join(url.split("/")[-2:]),
+        project_name=db.name(url),
         head_hash=row.hash,
         compliant=Repository.is_compliant(url),
         lint_output=row.lint_output,

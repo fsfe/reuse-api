@@ -15,6 +15,10 @@ from .config import NB_REPOSITORY_BY_PAGINATION
 db = SQLAlchemy()
 
 
+def name(url: str) -> str:
+    return "/".join(url.split("/")[-2:])
+
+
 class Repository(db.Model):
     """Repository database class"""
 
