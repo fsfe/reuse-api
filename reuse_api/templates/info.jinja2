@@ -4,12 +4,12 @@
 
 {% block content %}
     <h1>REUSE compliance of {{project_name}}</h1>
-    {% if status == "initialising" %}
+  {% if status == "initialising" %}
     <p>
       The initial check for REUSE compliance has not yet been finished.
       Please refresh the page in a few seconds.
     </p>
-    {% else %}
+  {% else %}
     <p class="lead">
       {% if lint_code == 0 %}
         Congratulations, <em>{{url}}</em> is REUSE compliant! This
@@ -59,6 +59,5 @@
       with the following result:
     </p>
     <pre class="pre-scrollable">{{lint_output}}</pre>
-    {% endif %}
-
+  {% endif %}
 {% endblock %}
