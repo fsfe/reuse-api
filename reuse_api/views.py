@@ -147,10 +147,11 @@ def badge(url: str):
 @html_blueprint.route("/info/<path:url>")
 def info(url: str):
     """General info page for repo"""
-    row = schedule_if_new_or_later(url, current_app.scheduler)
 
-    if row is None:
+    if not Repository.is_registered(url):
         return render_template("unregistered.jinja2", url=url), 404
+
+    row = schedule_if_new_or_later(url, current_app.scheduler)
 
     return render_template(
         "info.jinja2",
