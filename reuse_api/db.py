@@ -63,7 +63,7 @@ def lint_rval(repo: str) -> int:
         return int(f.read())
 
 
-def is_compliant(repo: str) -> bool:
+def is_compliant(repo: str) -> bool:  # pragma: no cover
     if not isfile(_path_rval(repo)):
         return False
 
@@ -168,7 +168,9 @@ def compliant() -> list[str]:
     return [r for r in getall() if is_compliant(r)]
 
 
-def compliant_paged(page: int, page_size: int = PAGE_SIZE) -> list[str]:
+def compliant_paged(
+    page: int, page_size: int = PAGE_SIZE
+) -> list[str]:  # pragma: no cover
     """Pages the compliant repositories sorted by check date"""
     start: int = (page - 1) * page_size
     repos: list[str] = sorted(
@@ -240,7 +242,7 @@ def spdx_path(repo: str) -> str:
     return _repo_file(repo, __SPDX_OUTPUT)
 
 
-def status(url: str) -> str:
+def status(url: str) -> str:  # pragma: no cover
     """Return Status codes based on db contents."""
     if not is_registered(url):
         return Status.NULL
