@@ -50,6 +50,7 @@ def register_post() -> tuple[str, HTTPStatus]:
     form = RegisterForm()
 
     if form.validate_on_submit():
+        url: str | None = form.project.data
         if FORMS_DISABLE:
             db.register(form.project.data)
         else:  # normal operation
@@ -63,7 +64,7 @@ def register_post() -> tuple[str, HTTPStatus]:
             if not response.ok:
                 return response.text, HTTPStatus(response.status_code)
         return (
-            render_template("register-success.html", project=form.project.data),
+            render_template("register-success.html", project=url),
             HTTPStatus.ACCEPTED,
         )
     return render_template("register.html", form=form), HTTPStatus.OK
