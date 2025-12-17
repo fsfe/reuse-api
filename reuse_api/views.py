@@ -125,7 +125,7 @@ def info(url: str) -> tuple[str, HTTPStatus]:
 
 
 @HTML.get("/sbom/<path:url>.spdx")
-def sbom(url: str) -> str:
+def sbom(url: str) -> Response:
     """SPDX SBOM in tag:value format"""
     # NOTE: This is a temporary measure to see if this feature is used
     current_app.logger.info("ASKED FOR SBOM: %s", url)
@@ -134,7 +134,7 @@ def sbom(url: str) -> str:
         return
 
     # WARN: The original scheduled here, I have removed it
-    return db.spdx(url)
+    return send_file(db.spdx_path(url))
 
 
 # Return error messages in JSON format
