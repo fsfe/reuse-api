@@ -31,7 +31,7 @@ def create_app():
 
     app.logger.setLevel(logging.DEBUG)
 
-    app.logger.info("Config: FORMS_FILE: %s", path.abspath(config.FORMS_FILE))
+    app.logger.debug("Running config: %s", app.config)
 
     environ["GIT_TERMINAL_PROMPT"] = "0"
 
