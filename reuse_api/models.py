@@ -9,7 +9,7 @@ from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import orm
 
-from .config import NB_REPOSITORY_BY_PAGINATION
+from .config import FORMS_FILE, NB_REPOSITORY_BY_PAGINATION
 
 
 db = SQLAlchemy()
@@ -35,7 +35,7 @@ class Repository(db.Model):
         """
         Ensure the user is registered and has validated their email from the `forms` app
         """
-        with open(current_app.config["FORMS_FILE"]) as f:
+        with open(FORMS_FILE) as f:
             for project in json.load(f):
                 if project["include_vars"]["project"].lower() == url.lower():
                     return True
