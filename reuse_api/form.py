@@ -1,12 +1,29 @@
 """RegisterForm class and it's filters & validators."""
 
+import subprocess
+
 from flask import url_for
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, ValidationError
 from wtforms.validators import Email, InputRequired
 
-from .models import Repository
-from .scheduler import InvalidRepositoryError, determine_protocol
+from reuse_api.db import is_registered
+
+
+def is_reachable(url: str) -> bool:
+    """Check if the repository is reachable via HTTPS in 5 seconds"""
+    protocol = "https"
+    try:
+        result = subprocess.run(
+            ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
+            stdout=subprocess.PIPE,
+            timeout=5,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return False
+
+    return result.returncode == 0
 
 
 def sanitize_url(url: str) -> str:
