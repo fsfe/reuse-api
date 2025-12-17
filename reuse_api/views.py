@@ -187,24 +187,3 @@ def reset(url: str) -> str:
 
     # Fall-back: repository does not exist and isn't registered
     return f"Repository not registered: {url}"
-
-
-@JSON.post("/admin/analytics/<string:query>.json")
-def analytics(query) -> dict:
-    """Show certain analytics, only accessible with admin key"""
-
-    # Check for valid admin credentials
-    if request.form.get("admin_key") != ADMIN_KEY:
-        abort(HTTPStatus.UNAUTHORIZED)
-
-    match query:
-        case "all_projects":
-            return Repository.all_projects()
-
-        case "projects_by_status":
-            if repo_status := request.form.get("status"):
-                return Repository.projects_by_status(repo_status)
-            return {"error": "Status parameter is missing"}
-
-        case _:
-            return {"error": "Invalid analytics URL"}
