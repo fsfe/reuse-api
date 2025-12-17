@@ -234,7 +234,7 @@ def projects(page: int = 1) -> str:
 # Only accessible by providing the valid admin key via POST request
 # ------------------------------------------------------------------------------
 @html_blueprint.route("/admin/reset/<path:url>", methods=["POST"])
-def reset(url) -> str:
+def reset(url: str) -> str:
     """Unset the hash of a repository and trigger a new check"""
 
     # Check for valid admin credentials
