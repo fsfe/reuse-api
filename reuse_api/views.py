@@ -22,6 +22,7 @@ from werkzeug.exceptions import HTTPException
 
 from reuse_api import db
 from reuse_api.forms import RegisterForm
+from reuse_api.adapter import mock_add
 
 from .config import ADMIN_KEY, FORMS_URL
 from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
@@ -52,7 +53,11 @@ def register() -> str:
     if form.validate_on_submit():
         url: str = form.project.data
         if FORMS_DISABLE:
+            current_app.logger.warning("Registered without forms: %s", url)
             db.register(form.project.data)
+        elif current_app.config.get("DEBUG", False):
+            current_app.logger.warning("Registered with mocked forms: %s", url)
+            mock_add(form.project.data)
         else:  # normal operation
             params = {"appid": "reuse-api", **form.data}
             params.pop("csrf_token", None)
