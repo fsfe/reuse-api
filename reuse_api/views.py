@@ -119,11 +119,10 @@ def sbom(url: str) -> str:
     # NOTE: This is a temporary measure to see if this feature is used
     current_app.logger.info("ASKED FOR SBOM: %s", url)
 
-    if not Repository.is_initialised(url):
-        abort(HTTPStatus.NOT_FOUND)
+    if not db.is_initialised(url):
+        return
 
-    row = schedule_if_new_or_later(url, current_app.scheduler)
-    return row.spdx_output
+    return db.spdx(url)
 
 
 # Return error messages in JSON format
