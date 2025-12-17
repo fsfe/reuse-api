@@ -122,7 +122,7 @@ def sbom(url: str) -> str:
     if not db.is_initialised(url):
         return
 
-    return db.spdx(url)
+    return send_file(db.spdx_path(url))
 
 
 # Return error messages in JSON format
