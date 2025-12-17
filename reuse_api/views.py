@@ -22,7 +22,7 @@ from werkzeug.exceptions import HTTPException
 from reuse_api import models as db
 from reuse_api.forms import RegisterForm
 
-from .config import ADMIN_KEY
+from .config import ADMIN_KEY, FORMS_URL
 from .models import Repository
 from .scheduler import schedule_if_new_or_later
 
@@ -51,7 +51,7 @@ def register() -> str:
         params = {"appid": "reuse-api", **form.data}
         params.pop("csrf_token", None)
         response = post(
-            url=current_app.config["FORMS_URL"],
+            url=FORMS_URL,
             data=params,
             allow_redirects=False,
         )
