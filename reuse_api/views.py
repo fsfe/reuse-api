@@ -25,7 +25,6 @@ from reuse_api.forms import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
 from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
-from .models import Repository
 
 
 # Blueprint for all endpoints delivering human-readable HTML/SVG content
