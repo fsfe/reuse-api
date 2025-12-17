@@ -109,7 +109,6 @@ def info(url: str) -> str:
         head_hash=row.hash,
         compliant=Repository.is_compliant(url),
         lint_output=row.lint_output,
-        spdx_output=row.spdx_output,
         last_access=row.last_access.strftime("%d %b %Y %X"),
         sbom=url_for("html.sbom", url=url, _external=False),
         json=url_for("json.status", url=url, _external=False),
