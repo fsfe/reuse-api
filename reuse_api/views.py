@@ -149,7 +149,6 @@ def status(url: str) -> dict:
     row = schedule_if_new_or_later(url, current_app.scheduler)
     # Return the current entry in the database.
     return {
-        "url": url,
         "hash": row.hash,
         "status": row.status,
         "lint_code": row.lint_code,
