@@ -21,6 +21,7 @@ from reuse_api.form import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
 from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
+from .config import FORMS_DISABLE
 
 
 HTML: Blueprint = Blueprint("html", __name__)
@@ -49,15 +50,18 @@ def register_post() -> tuple[str, HTTPStatus]:
     form = RegisterForm()
 
     if form.validate_on_submit():
-        params = {"appid": "reuse-api", **form.data}
-        params.pop("csrf_token", None)
-        response = post(
-            url=FORMS_URL,
-            data=params,
-            allow_redirects=False,
-        )
-        if not response.ok:
-            return response.text, HTTPStatus(response.status_code)
+        if FORMS_DISABLE:
+            db.register(form.project.data)
+        else:  # normal operation
+            params = {"appid": "reuse-api", **form.data}
+            params.pop("csrf_token", None)
+            response = post(
+                url=FORMS_URL,
+                data=params,
+                allow_redirects=False,
+            )
+            if not response.ok:
+                return response.text, HTTPStatus(response.status_code)
         return (
             render_template("register-success.html", project=form.project.data),
             HTTPStatus.ACCEPTED,

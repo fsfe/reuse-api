@@ -22,6 +22,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 # Configuration for the form server used for registration
 FORMS_URL: str = getenv("FORMS_URL", default="https://forms.fsfe.org/email")
 FORMS_FILE: str = getenv("FORMS_FILE", default="repos.json")
+FORMS_DISABLE: bool = bool(getenv("FORMS_DISABLE", default="0"))
 
 # SSH configurations
 SSH_KEY_PATH: str = getenv("SSH_KEY_PATH", default="~/.ssh/reuse_ed25519")
