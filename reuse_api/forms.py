@@ -2,13 +2,30 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import subprocess
+
 from flask import url_for
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, ValidationError
 from wtforms.validators import Email, InputRequired
 
-from .models import Repository
-from .scheduler import InvalidRepositoryError, determine_protocol
+from reuse_api.db import is_registered
+
+
+def is_reachable(url: str) -> bool:
+    """Check if the repository is reachable via HTTPS in 5 seconds"""
+    protocol = "https"
+    try:
+        result = subprocess.run(
+            ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
+            stdout=subprocess.PIPE,
+            timeout=5,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return False
+
+    return result.returncode == 0
 
 
 class RegisterForm(FlaskForm):
@@ -27,12 +44,10 @@ class RegisterForm(FlaskForm):
     @staticmethod  # noqa as form is required
     def __validate_url(form, url_field) -> None:  # noqa: ARG004
         """Check if URL is an unregistered git repository"""
-        try:
-            determine_protocol(url_field.data)
-        except InvalidRepositoryError:
-            raise ValidationError("Not a Git repository")
+        if not is_reachable(url_field.data):
+            raise ValidationError("Repository unreachable")
 
-        if Repository.is_registered(url_field.data):
+        if is_registered(url_field.data):
             info_page: str = url_for("html.info", url=url_field.data, _external=False)
             info_page_url: str = f'<a href="{info_page}">here</a>'
             raise ValidationError(
