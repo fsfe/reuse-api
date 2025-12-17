@@ -4,6 +4,7 @@
 
 import json
 from datetime import datetime
+from enum import StrEnum
 
 from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
@@ -17,6 +18,25 @@ db = SQLAlchemy()
 
 def name(url: str) -> str:
     return "/".join(url.split("/")[-2:])
+
+
+class Status(StrEnum):
+    """Named string enum to ensure string consistency."""
+
+    NULL = "unregistered"
+    EMPTY = "uninitialised"
+    BAD = "non-compliant"
+    OK = "compliant"
+
+
+def status(url: str) -> str:
+    if not Repository.is_registered(url):
+        return Status.NULL
+    if not Repository.is_initialised(url):
+        return Status.EMPTY
+    if not Repository.is_compliant(url):
+        return Status.BAD
+    return Status.OK
 
 
 class Repository(db.Model):
@@ -138,13 +158,3 @@ class Repository(db.Model):
         self.spdx_output = spdx_output
         self.last_access = datetime.utcnow()
         db.session.commit()
-
-
-def status(url: str) -> str:
-    if not Repository.is_registered(url):
-        return "unregistered"
-    if not Repository.is_initialised(url):
-        return "uninitialised"
-    if not Repository.is_compliant(url):
-        return "non-compliant"
-    return "compliant"
