@@ -77,8 +77,8 @@ def test_check_date(db_updated) -> None:
 def test_all_files_present(db_updated) -> None:
     assert isfile(db._path_rval(TEST_REPO))
     assert isfile(db._path_lint(TEST_REPO))
-    assert isfile(db._path_spdx(TEST_REPO))
     assert isfile(db._path_head(TEST_REPO))
+    assert isfile(db.spdx_path(TEST_REPO))
 
 
 def test_compliance(db_updated) -> None:

@@ -39,10 +39,6 @@ def _path_lint(repo: str) -> str:
     return _repo_file(repo, __LINT_OUTPUT)
 
 
-def _path_spdx(repo: str) -> str:
-    return _repo_file(repo, __SPDX_OUTPUT)
-
-
 def _path_head(repo: str) -> str:
     return _repo_file(repo, __HEAD_FILE)
 
@@ -67,12 +63,6 @@ def is_compliant(repo: str) -> bool:
 def lint(repo: str) -> str:  # pragma: no cover
     """Returns the `reuse lint` output"""
     with open(_path_lint(repo)) as f:
-        return f.read()
-
-
-def spdx(repo: str) -> str:  # pragma: no cover
-    """Returns the `reuse spdx` output"""
-    with open(_path_spdx(repo)) as f:
         return f.read()
 
 
@@ -231,3 +221,10 @@ def drop(really: bool = False) -> None:
         return
     rmtree(DB_ROOT)
     mkdir(DB_ROOT)
+
+
+# Frontend functions
+def spdx_path(repo: str) -> str:
+    """Get the path of the SPDX file.
+    Made to be used by flask.send_file."""
+    return _repo_file(repo, __SPDX_OUTPUT)
