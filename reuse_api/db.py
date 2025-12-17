@@ -218,6 +218,14 @@ def update(repo: str) -> int:
     return proc.returncode
 
 
+def reset(repo: str) -> int:  # pragma: no cover
+    """Convinience function that resets the database state
+    of a repository and updates it again."""
+    unregister(repo)
+    register(repo)
+    return update(repo)
+
+
 def drop(really: bool = False) -> None:
     if not really:
         return
