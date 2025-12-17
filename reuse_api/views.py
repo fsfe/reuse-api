@@ -16,7 +16,7 @@ from flask import (
 from requests import post
 from werkzeug.exceptions import HTTPException
 
-from reuse_api import models as db
+from reuse_api import db
 from reuse_api.form import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
