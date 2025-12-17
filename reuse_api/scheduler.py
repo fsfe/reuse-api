@@ -13,6 +13,8 @@ from typing import NamedTuple
 
 from flask import abort, current_app
 
+from reuse_api import models as db
+
 from .config import (
     NB_RUNNER,
     REUSE_API,
@@ -48,7 +50,7 @@ class Task(NamedTuple):
         Repository.find(self.url).update(
             url=self.url,
             hash=self.hash,
-            status=("compliant" if output["exit_code"] == 0 else "non-compliant"),
+            status=(db.Status.OK if output["exit_code"] == 0 else db.Status.BAD),
             lint_code=output["exit_code"],
             lint_output=output["lint_output"],
             spdx_output=output["spdx_output"],

@@ -136,7 +136,7 @@ def handle_error(err) -> dict:
 def status(url: str) -> dict:
     """Machine-readable information about a repo in JSON format"""
     if not Repository.is_registered(url):
-        return {"url": url, "status": "unregistered"}
+        return {"url": url, "status": db.Status.NULL}
 
     row = schedule_if_new_or_later(url, current_app.scheduler)
     # Return the current entry in the database.

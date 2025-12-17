@@ -44,7 +44,7 @@ class Repository(db.Model):
 
     url: str = db.Column(db.String, primary_key=True)
     hash: str = db.Column(db.String(40))
-    status: str = db.Column(db.String(13), default="initialising")
+    status: str = db.Column(db.String(13), default=Status.EMPTY)
     lint_code: int = db.Column(db.SmallInteger)
     lint_output: str = db.Column(db.Text)
     spdx_output: str = db.Column(db.Text)
@@ -71,7 +71,7 @@ class Repository(db.Model):
     def is_compliant(cls, url: str) -> bool:
         row = cls.query.filter_by(url=url).first()
 
-        return row.status == "compliant"
+        return row.status == Status.OK
 
     @classmethod
     def create(cls, **kwargs):
@@ -109,7 +109,7 @@ class Repository(db.Model):
         """
         return (
             cls.query.order_by(cls.last_access.desc())
-            .filter(cls.status == "compliant")
+            .filter(cls.status == Status.OK)
             .options(orm.load_only(cls.url))
             .paginate(page=page, per_page=NB_REPOSITORY_BY_PAGINATION)
         )
