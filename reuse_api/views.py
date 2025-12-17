@@ -148,16 +148,16 @@ def handle_error(err: HTTPException) -> tuple[dict, HTTPStatus]:
 @JSON.get("/status/<path:url>.json")
 def status(url: str) -> dict:
     """Machine-readable information about a repo in JSON format"""
-    if not Repository.is_registered(url):
+    if not db.is_registered(url):
         abort(HTTPStatus.NOT_FOUND)
 
-    row = current_app.scheduler.schedule(url)
-    # Return the current entry in the database.
+    # WARN: The original scheduled here, I have removed it
+    timestr: str = datetime.fromtimestamp(db.check_date(url)).isoformat()
     return {
-        "hash": row.hash,
-        "status": row.status,
-        "lint_code": row.lint_code,
-        "last_access": (row.last_access.isoformat() if row.last_access else None),
+        "hash": db.head(url),
+        "status": db.status(url),  # see https://git.fsfe.org/reuse/api/issues/141
+        "lint_code": db.lint_rval(url),
+        "last_access": timestr,
     }
 
 
