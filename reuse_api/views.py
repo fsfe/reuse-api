@@ -21,7 +21,6 @@ from reuse_api.form import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
 from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
-from .models import Repository
 
 
 HTML: Blueprint = Blueprint("html", __name__)
