@@ -146,7 +146,6 @@ def status(url: str) -> dict:
     row = current_app.scheduler.schedule(url)
     # Return the current entry in the database.
     return {
-        "url": url,
         "hash": row.hash,
         "status": row.status,
         "lint_code": row.lint_code,
