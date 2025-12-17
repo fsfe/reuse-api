@@ -27,8 +27,9 @@ from reuse_api.db import is_registered, register
 
 from .config import FORMS_FILE
 
-from json import loads
+from json import dump, loads
 from os import rename
+from os.path import isfile
 
 
 # no-cover as it's just stdlib functions
@@ -61,3 +62,34 @@ def move_registrations() -> list[str]:  # pragma: no cover
     repos: list[str] = __contents_to_strings(__move_and_read())
     __register_repos(repos)
     return repos
+
+
+def mock_add(url: str, forms_file: str = FORMS_FILE) -> None:
+    """Mock Forms adding an entry to the file"""  # the file is a list of JSONs
+
+    # if file is not present, create an empty one
+    if not isfile(forms_file):
+        with open(forms_file, "w") as f:
+            f.write("[]")
+
+    # Step 1: Lock the file
+    with open(forms_file, "r+") as f:
+        # Step 2: Read the contents to a list of dicts
+        contents: str = f.read()
+        entries: list[dict] = loads(contents) if contents else []
+
+        # Step 3: Append new entry to the list
+        new_entry: dict = {
+            "timestamp": 0,
+            "include_vars": {
+                "appid": "reuse-api",
+                "project": url,
+            },
+        }
+        entries.append(new_entry)
+
+        # zero the file
+        f.seek(0)
+        f.truncate()
+        # write the new contents
+        dump(entries, f)
