@@ -1,6 +1,7 @@
 """This file hosts the functions responsible managing the filesystem database."""
 
 from collections.abc import Callable
+from enum import StrEnum
 from os import makedirs, mkdir, remove, walk
 from os.path import exists, getmtime, isdir, isfile, join, relpath
 from shutil import rmtree
@@ -9,6 +10,15 @@ from time import time
 
 from .config import REUSE_DB_PATH as DB_ROOT
 from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
+
+
+class Status(StrEnum):
+    """Named string enum to ensure string consistency."""
+
+    NULL = "unregistered"
+    EMPTY = "uninitialised"
+    BAD = "non-compliant"
+    OK = "compliant"
 
 
 # filenames
@@ -228,3 +238,14 @@ def spdx_path(repo: str) -> str:
     """Get the path of the SPDX file.
     Made to be used by flask.send_file."""
     return _repo_file(repo, __SPDX_OUTPUT)
+
+
+def status(url: str) -> str:
+    """Return Status codes based on db contents."""
+    if not is_registered(url):
+        return Status.NULL
+    if not is_initialised(url):
+        return Status.EMPTY
+    if not is_compliant(url):
+        return Status.BAD
+    return Status.OK
