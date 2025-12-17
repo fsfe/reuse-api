@@ -49,6 +49,7 @@ def register() -> str:
         form.project.data = request.args.get("url")
 
     if form.validate_on_submit():
+        url: str = form.project.data
         if FORMS_DISABLE:
             db.register(form.project.data)
         else:  # normal operation
@@ -61,7 +62,7 @@ def register() -> str:
             )
             if not response.ok:
                 return response.text, response.status_code
-        return render_template("register-success.jinja2", project=form.project.data)
+        return render_template("register-success.jinja2", project=url)
     return render_template("register.jinja2", form=form)
 
 
