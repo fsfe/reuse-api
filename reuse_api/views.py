@@ -65,14 +65,7 @@ def register() -> str:
 def badge(url: str) -> str:
     """The SVG badge for a repo"""
 
-    def get_status() -> str:
-        if not Repository.is_registered(url):
-            return "unregistered"
-        if not Repository.is_initialised(url):
-            return "uninitialised"
-        return "compliant" if Repository.is_compliant(url) else "non-compliant"
-
-    result = send_file(f"badges/{get_status()}.svg", mimetype="image/svg+xml")
+    result = send_file(f"badges/{db.status(url)}.svg", mimetype="image/svg+xml")
 
     # Disable caching for badge files
     result.cache_control.max_age = 0

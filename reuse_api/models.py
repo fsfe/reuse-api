@@ -138,3 +138,13 @@ class Repository(db.Model):
         self.spdx_output = spdx_output
         self.last_access = datetime.utcnow()
         db.session.commit()
+
+
+def status(url: str) -> str:
+    if not Repository.is_registered(url):
+        return "unregistered"
+    if not Repository.is_initialised(url):
+        return "uninitialised"
+    if not Repository.is_compliant(url):
+        return "non-compliant"
+    return "compliant"
