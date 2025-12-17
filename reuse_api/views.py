@@ -137,19 +137,19 @@ def handle_error(err) -> dict:
 @json_blueprint.route("/status/<path:url>.json")
 def status(url: str) -> dict:
     """Machine-readable information about a repo in JSON format"""
-    if not Repository.is_registered(url):
+    if not db.is_registered(url):
         return {"url": url, "status": db.Status.NULL}
 
-    row = current_app.scheduler.schedule(url)
-    # Return the current entry in the database.
+    # WARN: The original scheduled here, I have removed it
+    timestr: str = datetime.fromtimestamp(db.check_date(url)).isoformat()
     return {
         "url": url,
-        "hash": row.hash,
-        "status": row.status,
-        "lint_code": row.lint_code,
-        "lint_output": row.lint_output,
-        "spdx_output": row.spdx_output,
-        "last_access": (row.last_access.isoformat() if row.last_access else None),
+        "hash": db.head(url),
+        "status": db.status(url),  # see https://git.fsfe.org/reuse/api/issues/141
+        "lint_code": db.lint_rval(url),
+        "last_access": timestr,
+        "lint_output": "https://git.fsfe.org/reuse/api/pulls/140",  # FIXME
+        "spdx_output": "https://git.fsfe.org/reuse/api/pulls/140",  # FIXME
         "badge": url_for("html.badge", url=url, _external=True, _scheme="https"),
     }
 
