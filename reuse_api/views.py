@@ -128,7 +128,7 @@ def sbom(url: str) -> str:
         return
 
     # WARN: The original scheduled here, I have removed it
-    return db.spdx(url)
+    return send_file(db.spdx_path(url))
 
 
 # Return error messages in JSON format
