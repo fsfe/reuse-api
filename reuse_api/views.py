@@ -1,5 +1,3 @@
-# SPDX-FileCopyrightText: 2023 DB Systel GmbH
-
 """Request handlers for all endpoints."""
 
 from http import HTTPStatus
@@ -180,16 +178,13 @@ def projects(page: int = 1) -> str:
 # ------------------------------------------------------------------------------
 @HTML.post("/admin/reset/<path:url>")
 def reset(url: str) -> str:
-    """Unset the hash of a repository and trigger a new check"""
-
     # Check for valid admin credentials
     if request.form.get("admin_key") != ADMIN_KEY:
         abort(HTTPStatus.UNAUTHORIZED)
-    # Force re-check
-    repository = current_app.scheduler.schedule(url, force=True)
-    # If re-check scheduled and repository actually exists
-    if repository:
-        return f"Repository scheduled for re-check: {url}"
 
-    # Fall-back: repository does not exist and isn't registered
-    return f"Repository not registered: {url}"
+    # Admin actions are executed immediately
+    rval: int = db.reset(url)
+
+    # REVIEW: this is a bit bare but I do not know how to improve it
+    #         and it will not be heavily used
+    return f"Reset {url} rval: {rval}"
