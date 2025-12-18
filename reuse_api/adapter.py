@@ -42,6 +42,7 @@ def __move_and_read() -> list:  # pragma: no cover
 
 
 def __jsons_to_strings(jsons: list) -> list[str]:
+    """Extracts the project names from the details provided by forms"""
     return [r["include_vars"]["project"] for r in jsons]
 
 
