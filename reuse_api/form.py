@@ -10,14 +10,14 @@ from wtforms.validators import Email, InputRequired
 from reuse_api.db import is_registered
 
 
-def is_reachable(url: str) -> bool:
-    """Check if the repository is reachable via HTTPS in 5 seconds"""
+def is_reachable(url: str, timeout: int = 5) -> bool:
+    """Check if the repository is reachable via HTTPS in <timeout> seconds"""
     protocol = "https"
     try:
         result = subprocess.run(
             ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
             stdout=subprocess.PIPE,
-            timeout=5,
+            timeout=timeout,
             check=False,
         )
     except subprocess.TimeoutExpired:
