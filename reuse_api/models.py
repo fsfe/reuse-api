@@ -64,6 +64,8 @@ class Repository(db.Model):
     @classmethod
     def is_initialised(cls, url: str) -> bool:
         row = cls.query.filter_by(url=url).first()
+        if row is None:
+            return False
 
         return row.last_access is not None
 
