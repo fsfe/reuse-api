@@ -102,6 +102,7 @@ def determine_protocol(url: str) -> str:
 
 def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
     """Check whether repo has a new commit and execute check accordingly"""
+    current_app.logger.debug("Trying to schedule %s", url)
     protocol, latest = None, None
 
     try:
