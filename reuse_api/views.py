@@ -86,6 +86,9 @@ def info(url: str) -> str:
     # Handle unregistered & uninitialised
     if not Repository.is_registered(url):
         return render_template("unregistered.jinja2", url=url), HTTPStatus.NOT_FOUND
+
+    row = schedule_if_new_or_later(url, current_app.scheduler)
+
     if not Repository.is_initialised(url):
         return (
             render_template("uninitialised.jinja2", project_name=db.name(url)),
@@ -93,7 +96,6 @@ def info(url: str) -> str:
         )
 
     # Handle normal records
-    row = schedule_if_new_or_later(url, current_app.scheduler)
     return render_template(
         "info.jinja2",
         url=url,
