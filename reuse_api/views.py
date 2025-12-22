@@ -76,7 +76,6 @@ def badge(url: str) -> str:
     result.cache_control.public = False
     result.headers["Expires"] = "Thu, 01 Jan 1970 00:00:00 UTC"
 
-    current_app.logger.debug("Sending badge: %s", url)
     return result
 
 
