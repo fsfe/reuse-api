@@ -3,10 +3,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import json
 import re
 import subprocess
 import threading
+from json import JSONDecodeError, loads
 from queue import Empty, Queue
 from threading import Thread
 from typing import NamedTuple
@@ -42,7 +42,7 @@ class Task(NamedTuple):
         """Depending on the output, update the information of the repository:
         status, new hash, status, url, lint code/output, spdx output"""
         # Output is JSON, convert to dict
-        output = json.loads(output)
+        output = loads(output)
 
         # Here, we update the URL as well, since it could differ in case from
         # what's stored previously, and we want the info pages to display the URL
@@ -298,7 +298,7 @@ class Runner(Thread):
                         try:  # Update database entry with the results of this check
                             task.update_db(output)
 
-                        except json.JSONDecodeError as e:
+                        except JSONDecodeError as e:
                             self._app.logger.error("Failed to parse JSON output: %s", e)
             finally:
                 self._queue.done(task)
