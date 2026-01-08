@@ -5,10 +5,9 @@
 
 import re
 import subprocess
-import threading
 from json import JSONDecodeError, loads
 from queue import Empty, Queue
-from threading import Thread
+from threading import Lock, Thread
 from typing import NamedTuple
 
 from flask import abort, current_app
@@ -65,7 +64,7 @@ class TaskQueue(Queue):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.task_mutex = threading.Lock()
+        self.task_mutex: Lock = Lock()
         self.task_urls = {}
 
     def __contains__(self, task: Task) -> bool:
