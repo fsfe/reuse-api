@@ -3,10 +3,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import subprocess
 from json import JSONDecodeError, loads
 from queue import Empty, Queue
 from re import compile as re_compile
+from subprocess import PIPE, TimeoutExpired, run
 from threading import Lock, Thread
 from typing import NamedTuple
 
@@ -144,13 +144,13 @@ def latest_hash(protocol: str, url: str) -> str:
     """Get the latest hash of the given Git URL using ls-remote"""
     try:
         # pylint: disable=subprocess-run-check
-        result = subprocess.run(
+        result = run(
             ["git", "ls-remote", f"{protocol}://{url}", "HEAD"],
-            stdout=subprocess.PIPE,
+            stdout=PIPE,
             timeout=5,
             check=False,
         )
-    except subprocess.TimeoutExpired:
+    except TimeoutExpired:
         raise InvalidRepositoryError
 
     if result.returncode != 0:
@@ -259,13 +259,13 @@ class Runner(Thread):
                     "-v",
                 ]
                 # pylint: disable=subprocess-run-check
-                result = subprocess.run(
+                result = run(
                     cmd,
                     capture_output=True,
                     timeout=900,
                     check=False,
                 )
-            except subprocess.TimeoutExpired:
+            except TimeoutExpired:
                 self._app.logger.warning("linting of '%s' timed out", task.url)
             else:
                 self._app.logger.debug(
