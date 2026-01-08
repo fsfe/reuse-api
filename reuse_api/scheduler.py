@@ -3,10 +3,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import re
 import subprocess
 from json import JSONDecodeError, loads
 from queue import Empty, Queue
+from re import compile as re_compile
 from threading import Lock, Thread
 from typing import NamedTuple
 
@@ -25,7 +25,7 @@ from .config import (
 from .models import Repository
 
 
-_HASH_PATTERN = re.compile(r"commit (.*):")
+_HASH_PATTERN = re_compile(r"commit (.*):")
 
 
 class InvalidRepositoryError(Exception):
