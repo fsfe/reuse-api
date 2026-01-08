@@ -38,7 +38,7 @@ class Task(NamedTuple):
     url: str
     hash: str
 
-    def update_db(self, output) -> None:
+    def update_db(self, output: str) -> None:
         """Depending on the output, update the information of the repository:
         status, new hash, status, url, lint code/output, spdx output"""
         # Output is JSON, convert to dict
@@ -178,7 +178,7 @@ class Scheduler:
     def __contains__(self, task: Task) -> bool:
         return task in self._queue
 
-    def add_task(self, task):
+    def add_task(self, task) -> None:
         """Add a repository to the check queue"""
         if self._running:
             self._add_task_if_not_already_enqueue(task)
