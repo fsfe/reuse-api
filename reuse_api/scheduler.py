@@ -301,6 +301,7 @@ class Runner(Thread):
             finally:
                 self._queue.done(task)
 
-    def join(self, *args, **kwargs) -> None:
+    @override
+    def join(self, timeout=None) -> None:
         self._running = False
-        super().join(*args, **kwargs)
+        super().join()
