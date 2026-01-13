@@ -60,19 +60,19 @@ def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
         current_app.logger.debug("No database entry found: %s", url)
         repository = Repository.create(url=url)
         if repository:
-            scheduler.add_task(task_of_repository)
+            scheduler._add_task(task_of_repository)
 
     elif task_of_repository in scheduler:
         current_app.logger.debug("Task enqueued: %s", url)
 
     elif force:
         current_app.logger.debug("Forcefully scheduling %s", url)
-        scheduler.add_task(task_of_repository)
+        scheduler._add_task(task_of_repository)
 
     elif repository.hash != latest:
         # Make the database entry up-to-date.
         current_app.logger.debug("Repo outdated: %s", url)
-        scheduler.add_task(task_of_repository)
+        scheduler._add_task(task_of_repository)
     else:
         current_app.logger.debug("Repo up-to-date: %s", url)
 
@@ -117,7 +117,7 @@ class Scheduler:
     def __contains__(self, task: Task) -> bool:
         return task in self._queue
 
-    def add_task(self, task: Task) -> None:
+    def _add_task(self, task: Task) -> None:  # Should not be used directly
         """Add a repository to the check queue"""
         if not self._running:
             current_app.logger.warning(
