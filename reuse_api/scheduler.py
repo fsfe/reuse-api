@@ -199,8 +199,6 @@ class Scheduler:
         self._app.logger.debug("stopping all threads")
         self._running = False
         for runner in self._runners:
-            runner.stop()
-        for runner in self._runners:
             runner.join()
         self._app.logger.debug("finished stopping all threads")
 
@@ -303,9 +301,5 @@ class Runner(Thread):
                 self._queue.done(task)
 
     def join(self, *args, **kwargs) -> None:
-        self.stop()
-        super().join(*args, **kwargs)
-
-    def stop(self) -> None:
-        """Stop the tasks"""
         self._running = False
+        super().join(*args, **kwargs)
