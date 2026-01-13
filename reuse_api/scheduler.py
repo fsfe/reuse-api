@@ -58,6 +58,7 @@ class Task(NamedTuple):
 
 
 class TaskQueue(Queue):
+    # Not SimpleQueue because we want .join()
     """
     Allows to know when a Task is already in the Queue or in computation to
     limit redundant execution
