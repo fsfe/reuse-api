@@ -36,11 +36,11 @@ class InvalidRepositoryError(Exception):
 class Task(NamedTuple):
     protocol: str
     url: str
-    hash: str
+    head: str
 
     def update_db(self, output: str) -> None:
         """Depending on the output, update the information of the repository:
-        status, new hash, status, url, lint code/output, spdx output"""
+        status, new head hash, status, url, lint code/output, spdx output"""
         # Output is JSON, convert to dict
         output = json.loads(output)
 
@@ -49,7 +49,7 @@ class Task(NamedTuple):
         # in the form it was used for the last check.
         Repository.find(self.url).update(
             url=self.url,
-            hash=self.hash,
+            hash=self.head,
             status=(db.Status.OK if output["exit_code"] == 0 else db.Status.BAD),
             lint_code=output["exit_code"],
             lint_output=output["lint_output"],
