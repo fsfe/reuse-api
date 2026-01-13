@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import json
-import re
 import subprocess
 import threading
 from queue import Empty, Queue
@@ -24,9 +23,6 @@ from .config import (
     SSH_USER,
 )
 from .models import Repository
-
-
-_HASH_PATTERN = re.compile(r"commit (.*):")
 
 
 class InvalidRepositoryError(Exception):
