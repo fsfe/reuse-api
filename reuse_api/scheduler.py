@@ -123,11 +123,6 @@ def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
         if repository:
             scheduler.add_task(task_of_repository)
 
-    elif repository.hash != latest:
-        # Make the database entry up-to-date.
-        current_app.logger.debug("'%s' is outdated", url)
-        scheduler.add_task(task_of_repository)
-
     elif task_of_repository in scheduler:
         current_app.logger.debug("'%s' already in queue", url)
 
@@ -135,6 +130,10 @@ def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
         current_app.logger.debug("'%s' will be forcefully rechecked", url)
         scheduler.add_task(task_of_repository)
 
+    elif repository.hash != latest:
+        # Make the database entry up-to-date.
+        current_app.logger.debug("'%s' is outdated", url)
+        scheduler.add_task(task_of_repository)
     else:
         current_app.logger.debug("'%s' is still up-to-date", url)
 
