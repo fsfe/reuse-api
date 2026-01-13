@@ -9,7 +9,7 @@ import subprocess
 import threading
 from queue import Empty, Queue
 from threading import Thread
-from typing import NamedTuple
+from typing import NamedTuple, override
 
 from flask import abort, current_app
 
@@ -224,6 +224,7 @@ class Runner(Thread):
         self._running = False
         super().__init__()
 
+    @override
     def run(self):
         self._running = True
         while self._running:
