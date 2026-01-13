@@ -77,7 +77,7 @@ class Scheduler:
     def __contains__(self, task: Task) -> bool:
         return task in self._queue
 
-    def _add_task(self, task: Task) -> None:  # Should not be used directly
+    def __add_task(self, task: Task) -> None:
         """Add a repository to the check queue"""
         if not self._running:
             current_app.logger.warning(
@@ -131,18 +131,18 @@ class Scheduler:
             current_app.logger.debug("No database entry found: %s", url)
             repository = Repository.create(url=url)
             if repository:
-                self._add_task(task_of_repository)
+                self.__add_task(task_of_repository)
         elif task_of_repository in self:
             current_app.logger.debug("Task enqueued: %s", url)
 
         elif force:
             current_app.logger.debug("Forcefully scheduling %s", url)
-            self._add_task(task_of_repository)
+            self.__add_task(task_of_repository)
 
         elif repository.hash != latest:
             # Make the database entry up-to-date.
             current_app.logger.debug("Repo outdated: %s", url)
-            self._add_task(task_of_repository)
+            self.__add_task(task_of_repository)
         else:
             current_app.logger.debug("Repo up-to-date: %s", url)
 
