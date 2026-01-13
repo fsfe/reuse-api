@@ -178,14 +178,23 @@ class Scheduler:
     def __contains__(self, task: Task) -> bool:
         return task in self._queue
 
-    def add_task(self, task) -> None:
+    def add_task(self, task: Task) -> None:
         """Add a repository to the check queue"""
-        if self._running:
-            self._add_task_if_not_already_enqueue(task)
-        else:
+        if not self._running:
             current_app.logger.warning(
                 "cannot add task to queue when scheduler is not running"
             )
+            return False
+
+        if task in self:
+            current_app.logger.debug("Task already enqueued: %s", task.url)
+            return False
+
+        current_app.logger.info("Task enqueued: %s", task.url)
+        self._queue.put_nowait(task)
+
+        current_app.logger.debug("Queue size: %d", len(self._queue))
+        return True
 
     def run(self) -> None:
         """Start scheduler"""
@@ -201,18 +210,6 @@ class Scheduler:
         for runner in self._runners:
             runner.join()
         self._app.logger.debug("finished stopping all threads")
-
-    def _add_task_if_not_already_enqueue(self, task) -> bool:
-        """Add task to queue if not already in queue.
-        Returns true if the task has been added"""
-        if task in self:
-            current_app.logger.debug("'%s' already in queue", task.url)
-            return False
-
-        current_app.logger.debug("adding '%s' to queue", task.url)
-        self._queue.put_nowait(task)
-        current_app.logger.debug("size of queue is %d", len(self._queue))
-        return True
 
 
 class Runner(Thread):
