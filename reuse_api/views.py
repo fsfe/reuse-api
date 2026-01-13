@@ -24,7 +24,6 @@ from reuse_api.forms import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
 from .models import Repository
-from .scheduler import schedule_if_new_or_later
 
 
 # Blueprint for all endpoints delivering human-readable HTML/SVG content
@@ -87,7 +86,7 @@ def info(url: str) -> str:
     if not Repository.is_registered(url):
         return render_template("unregistered.jinja2", url=url), HTTPStatus.NOT_FOUND
 
-    row = schedule_if_new_or_later(url, current_app.scheduler)
+    row = current_app.scheduler.schedule(url)
 
     if not Repository.is_initialised(url):
         return (
@@ -121,7 +120,7 @@ def sbom(url: str) -> str:
     if not Repository.is_initialised(url):
         abort(HTTPStatus.NOT_FOUND)
 
-    row = schedule_if_new_or_later(url, current_app.scheduler)
+    row = current_app.scheduler.schedule(url)
     return row.spdx_output
 
 
@@ -139,7 +138,7 @@ def status(url: str) -> dict:
     if not Repository.is_registered(url):
         return {"url": url, "status": db.Status.NULL}
 
-    row = schedule_if_new_or_later(url, current_app.scheduler)
+    row = current_app.scheduler.schedule(url)
     # Return the current entry in the database.
     return {
         "url": url,
@@ -172,7 +171,7 @@ def reset(url: str) -> str:
     if request.form.get("admin_key") != ADMIN_KEY:
         abort(HTTPStatus.UNAUTHORIZED)
     # Force re-check
-    repository = schedule_if_new_or_later(url, current_app.scheduler, force=True)
+    repository = current_app.scheduler.schedule(url, force=True)
     # If re-check scheduled and repository actually exists
     if repository:
         return f"Repository scheduled for re-check: {url}"

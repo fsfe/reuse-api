@@ -39,46 +39,6 @@ def determine_protocol(url: str) -> str:
     raise InvalidRepositoryError
 
 
-def schedule_if_new_or_later(url: str, scheduler, force: bool = False):
-    """Check whether repo has a new commit and execute check accordingly"""
-    current_app.logger.debug("Trying to schedule %s", url)
-    protocol, latest = None, None
-
-    try:
-        protocol = determine_protocol(url)
-        # TODO: This is an additional request that also happens inside of
-        # determine_protocol.
-        latest = latest_hash(protocol, url)
-    except InvalidRepositoryError:
-        abort(400, "Not a Git repository")
-
-    repository = Repository.find(url)
-    task_of_repository = Task(protocol, url, latest)
-
-    if repository is None:
-        # Create a new entry.
-        current_app.logger.debug("No database entry found: %s", url)
-        repository = Repository.create(url=url)
-        if repository:
-            scheduler._add_task(task_of_repository)
-
-    elif task_of_repository in scheduler:
-        current_app.logger.debug("Task enqueued: %s", url)
-
-    elif force:
-        current_app.logger.debug("Forcefully scheduling %s", url)
-        scheduler._add_task(task_of_repository)
-
-    elif repository.hash != latest:
-        # Make the database entry up-to-date.
-        current_app.logger.debug("Repo outdated: %s", url)
-        scheduler._add_task(task_of_repository)
-    else:
-        current_app.logger.debug("Repo up-to-date: %s", url)
-
-    return repository
-
-
 def latest_hash(protocol: str, url: str) -> str:
     """Get the latest hash of the given Git URL using ls-remote"""
     try:
@@ -149,6 +109,44 @@ class Scheduler:
         for runner in self._runners:
             runner.join()
         self._app.logger.debug("finished stopping all threads")
+
+    def schedule(self, url: str, force: bool = False) -> Repository | None:
+        """Check whether repo has a new commit and execute check accordingly"""
+        current_app.logger.debug("Trying to schedule %s", url)
+        protocol, latest = None, None
+
+        try:
+            protocol = determine_protocol(url)
+            # TODO: This is an additional request that also happens inside of
+            # determine_protocol.
+            latest = latest_hash(protocol, url)
+        except InvalidRepositoryError:
+            abort(400, "Not a Git repository")
+
+        repository = Repository.find(url)
+        task_of_repository = Task(protocol, url, latest)
+
+        if repository is None:
+            # Create a new entry.
+            current_app.logger.debug("No database entry found: %s", url)
+            repository = Repository.create(url=url)
+            if repository:
+                self._add_task(task_of_repository)
+        elif task_of_repository in self:
+            current_app.logger.debug("Task enqueued: %s", url)
+
+        elif force:
+            current_app.logger.debug("Forcefully scheduling %s", url)
+            self._add_task(task_of_repository)
+
+        elif repository.hash != latest:
+            # Make the database entry up-to-date.
+            current_app.logger.debug("Repo outdated: %s", url)
+            self._add_task(task_of_repository)
+        else:
+            current_app.logger.debug("Repo up-to-date: %s", url)
+
+        return repository
 
 
 class Runner(Thread):
