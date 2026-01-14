@@ -62,7 +62,7 @@ class TaskQueue(Queue):
     def put_nowait(self, task: Task) -> None:
         with self.mutex:
             self.__urls.add(task.url)
-            super().put_nowait(task)
+        super().put_nowait(task)
 
     def done(self, task: Task) -> None:
         with self.mutex:
