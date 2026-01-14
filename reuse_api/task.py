@@ -57,10 +57,10 @@ class TaskQueue(Queue):
         with self.task_mutex:
             return len(self.task_urls)
 
-    def put_nowait(self, task: Task, **kwargs) -> None:
+    def put_nowait(self, task: Task) -> None:
         with self.task_mutex:
             self.task_urls[task.url] = True
-            super().put_nowait(task, **kwargs)
+            super().put_nowait(task)
 
     def done(self, task: Task) -> None:
         with self.task_mutex:
