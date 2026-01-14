@@ -47,24 +47,24 @@ class TaskQueue(Queue):
     def __init__(self, maxsize: int = 0) -> None:
         super().__init__(maxsize=maxsize)
         self.mutex: Lock = Lock()
-        self.urls: set[str] = set()
+        self.__urls: set[str] = set()
 
     def __contains__(self, task: Task) -> bool:
         with self.mutex:
-            return task.url in self.urls
+            return task.url in self.__urls
 
     def __len__(self) -> int:
         """Return the number of tasks in the queue"""
         with self.mutex:
-            return len(self.urls)
+            return len(self.__urls)
 
     @override
     def put_nowait(self, task: Task) -> None:
         with self.mutex:
-            self.urls.add(task.url)
+            self.__urls.add(task.url)
             super().put_nowait(task)
 
     def done(self, task: Task) -> None:
         with self.mutex:
-            self.urls.discard(task.url)
+            self.__urls.discard(task.url)
         super().task_done()
