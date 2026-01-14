@@ -155,7 +155,7 @@ class Runner(Thread):
     def __init__(self, queue, app):
         self._queue = queue
         self._app = app
-        self._running = False
+        self._running: bool = False
         super().__init__()
 
     @override
