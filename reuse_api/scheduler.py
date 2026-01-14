@@ -58,97 +58,6 @@ def latest_hash(protocol: str, url: str) -> str:
     return result.stdout.decode("utf-8").split()[0]
 
 
-class Scheduler:
-    """'Scheduler' is probably a bad name for this class, but I do not know
-    what else to call it. It takes tasks and distributes them to runners.
-    Except it doesn't even do that, because the runners themselves take the
-    tasks from the queue.
-
-    In essence, this is just a container class to hold a queue and some
-    runners, and to provide some convenience functions to manage them both.
-    """
-
-    def __init__(self, app):
-        self._app = app
-        self._queue = TaskQueue()
-        self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
-        self._running: bool = False
-
-    def __contains__(self, task: Task) -> bool:
-        return task in self._queue
-
-    def __add_task(self, task: Task) -> None:
-        """Add a repository to the check queue"""
-        if not self._running:
-            current_app.logger.warning(
-                "cannot add task to queue when scheduler is not running"
-            )
-            return False
-
-        if task in self:
-            current_app.logger.debug("Task already enqueued: %s", task.url)
-            return False
-
-        current_app.logger.info("Task enqueued: %s", task.url)
-        self._queue.put_nowait(task)
-
-        current_app.logger.debug("Queue size: %d", len(self._queue))
-        return True
-
-    def run(self) -> None:
-        """Start scheduler"""
-        self._running = True
-        for runner in self._runners:
-            runner.start()
-
-    def join(self) -> None:
-        self._app.logger.debug("finishing the queue")
-        self._queue.join()
-        self._app.logger.debug("stopping all threads")
-        self._running = False
-        for runner in self._runners:
-            runner.join()
-        self._app.logger.debug("finished stopping all threads")
-
-    def schedule(self, url: str, force: bool = False) -> Repository | None:
-        """Check whether repo has a new commit and execute check accordingly"""
-        current_app.logger.debug("Scheduling %s", url)
-        protocol, latest = None, None
-
-        try:
-            protocol = determine_protocol(url)
-            # TODO: This is an additional request that also happens inside of
-            # determine_protocol.
-            latest = latest_hash(protocol, url)
-        except InvalidRepositoryError:
-            abort(400, "Not a Git repository")
-
-        repository = Repository.find(url)
-        task_of_repository = Task(protocol, url, latest)
-
-        if repository is None:
-            # Create a new entry.
-            current_app.logger.debug("No database entry found: %s", url)
-            repository = Repository.create(url=url)
-            if repository:
-                self.__add_task(task_of_repository)
-        elif task_of_repository in self:
-            current_app.logger.debug("Task enqueued: %s", url)
-
-        elif force:
-            current_app.logger.debug("Forcefully scheduling %s", url)
-            self.__add_task(task_of_repository)
-
-        elif repository.hash != latest:
-            # Make the database entry up-to-date.
-            current_app.logger.debug("Repo outdated: %s", url)
-            self.__add_task(task_of_repository)
-        else:
-            current_app.logger.debug("Repo up-to-date: %s", url)
-
-        return repository
-
-
 class Runner(Thread):
     """Defining one task in the schedule queue"""
 
@@ -239,3 +148,94 @@ class Runner(Thread):
     def join(self, timeout=None) -> None:
         self._running = False
         super().join()
+
+
+class Scheduler:
+    """'Scheduler' is probably a bad name for this class, but I do not know
+    what else to call it. It takes tasks and distributes them to runners.
+    Except it doesn't even do that, because the runners themselves take the
+    tasks from the queue.
+
+    In essence, this is just a container class to hold a queue and some
+    runners, and to provide some convenience functions to manage them both.
+    """
+
+    def __init__(self, app):
+        self._app = app
+        self._queue = TaskQueue()
+        self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
+        self._running: bool = False
+
+    def __contains__(self, task: Task) -> bool:
+        return task in self._queue
+
+    def __add_task(self, task: Task) -> None:
+        """Add a repository to the check queue"""
+        if not self._running:
+            current_app.logger.warning(
+                "cannot add task to queue when scheduler is not running"
+            )
+            return False
+
+        if task in self:
+            current_app.logger.debug("Task already enqueued: %s", task.url)
+            return False
+
+        current_app.logger.info("Task enqueued: %s", task.url)
+        self._queue.put_nowait(task)
+
+        current_app.logger.debug("Queue size: %d", len(self._queue))
+        return True
+
+    def run(self) -> None:
+        """Start scheduler"""
+        self._running = True
+        for runner in self._runners:
+            runner.start()
+
+    def join(self) -> None:
+        self._app.logger.debug("finishing the queue")
+        self._queue.join()
+        self._app.logger.debug("stopping all threads")
+        self._running = False
+        for runner in self._runners:
+            runner.join()
+        self._app.logger.debug("finished stopping all threads")
+
+    def schedule(self, url: str, force: bool = False) -> Repository | None:
+        """Check whether repo has a new commit and execute check accordingly"""
+        current_app.logger.debug("Scheduling %s", url)
+        protocol, latest = None, None
+
+        try:
+            protocol = determine_protocol(url)
+            # TODO: This is an additional request that also happens inside of
+            # determine_protocol.
+            latest = latest_hash(protocol, url)
+        except InvalidRepositoryError:
+            abort(400, "Not a Git repository")
+
+        repository = Repository.find(url)
+        task_of_repository = Task(protocol, url, latest)
+
+        if repository is None:
+            # Create a new entry.
+            current_app.logger.debug("No database entry found: %s", url)
+            repository = Repository.create(url=url)
+            if repository:
+                self.__add_task(task_of_repository)
+        elif task_of_repository in self:
+            current_app.logger.debug("Task enqueued: %s", url)
+
+        elif force:
+            current_app.logger.debug("Forcefully scheduling %s", url)
+            self.__add_task(task_of_repository)
+
+        elif repository.hash != latest:
+            # Make the database entry up-to-date.
+            current_app.logger.debug("Repo outdated: %s", url)
+            self.__add_task(task_of_repository)
+        else:
+            current_app.logger.debug("Repo up-to-date: %s", url)
+
+        return repository
