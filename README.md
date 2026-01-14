@@ -9,10 +9,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 [![Build Status](https://drone.fsfe.org/api/badges/reuse/api/status.svg)](https://drone.fsfe.org/reuse/api)
 [![REUSE compliant](https://api.reuse.software/badge/git.fsfe.org/reuse/api)](https://api.reuse.software/info/git.fsfe.org/reuse/api)
 
-The REUSE API checks repositories for their compliance with the [REUSE
-best practices](https://reuse.software). It basically runs the `lint`
-command of the [REUSE helper tool](https://git.fsfe.org/reuse/tool) for
-the default branch of a project.
+The REUSE API checks repositories for their compliance with the [best
+practices](https://reuse.software). It basically runs the [helper
+tool](https://git.fsfe.org/reuse/tool) for the default branch of a
+project.
 
 REUSE offers [many tools and methods](https://reuse.software/dev/) to
 support developers in making their licensing more clear and simple. This
