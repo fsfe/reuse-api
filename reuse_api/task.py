@@ -46,8 +46,8 @@ class TaskQueue(Queue):
     @override
     def __init__(self, maxsize: int = 0) -> None:
         super().__init__(maxsize=maxsize)
-        self.task_mutex = Lock()
-        self.task_urls = {}
+        self.task_mutex: Lock = Lock()
+        self.task_urls: dict = {}
 
     def __contains__(self, task: Task) -> bool:
         with self.task_mutex:
