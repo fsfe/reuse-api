@@ -47,7 +47,7 @@ class TaskQueue(Queue):
     def __init__(self, maxsize: int = 0) -> None:
         super().__init__(maxsize=maxsize)
         self.task_mutex: Lock = Lock()
-        self.task_urls: dict = {}
+        self.task_urls: set[str] = set()
 
     def __contains__(self, task: Task) -> bool:
         with self.task_mutex:
@@ -61,10 +61,10 @@ class TaskQueue(Queue):
     @override
     def put_nowait(self, task: Task) -> None:
         with self.task_mutex:
-            self.task_urls[task.url] = True
+            self.task_urls.add(task.url)
             super().put_nowait(task)
 
     def done(self, task: Task) -> None:
         with self.task_mutex:
-            del self.task_urls[task.url]
+            self.task_urls.discard(task.url)
         super().task_done()
