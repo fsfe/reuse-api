@@ -163,7 +163,9 @@ class Scheduler:
     def __init__(self, app):
         self._app = app
         self._queue = TaskQueue()
-        self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
+        self._runners: tuple = (
+            Runner(self._queue, self._app) for _ in range(NB_RUNNER)
+        )
         self._running: bool = False
 
     def __contains__(self, task: Task) -> bool:
