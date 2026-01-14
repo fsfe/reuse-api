@@ -112,7 +112,7 @@ class Scheduler:
 
     def schedule(self, url: str, force: bool = False) -> Repository | None:
         """Check whether repo has a new commit and execute check accordingly"""
-        current_app.logger.debug("Trying to schedule %s", url)
+        current_app.logger.debug("Scheduling %s", url)
         protocol, latest = None, None
 
         try:
