@@ -5,7 +5,7 @@
 from json import loads as json_loads
 from queue import Queue
 from threading import Lock
-from typing import NamedTuple
+from typing import NamedTuple, override
 
 from reuse_api import models as db
 
@@ -57,6 +57,7 @@ class TaskQueue(Queue):
         with self.task_mutex:
             return len(self.task_urls)
 
+    @override
     def put_nowait(self, task: Task) -> None:
         with self.task_mutex:
             self.task_urls[task.url] = True
