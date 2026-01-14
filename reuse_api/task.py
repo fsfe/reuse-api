@@ -43,8 +43,9 @@ class TaskQueue(Queue):
     limit redundant execution
     """
 
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
+    @override
+    def __init__(self, maxsize: int = 0) -> None:
+        super().__init__(maxsize=maxsize)
         self.task_mutex = Lock()
         self.task_urls = {}
 
