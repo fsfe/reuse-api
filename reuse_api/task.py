@@ -43,11 +43,15 @@ class TaskQueue(Queue):
     limit redundant execution
     """
 
+    _instance = None
+    __urls: set[str] = set()
+    __urls_lock: Lock = Lock()
+
     @override
-    def __init__(self, maxsize: int = 0) -> None:
-        super().__init__(maxsize=maxsize)
-        self.__urls: set[str] = set()
-        self.__urls_lock: Lock = Lock()
+    def __new__(cls) -> "TaskQueue":
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __contains__(self, task: Task) -> bool:
         with self.__urls_lock:
