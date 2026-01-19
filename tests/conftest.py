@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 
-import json
-import os
-import tempfile
+from json import dumps as json_dumps
+from os import environ
+from tempfile import NamedTemporaryFile
 
 import pytest
 
@@ -20,14 +20,14 @@ def client(_mock_forms_url, mocked_forms_app):
 @pytest.fixture
 def _mock_forms_url(requests_mock):
     url = "http://test-url.fsfe"
-    os.environ["FORMS_URL"] = url
+    environ["FORMS_URL"] = url
 
     requests_mock.post(url)
 
 
 @pytest.fixture
 def mocked_forms_app(tmp_repos):
-    os.environ["FORMS_FILE"] = tmp_repos
+    environ["FORMS_FILE"] = tmp_repos
 
     from reuse_api import create_app  # noqa: PLC0415
 
@@ -41,6 +41,6 @@ def mocked_forms_app(tmp_repos):
 
 @pytest.fixture
 def tmp_repos():
-    with tempfile.NamedTemporaryFile("w", delete=False) as repos:
-        repos.write(json.dumps({}))
+    with NamedTemporaryFile("w", delete=False) as repos:
+        repos.write(json_dumps({}))
         return repos.name
