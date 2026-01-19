@@ -139,7 +139,6 @@ def sbom(url: str) -> str:
     return send_file(db.spdx_path(url))
 
 
-# Return error messages in JSON format
 @JSON.errorhandler(HTTPException)  # pragma: no cover
 def handle_error(err) -> dict:
     """Handle HTTP errors, return as JSON"""
