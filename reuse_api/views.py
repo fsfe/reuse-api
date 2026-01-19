@@ -2,8 +2,8 @@
 
 """Request handlers for all endpoints."""
 
-from http import HTTPStatus
 from datetime import datetime
+from http import HTTPStatus
 
 from flask import (
     Blueprint,
@@ -21,9 +21,8 @@ from reuse_api import db
 from reuse_api.adapter import mock_add
 from reuse_api.form import RegisterForm
 
-from .config import ADMIN_KEY, FORMS_URL
+from .config import ADMIN_KEY, FORMS_DISABLE, FORMS_URL
 from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
-from .config import FORMS_DISABLE
 
 
 HTML: Blueprint = Blueprint("html", __name__)
@@ -134,7 +133,7 @@ def sbom(url: str) -> str:
     current_app.logger.info("ASKED FOR SBOM: %s", url)
 
     if not db.is_initialised(url):
-        return
+        return None
 
     # WARN: The original scheduled here, I have removed it
     return send_file(db.spdx_path(url))

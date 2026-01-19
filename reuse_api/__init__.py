@@ -6,7 +6,7 @@
 
 import logging
 from atexit import register as atexit_register
-from os import R_OK, access, environ, path, makedirs
+from os import R_OK, access, environ, makedirs, path
 
 from flask import Flask
 
