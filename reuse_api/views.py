@@ -53,7 +53,10 @@ def register() -> str:
         )
         if not response.ok:
             return response.text, response.status_code
-        return render_template("register-success.jinja2", project=form.project.data)
+        return (
+            render_template("register-success.jinja2", project=form.project.data),
+            HTTPStatus.ACCEPTED,
+        )
     return render_template("register.jinja2", form=form)
 
 

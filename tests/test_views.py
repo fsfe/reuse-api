@@ -25,7 +25,7 @@ def test_register(client):
     }
     response = client.post("/register", data=data)
 
-    assert response.status_code == HTTPStatus.OK
+    assert response.status_code == HTTPStatus.ACCEPTED
     assert "Registration successful" in response.data.decode()
 
 
@@ -37,7 +37,7 @@ def test_register_double_with_protocol(client):
     }
     response = client.post("/register", data=data)
 
-    assert response.status_code == HTTPStatus.OK
+    assert response.status_code == HTTPStatus.ACCEPTED
     assert "Registration successful" in response.data.decode()
 
 
