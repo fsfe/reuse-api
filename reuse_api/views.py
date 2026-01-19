@@ -55,7 +55,7 @@ def register_post() -> str:
         if FORMS_DISABLE:
             current_app.logger.warning("Registered without forms: %s", url)
             db.register(form.project.data)
-        elif current_app.config.get("DEBUG", False):
+        elif current_app.config.get("TESTING", False):
             current_app.logger.warning("Registered with mocked forms: %s", url)
             mock_add(form.project.data)
         else:  # normal operation
