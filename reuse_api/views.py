@@ -26,19 +26,16 @@ from .config import ADMIN_KEY, FORMS_URL
 from .models import Repository
 
 
-# Blueprint for all endpoints delivering human-readable HTML/SVG content
-html_blueprint = Blueprint("html", __name__)
-
-# Blueprint for all endpoints delivering machine-readable JSON content
-json_blueprint = Blueprint("json", __name__)
+HTML: Blueprint = Blueprint("html", __name__)
+JSON: Blueprint = Blueprint("json", __name__)
 
 
-@html_blueprint.route("/")
+@HTML.route("/")
 def index() -> str:
     return render_template("index.jinja2", compliant_repos=Repository.projects().total)
 
 
-@html_blueprint.route("/register", methods=["GET", "POST"])
+@HTML.route("/register", methods=["GET", "POST"])
 def register() -> str:
     """Registration form for new projects"""
     form = RegisterForm()
@@ -60,7 +57,7 @@ def register() -> str:
     return render_template("register.jinja2", form=form)
 
 
-@html_blueprint.route("/badge/<path:url>")
+@HTML.route("/badge/<path:url>")
 def badge(url: str) -> str:
     """The SVG badge for a repo"""
 
@@ -78,7 +75,7 @@ def badge(url: str) -> str:
     return result
 
 
-@html_blueprint.route("/info/<path:url>")
+@HTML.route("/info/<path:url>")
 def info(url: str) -> str:
     """General info page for repo"""
 
@@ -111,7 +108,7 @@ def info(url: str) -> str:
     )
 
 
-@html_blueprint.route("/sbom/<path:url>.spdx")
+@HTML.route("/sbom/<path:url>.spdx")
 def sbom(url: str) -> str:
     """SPDX SBOM in tag:value format"""
     # NOTE: This is a temporary measure to see if this feature is used
@@ -125,14 +122,14 @@ def sbom(url: str) -> str:
 
 
 # Return error messages in JSON format
-@json_blueprint.errorhandler(HTTPException)
+@JSON.errorhandler(HTTPException)
 def handle_error(err) -> dict:
     """Handle HTTP errors, return as JSON"""
     return {"error": err.description}, err.code
 
 
-@json_blueprint.route("/status/<path:url>")
-@json_blueprint.route("/status/<path:url>.json")
+@JSON.route("/status/<path:url>")
+@JSON.route("/status/<path:url>.json")
 def status(url: str) -> dict:
     """Machine-readable information about a repo in JSON format"""
     if not Repository.is_registered(url):
@@ -152,8 +149,8 @@ def status(url: str) -> dict:
     }
 
 
-@html_blueprint.route("/projects")
-@html_blueprint.route("/projects/page/<int:page>")
+@HTML.route("/projects")
+@HTML.route("/projects/page/<int:page>")
 def projects(page: int = 1) -> str:
     """Show paginated table of compliant repositories"""
     return render_template("projects.jinja2", compliant_list=Repository.projects(page))
@@ -163,7 +160,7 @@ def projects(page: int = 1) -> str:
 # ADMINISTRATIVE FUNCTIONS
 # Only accessible by providing the valid admin key via POST request
 # ------------------------------------------------------------------------------
-@html_blueprint.route("/admin/reset/<path:url>", methods=["POST"])
+@HTML.route("/admin/reset/<path:url>", methods=["POST"])
 def reset(url: str) -> str:
     """Unset the hash of a repository and trigger a new check"""
 
@@ -180,7 +177,7 @@ def reset(url: str) -> str:
     return f"Repository not registered: {url}"
 
 
-@json_blueprint.route("/admin/analytics/<string:query>.json", methods=["POST"])
+@JSON.route("/admin/analytics/<string:query>.json", methods=["POST"])
 def analytics(query) -> dict:
     """Show certain analytics, only accessible with admin key"""
 

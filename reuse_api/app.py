@@ -11,7 +11,7 @@ from os import R_OK, access, environ, path
 from flask import Flask
 
 from reuse_api import config
-from reuse_api.views import html_blueprint, json_blueprint
+from reuse_api.views import HTML, JSON
 
 from .models import db
 from .scheduler import Scheduler
@@ -35,8 +35,8 @@ def create_app() -> Flask:
     app.config.from_object(config)
     app.logger.setLevel(logging.DEBUG)
 
-    app.register_blueprint(html_blueprint)
-    app.register_blueprint(json_blueprint)
+    app.register_blueprint(HTML)
+    app.register_blueprint(JSON)
 
     app.logger.debug("Running config: %s", app.config)
 
