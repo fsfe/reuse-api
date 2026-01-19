@@ -2,6 +2,8 @@ from os import environ
 
 import pytest
 
+from reuse_api import create_app
+
 TEST_REPO: str = "git.fsfe.org/reuse/api"
 
 
@@ -23,10 +25,7 @@ def app(requests_mock, tmp_json):
     environ["FORMS_URL"] = forms_url
     requests_mock.post(forms_url)
 
-    from reuse_api import create_app  # noqa: PLC0415
-
     app = create_app()
-
     app.config["TESTING"] = True
     app.config["WTF_CSRF_ENABLED"] = False
 
