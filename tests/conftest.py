@@ -10,6 +10,13 @@ from tempfile import NamedTemporaryFile
 import pytest
 
 
+def __tmp_json_file() -> str:
+    """Creates a temporary JSON file and returns it's path."""
+    with NamedTemporaryFile("w", delete=False) as repos:
+        repos.write(json_dumps({}))
+        return repos.name
+
+
 @pytest.fixture
 def client(_mock_forms_url, mocked_forms_app):
     """A test client for the app."""
@@ -26,8 +33,9 @@ def _mock_forms_url(requests_mock):
 
 
 @pytest.fixture
-def mocked_forms_app(tmp_repos):
-    environ["FORMS_FILE"] = tmp_repos
+def mocked_forms_app():
+
+    environ["FORMS_FILE"] = __tmp_json_file()
 
     from reuse_api import create_app  # noqa: PLC0415
 
@@ -37,10 +45,3 @@ def mocked_forms_app(tmp_repos):
     app.config["WTF_CSRF_ENABLED"] = False
 
     return app
-
-
-@pytest.fixture
-def tmp_repos():
-    with NamedTemporaryFile("w", delete=False) as repos:
-        repos.write(json_dumps({}))
-        return repos.name
