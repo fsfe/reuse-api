@@ -6,14 +6,13 @@
 
 import logging
 from atexit import register as atexit_register
-from os import R_OK, access, environ, path
+from os import R_OK, access, environ, path, makedirs
 
 from flask import Flask
 
 from reuse_api import config
 from reuse_api.views import HTML, JSON
 
-from .models import db
 from .scheduler import Scheduler
 
 
@@ -41,9 +40,7 @@ def create_app() -> Flask:
     app.logger.debug("Running config: %s", app.config)
 
     # Initialize database
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()
+    makedirs(config.REUSE_DB_PATH, exist_ok=True)
 
     # Initialize scheduler
     app.scheduler = Scheduler(app)
