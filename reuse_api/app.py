@@ -10,10 +10,11 @@ from os import R_OK, access, environ, path
 
 from flask import Flask
 
-from . import config
+from reuse_api import config
+from reuse_api.views import html_blueprint, json_blueprint
+
 from .models import db
 from .scheduler import Scheduler
-from .views import html_blueprint, json_blueprint
 
 
 def create_app():
