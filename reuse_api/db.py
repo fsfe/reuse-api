@@ -153,7 +153,7 @@ def _get_registered_repos(filter_func: Callable) -> list[str]:
     return [
         relpath(dirpath, DB_ROOT)
         for dirpath, dirnames, filenames in walk(DB_ROOT)
-        if dirpath.count("/") - DB_ROOT.count("/") == 2
+        if dirpath.count("/") - DB_ROOT.count("/") == 2  # noqa: PLR2004
         and filter_func(dirpath, dirnames, filenames)
     ]
 
