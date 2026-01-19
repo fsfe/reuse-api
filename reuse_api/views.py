@@ -30,7 +30,7 @@ HTML: Blueprint = Blueprint("html", __name__)
 JSON: Blueprint = Blueprint("json", __name__)
 
 
-@HTML.route("/")
+@HTML.get("/")
 def index() -> str:
     return render_template("index.jinja2", compliant_repos=Repository.projects().total)
 
@@ -57,7 +57,7 @@ def register() -> str:
     return render_template("register.jinja2", form=form)
 
 
-@HTML.route("/badge/<path:url>")
+@HTML.get("/badge/<path:url>")
 def badge(url: str) -> str:
     """The SVG badge for a repo"""
 
@@ -75,7 +75,7 @@ def badge(url: str) -> str:
     return result
 
 
-@HTML.route("/info/<path:url>")
+@HTML.get("/info/<path:url>")
 def info(url: str) -> str:
     """General info page for repo"""
 
@@ -108,7 +108,7 @@ def info(url: str) -> str:
     )
 
 
-@HTML.route("/sbom/<path:url>.spdx")
+@HTML.get("/sbom/<path:url>.spdx")
 def sbom(url: str) -> str:
     """SPDX SBOM in tag:value format"""
     # NOTE: This is a temporary measure to see if this feature is used
@@ -128,8 +128,8 @@ def handle_error(err) -> dict:
     return {"error": err.description}, err.code
 
 
-@JSON.route("/status/<path:url>")
-@JSON.route("/status/<path:url>.json")
+@JSON.get("/status/<path:url>")
+@JSON.get("/status/<path:url>.json")
 def status(url: str) -> dict:
     """Machine-readable information about a repo in JSON format"""
     if not Repository.is_registered(url):
@@ -149,8 +149,8 @@ def status(url: str) -> dict:
     }
 
 
-@HTML.route("/projects")
-@HTML.route("/projects/page/<int:page>")
+@HTML.get("/projects")
+@HTML.get("/projects/page/<int:page>")
 def projects(page: int = 1) -> str:
     """Show paginated table of compliant repositories"""
     return render_template("projects.jinja2", compliant_list=Repository.projects(page))
