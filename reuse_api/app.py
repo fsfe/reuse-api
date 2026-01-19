@@ -17,14 +17,14 @@ from .models import db
 from .scheduler import Scheduler
 
 
-def create_app():
+def create_app() -> Flask:
     if not access(config.FORMS_FILE, R_OK):
         raise PermissionError(
             "FORMS_FILE is not readable:", path.abspath(config.FORMS_FILE)
         )
 
     # create and configure the app
-    app = Flask(__name__.split(".")[0])
+    app: Flask = Flask(__name__.split(".")[0])
     app.config.from_object(config)
 
     # TODO: Make this configurable
