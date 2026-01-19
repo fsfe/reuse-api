@@ -8,8 +8,8 @@ from shutil import rmtree
 from subprocess import CompletedProcess, run
 from time import time
 
-from .config import REUSE_DB_PATH as DB_ROOT
 from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
+from .config import REUSE_DB_PATH as DB_ROOT
 
 
 class Status(StrEnum):
