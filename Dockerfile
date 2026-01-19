@@ -17,8 +17,10 @@ RUN apk add --no-cache \
     py3-requests \
     # WSGI HTTP server
     py3-gunicorn \
-    # Required for the scripts to work
-    git openssh-client-default \
+    # Obtaining the HEAD
+    git \
+    # Connection to api-worker
+    openssh-client-default \
     # For installing the application
     py3-pip py3-setuptools
 # We do not break system packages as this is an original
