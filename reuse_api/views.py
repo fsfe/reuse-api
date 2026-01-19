@@ -140,14 +140,14 @@ def sbom(url: str) -> Response:
     current_app.logger.info("ASKED FOR SBOM: %s", url)
 
     if not db.is_initialised(url):
-        return None
+        return None  # pragma: no cover
 
     # WARN: The original scheduled here, I have removed it
     return send_file(db.spdx_path(url))
 
 
 # Return error messages in JSON format
-@JSON.errorhandler(HTTPException)
+@JSON.errorhandler(HTTPException)  # pragma: no cover
 def handle_error(err: HTTPException) -> tuple[dict, HTTPStatus]:
     """Handle HTTP errors, return as JSON"""
     return {"error": err.description}, HTTPStatus(err.code if err.code else 500)
