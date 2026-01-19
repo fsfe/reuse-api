@@ -23,13 +23,13 @@ It assumes that the file is a list of JSONs of the following structure:
 ```
 """
 
-from reuse_api.db import is_registered, register
-
-from .config import FORMS_FILE
-
 from json import dump, loads
 from os import rename
 from os.path import isfile
+
+from reuse_api.db import register
+
+from .config import FORMS_FILE
 
 
 # no-cover as it's just stdlib functions
