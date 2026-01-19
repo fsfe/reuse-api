@@ -160,7 +160,7 @@ def projects(page: int = 1) -> str:
 # ADMINISTRATIVE FUNCTIONS
 # Only accessible by providing the valid admin key via POST request
 # ------------------------------------------------------------------------------
-@HTML.route("/admin/reset/<path:url>", methods=["POST"])
+@HTML.post("/admin/reset/<path:url>")
 def reset(url: str) -> str:
     """Unset the hash of a repository and trigger a new check"""
 
@@ -177,7 +177,7 @@ def reset(url: str) -> str:
     return f"Repository not registered: {url}"
 
 
-@JSON.route("/admin/analytics/<string:query>.json", methods=["POST"])
+@JSON.post("/admin/analytics/<string:query>.json")
 def analytics(query) -> dict:
     """Show certain analytics, only accessible with admin key"""
 
