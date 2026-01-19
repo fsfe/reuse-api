@@ -2,8 +2,8 @@
 
 from os import getenv
 
-
-# Configuration for Flask
+# Flask configuration
+TESTING: bool = bool(getenv("FLASK_TESTING", default="0"))
 SECRET_KEY: str = getenv("SECRET_KEY", default="secret_key")
 
 # Admin key for the REUSE API, necessary for some operations
