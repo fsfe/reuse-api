@@ -18,22 +18,13 @@ def __tmp_json_file() -> str:
 
 
 @pytest.fixture
-def client(_mock_forms_url, mocked_forms_app):
-    """A test client for the app."""
-    yield mocked_forms_app.test_client()
-    mocked_forms_app.scheduler.join()
+def mocked_app(requests_mock):
+    """Returns a mocked app with TESTING=True, no CRSF and mocked forms"""
 
-
-@pytest.fixture
-def _mock_forms_url(requests_mock):
-    url = "http://test-url.fsfe"
-    environ["FORMS_URL"] = url
-
-    requests_mock.post(url)
-
-
-@pytest.fixture
-def mocked_forms_app():
+    # Mock forms
+    forms_url: str = "http://totally.forms"
+    environ["FORMS_URL"] = forms_url
+    requests_mock.post(forms_url)
 
     environ["FORMS_FILE"] = __tmp_json_file()
 
@@ -45,3 +36,10 @@ def mocked_forms_app():
     app.config["WTF_CSRF_ENABLED"] = False
 
     return app
+
+
+@pytest.fixture
+def client(mocked_app):
+    """A test client for the app."""
+    yield mocked_app.test_client()
+    mocked_app.scheduler.join()
