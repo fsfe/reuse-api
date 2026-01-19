@@ -4,8 +4,8 @@
 
 """Flask application factory."""
 
-import atexit
 import logging
+from atexit import register as atexit_register
 from os import R_OK, access, environ, path
 
 from flask import Flask
@@ -46,7 +46,7 @@ def create_app():
     # can't find documentation for this.
     app.scheduler.run()
 
-    atexit.register(app.scheduler.join)
+    atexit_register(app.scheduler.join)
 
     # Register blueprints
     app.register_blueprint(html_blueprint)
