@@ -35,13 +35,21 @@ def index() -> str:
     return render_template("index.jinja2", compliant_repos=Repository.projects().total)
 
 
-@HTML.route("/register", methods=["GET", "POST"])
-def register() -> str:
-    """Registration form for new projects"""
+@HTML.get("/register")
+def register_get() -> str:
+    """Display the registration form."""
     form = RegisterForm()
     # Extract project's url from the request
     if request.args.get("url"):
         form.project.data = request.args.get("url")
+
+    return render_template("register.jinja2", form=form)
+
+
+@HTML.post("/register")
+def register_post() -> str:
+    """Process the registration form."""
+    form = RegisterForm()
 
     if form.validate_on_submit():
         params = {"appid": "reuse-api", **form.data}
