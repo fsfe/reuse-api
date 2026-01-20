@@ -5,6 +5,12 @@ SPDX-PackageSupplier = "Carmen Bianca Bakker <carmenbianca@fsfe.org>"
 SPDX-PackageDownloadLocation = "https://git.fsfe.org/reuse/api"
 
 # Code
+[[annotations]] # Actual software
+path = "reuse_api/*.py"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Free Software Foundation Europe e.v."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
 [[annotations]] # Tests
 path = "tests/*.py"
 precedence = "aggregate"
