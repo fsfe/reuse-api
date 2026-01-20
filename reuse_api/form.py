@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 2025 Free Software Foundation Europe e.V.
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-
 from flask import url_for
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, ValidationError
