@@ -30,16 +30,16 @@ precedence = "aggregate"
 SPDX-FileCopyrightText = "2019 Free Software Foundation Europe e.v."
 SPDX-License-Identifier = "CC0-1.0"
 
+## Jinja2 templates
 [[annotations]]
 path = "reuse_api/templates/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2019 Free Software Foundation Europe e.V."
 SPDX-License-Identifier = "GPL-3.0-or-later"
-
 [[annotations]]
-path = "reuse_api/templates/base/**"
+path = "reuse_api/templates/base/*"
 precedence = "aggregate"
-SPDX-FileCopyrightText = ["2015 Omar Abdelhafith <o.arrabi@me.com>", "2019 Free Software Foundation Europe e.V."]
+SPDX-FileCopyrightText = "2015 Omar Abdelhafith <o.arrabi@me.com>"
 SPDX-License-Identifier = "MIT"
 
 # Fonts
