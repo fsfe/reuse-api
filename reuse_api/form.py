@@ -36,6 +36,14 @@ def sanitize_url(url: str) -> str:
     return url
 
 
+def repo_reachable(form, url_field) -> None:  # noqa: ARG001
+    """Validator assuring that the repository is reachable"""
+    try:
+        determine_protocol(url_field.data)
+    except InvalidRepositoryError:
+        raise ValidationError("Git repository is not reachable")
+
+
 def repo_unregistered(form, url_field) -> None:  # noqa: ARG001
     """Validator assuring that the repository is not registered already"""
     if Repository.is_registered(url_field.data):
@@ -47,14 +55,6 @@ def repo_unregistered(form, url_field) -> None:  # noqa: ARG001
 
 class RegisterForm(FlaskForm):
     """Form class for repository registration page"""
-
-    @staticmethod  # noqa as form is required
-    def _validate_url(form, url_field) -> None:  # noqa: ARG004
-        """Check if URL is an unregistered git repository"""
-        try:
-            determine_protocol(url_field.data)
-        except InvalidRepositoryError:
-            raise ValidationError("Not a Git repository")
 
     name = StringField(label="Your name", validators=[InputRequired()])
     confirm = StringField(
@@ -74,7 +74,7 @@ class RegisterForm(FlaskForm):
             "git://. We automatically try git, https, and http as schemas."
         ),
         filters=[sanitize_url],
-        validators=[InputRequired(), _validate_url, repo_unregistered],
+        validators=[InputRequired(), repo_reachable, repo_unregistered],
     )
     wantupdates = BooleanField(
         label=(
