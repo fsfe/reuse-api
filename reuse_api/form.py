@@ -9,18 +9,18 @@ from .models import Repository
 from .scheduler import InvalidRepositoryError, determine_protocol
 
 
+def sanitize_url(url: str) -> str:
+    """Filter removing schema and extension from an URL"""
+    if url:
+        if (scheme := url.find("://")) != -1:
+            url = url[scheme + 3 :]  # noqa: E203
+        if url.lower().endswith(".git"):
+            url = url[:-4]
+    return url
+
+
 class RegisterForm(FlaskForm):
     """Form class for repository registration page"""
-
-    @staticmethod
-    def _sanitize_url(url: str) -> str:
-        """Remove schema and extension from an URL"""
-        if url:
-            if (scheme := url.find("://")) != -1:
-                url = url[scheme + 3 :]  # noqa: E203
-            if url.lower().endswith(".git"):
-                url = url[:-4]
-        return url
 
     @staticmethod  # noqa as form is required
     def _validate_url(form, url_field) -> None:  # noqa: ARG004
@@ -54,7 +54,7 @@ class RegisterForm(FlaskForm):
             "Please add your project URL without a schema like http:// or "
             "git://. We automatically try git, https, and http as schemas."
         ),
-        filters=[_sanitize_url],
+        filters=[sanitize_url],
         validators=[InputRequired(), _validate_url],
     )
     wantupdates = BooleanField(
