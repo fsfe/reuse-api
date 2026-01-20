@@ -1,3 +1,5 @@
+"""RegisterForm class and it's filters & validators."""
+
 from flask import url_for
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, ValidationError
