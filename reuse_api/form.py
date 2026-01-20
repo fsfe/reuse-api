@@ -32,9 +32,8 @@ class RegisterForm(FlaskForm):
 
         if Repository.is_registered(url_field.data):
             info_page: str = url_for("html.info", url=url_field.data, _external=False)
-            info_page_url: str = f'<a href="{info_page}">here</a>'
             raise ValidationError(
-                f"Project is already registered. See its REUSE status {info_page_url}."
+                f'Project is <a href="{info_page}">already registered</a>.'
             )
 
     name = StringField(label="Your name", validators=[InputRequired()])
