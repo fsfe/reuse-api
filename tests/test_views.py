@@ -5,9 +5,12 @@
 from http import HTTPStatus
 
 
-PROJECT: str = "my_project"
-EMAIL: str = "my_email@fsfe.org"
 FSFE_URL: str = "fsfe.org/reuse/api"
+
+
+def gendata(url: str, email: str = "my_email@fsfe.org", name="some_name") -> dict:
+    """Generates POST data contents for testing."""
+    return {"project": url, "confirm": email, "name": name}
 
 
 def test_root_url(client):
@@ -18,46 +21,26 @@ def test_root_url(client):
 
 
 def test_register(client):
-    data = {
-        "name": PROJECT,
-        "confirm": EMAIL,
-        "project": "git." + FSFE_URL,
-    }
-    response = client.post("/register", data=data)
+    response = client.post("/register", data=gendata("git." + FSFE_URL))
 
     assert response.status_code == HTTPStatus.ACCEPTED
 
 
 def test_register_double_with_protocol(client):
-    data = {
-        "name": PROJECT,
-        "confirm": EMAIL,
-        "project": "https://git." + FSFE_URL,
-    }
-    response = client.post("/register", data=data)
+    response = client.post("/register", data=gendata("https://git." + FSFE_URL))
 
     assert response.status_code == HTTPStatus.ACCEPTED
 
 
 def test_register_failed_not_a_git_repository(client):
-    data = {
-        "name": PROJECT,
-        "confirm": EMAIL,
-        "project": FSFE_URL,
-    }
-    response = client.post("/register", data=data)
+    response = client.post("/register", data=gendata(FSFE_URL))
 
     assert response.status_code == HTTPStatus.OK
     assert "Not a Git repository" in response.data.decode()
 
 
 def test_register_failed_due_to_schema(client):
-    data = {
-        "name": PROJECT,
-        "confirm": EMAIL,
-        "project": "git.fsfe.org:reuse/api",
-    }
-    response = client.post("/register", data=data)
+    response = client.post("/register", data=gendata("git.fsfe.org:reuse/api"))
 
     assert response.status_code == HTTPStatus.OK
     assert "Not a Git repository" in response.data.decode()
