@@ -15,7 +15,7 @@ class RegisterForm(FlaskForm):
     """Form class for repository registration page"""
 
     @staticmethod
-    def __sanitize_url(url: str) -> str:
+    def _sanitize_url(url: str) -> str:
         """Remove schema and extension from an URL"""
         if url:
             if (scheme := url.find("://")) != -1:
@@ -25,7 +25,7 @@ class RegisterForm(FlaskForm):
         return url
 
     @staticmethod  # noqa as form is required
-    def __validate_url(form, url_field) -> None:  # noqa: ARG004
+    def _validate_url(form, url_field) -> None:  # noqa: ARG004
         """Check if URL is an unregistered git repository"""
         try:
             determine_protocol(url_field.data)
@@ -56,8 +56,8 @@ class RegisterForm(FlaskForm):
             "Please add your project URL without a schema like http:// or "
             "git://. We automatically try git, https, and http as schemas."
         ),
-        filters=[__sanitize_url],
-        validators=[InputRequired(), __validate_url],
+        filters=[_sanitize_url],
+        validators=[InputRequired(), _validate_url],
     )
     wantupdates = BooleanField(
         label=(
