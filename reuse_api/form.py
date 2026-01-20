@@ -20,7 +20,7 @@ def is_reachable(url: str, timeout: int = 5) -> bool:
             timeout=timeout,
             check=False,
         )
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired:  # pragma: no cover
         return False
 
     return result.returncode == 0
