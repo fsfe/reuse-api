@@ -5,7 +5,7 @@
 from http import HTTPStatus
 
 
-FSFE_URL: str = "fsfe.org/reuse/api"
+REPO: str = "fsfe.org/reuse/api"
 
 
 def gendata(url: str, email: str = "my_email@fsfe.org", name="some_name") -> dict:
@@ -21,19 +21,19 @@ def test_root_url(client):
 
 
 def test_register(client):
-    response = client.post("/register", data=gendata("git." + FSFE_URL))
+    response = client.post("/register", data=gendata("git." + REPO))
 
     assert response.status_code == HTTPStatus.ACCEPTED
 
 
 def test_register_double_with_protocol(client):
-    response = client.post("/register", data=gendata("https://git." + FSFE_URL))
+    response = client.post("/register", data=gendata("https://git." + REPO))
 
     assert response.status_code == HTTPStatus.ACCEPTED
 
 
 def test_register_failed_not_a_git_repository(client):
-    response = client.post("/register", data=gendata(FSFE_URL))
+    response = client.post("/register", data=gendata(REPO))
 
     assert response.status_code == HTTPStatus.OK
     assert "Not a Git repository" in response.data.decode()
