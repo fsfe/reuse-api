@@ -18,8 +18,8 @@ SPDX-FileCopyrightText = "2025 Free Software Foundation Europe e.v."
 SPDX-License-Identifier = "GPL-3.0-or-later"
 
 # Assets
-[[annotations]]
-path = "reuse_api/badges/**.svg"
+[[annotations]] # SVG badges
+path = "reuse_api/badges/*"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2019 Free Software Foundation Europe e.v."
 SPDX-License-Identifier = "CC0-1.0"
