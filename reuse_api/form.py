@@ -1,5 +1,8 @@
 """RegisterForm class and it's filters & validators."""
 
+# Validators require (form, form_field)
+# ruff: noqa: ARG001, ANN001
+
 import subprocess
 
 from flask import url_for
@@ -36,7 +39,7 @@ def sanitize_url(url: str) -> str:
     return url
 
 
-def repo_reachable(form, url_field) -> None:  # noqa: ARG001
+def repo_reachable(form, url_field) -> None:
     """Validator assuring that the repository is reachable"""
     try:
         determine_protocol(url_field.data)
@@ -44,7 +47,7 @@ def repo_reachable(form, url_field) -> None:  # noqa: ARG001
         raise ValidationError("Git repository is not reachable")
 
 
-def repo_unregistered(form, url_field) -> None:  # noqa: ARG001
+def repo_unregistered(form, url_field) -> None:
     """Validator assuring that the repository is not registered already"""
     if Repository.is_registered(url_field.data):
         info_page: str = url_for("html.info", url=url_field.data, _external=False)
