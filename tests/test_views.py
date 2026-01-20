@@ -44,7 +44,6 @@ def test_register_failed_not_a_git_repository(client):
         "name": PROJECT,
         "confirm": EMAIL,
         "project": FSFE_URL,
-        "wantupdates": True,
     }
     response = client.post("/register", data=data)
 
@@ -57,7 +56,6 @@ def test_register_failed_due_to_schema(client):
         "name": PROJECT,
         "confirm": EMAIL,
         "project": "git.fsfe.org:reuse/api",
-        "wantupdates": True,
     }
     response = client.post("/register", data=data)
 
