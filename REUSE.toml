@@ -42,6 +42,7 @@ precedence = "aggregate"
 SPDX-FileCopyrightText = ["2015 Omar Abdelhafith <o.arrabi@me.com>", "2019 Free Software Foundation Europe e.V."]
 SPDX-License-Identifier = "MIT"
 
+# Fonts
 [[annotations]]
 path = "reuse_api/static/fonts/roboto/**"
 precedence = "aggregate"
