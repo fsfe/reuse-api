@@ -1,8 +1,8 @@
 import pytest
-from json import loads
 
+from json import loads
 from os import remove
-from os.path import getsize
+from os.path import getsize, isfile
 
 from reuse_api import adapter
 from reuse_api.db import is_registered
@@ -44,19 +44,36 @@ FORMS_CONTENTS: str = """
 FORMS_JSONS = loads(FORMS_CONTENTS)
 REPOS: list[str] = ["github.com/fkobi/date", "github.com/fkobi/openrc"]
 
-REPOS_FILE: str = "/tmp/reuse-repos.json"
-
 
 @pytest.fixture
-def file_empty() -> None:
-    try:
-        remove(REPOS_FILE)
-    except:
-        pass
+def tmp_reposfile(tmp_json) -> str:
+    """Creates a temporary json file filled with FORMS_CONTENTS"""
+    with open(tmp_json, "w") as f:
+        f.write(FORMS_CONTENTS)
+    return tmp_json
 
 
-def test_project_extraction() -> None:
-    assert REPOS == adapter.__jsons_to_strings(FORMS_JSONS)
+def test_move_and_add(tmp_reposfile) -> None:
+    newfile: str = tmp_reposfile + "~"
+
+    assert not isfile(newfile)
+
+    data = adapter.__move_and_read(tmp_reposfile)
+    assert data == loads(FORMS_CONTENTS)
+
+    assert not isfile(tmp_reposfile)
+    assert isfile(newfile)
+    remove(newfile)
+
+
+def test_extract() -> None:
+    jsons: list[dict] = loads(FORMS_CONTENTS)
+    assert isinstance(jsons, list)
+    assert isinstance(jsons[0], dict)
+
+    repos: list[str] = adapter.__extract_repos(loads(FORMS_CONTENTS))
+    assert isinstance(repos, list)
+    assert repos == REPOS
 
 
 def test_register_repos(db_empty) -> None:
@@ -71,15 +88,22 @@ def test_register_repos(db_empty) -> None:
     assert not adapter.__register_repos(REPOS)
 
 
-def test_mock_add(file_empty) -> None:
-    adapter.mock_add(REPOS[0], forms_file=REPOS_FILE)
-    single_size = getsize(REPOS_FILE)
-    adapter.mock_add(REPOS[0], forms_file=REPOS_FILE)
-    assert single_size < getsize(REPOS_FILE)
+def test_move_registrations(db_empty, tmp_reposfile) -> None:
+    assert adapter.move_registrations(tmp_reposfile) == REPOS
+    assert is_registered(REPOS[0])
+    assert is_registered(REPOS[1])
 
 
-def test_full(db_empty, file_empty) -> None:
+def test_mock_add(tmp_json) -> None:
+    remove(tmp_json)
+    adapter.mock_add(REPOS[0], forms_file=tmp_json)
+    single_size = getsize(tmp_json)
+    adapter.mock_add(REPOS[0], forms_file=tmp_json)
+    assert single_size < getsize(tmp_json)
+
+
+def test_full(db_empty, tmp_json) -> None:
     assert not is_registered(REPOS[0])
-    adapter.mock_add(REPOS[0], forms_file=REPOS_FILE)
+    adapter.mock_add(REPOS[0], forms_file=tmp_json)
     assert adapter.__register_repos(REPOS)
     assert is_registered(REPOS[1])
