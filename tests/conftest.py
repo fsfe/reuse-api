@@ -4,6 +4,7 @@ import pytest
 
 from reuse_api import create_app
 
+environ["GIT_TERMINAL_PROMPT"] = "0"
 TEST_REPO: str = "git.fsfe.org/reuse/api"
 
 
