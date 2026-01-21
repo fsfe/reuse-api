@@ -41,9 +41,7 @@ def sanitize_url(url: str) -> str:
 
 def repo_reachable(form, url_field) -> None:  # pragma: no cover
     """Validator assuring that the repository is reachable"""
-    try:
-        determine_protocol(url_field.data)
-    except InvalidRepositoryError:
+    if not is_reachable(url_field.data):
         raise ValidationError("Git repository is not reachable")
 
 
