@@ -5,6 +5,7 @@
 from http import HTTPStatus
 
 
+from reuse_api.adapter import move_registrations
 from reuse_api.db import is_registered, register
 
 from .conftest import TEST_REPO
@@ -32,3 +33,7 @@ def test_registration_mocked_forms(app, client, db_empty) -> None:
     response = client.post("/register", data=gendata(TEST_REPO))
     assert response.status_code == HTTPStatus.ACCEPTED
     assert not is_registered(TEST_REPO)
+
+    # full registration
+    assert move_registrations(app.config.get("FORMS_FILE")) == [TEST_REPO]
+    assert is_registered(TEST_REPO), "move_registrations did not register the repo"
