@@ -5,6 +5,7 @@
 # Test data
 database.sqlite
 repos.json
+repos.json~
 db/
 
 # Created by Python running locally
