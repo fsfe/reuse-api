@@ -58,7 +58,7 @@ def register_post() -> str:
         elif current_app.config.get("TESTING", False):
             current_app.logger.warning("Registered with mocked forms: %s", url)
             mock_add(form.project.data)
-        else:  # normal operation
+        else:  # pragma: no cover
             params = {"appid": "reuse-api", **form.data}
             params.pop("csrf_token", None)
             response = post(
