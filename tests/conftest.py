@@ -30,11 +30,12 @@ def mocked_app(requests_mock):
     app.config["TESTING"] = True
     app.config["WTF_CSRF_ENABLED"] = False
 
-    return app
+    yield app
+
+    app.scheduler.join()
 
 
 @pytest.fixture
 def client(mocked_app):
     """A test client for the app."""
-    yield mocked_app.test_client()
-    mocked_app.scheduler.join()
+    return mocked_app.test_client()
