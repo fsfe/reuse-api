@@ -53,5 +53,9 @@ select = [
   "W",     # pycodestyle warnings
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ARG001"] # incompatible with pytest style
+
+
 [tool.ruff.lint.isort]
 lines-after-imports = 2
