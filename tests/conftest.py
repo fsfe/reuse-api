@@ -16,7 +16,7 @@ def pytest_configure(config) -> None:
     config.addinivalue_line("markers", "reg: Tests involving the registration")
 
 
-def pytest_collection_modifyitems(config, items):
+def pytest_collection_modifyitems(config, items) -> None:
     for item in items:
         match item.fspath.basename:
             case "adapter_test.py":
