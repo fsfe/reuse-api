@@ -17,14 +17,9 @@ def tmp_json(tmp_path) -> str:
 
 
 @pytest.fixture
-def app(requests_mock, tmp_json):
+def app(tmp_json):
     """Returns a mocked app with TESTING=True, no CRSF and mocked forms"""
     environ["FORMS_FILE"] = tmp_json
-
-    # Mock forms
-    forms_url: str = "http://totally.forms"
-    environ["FORMS_URL"] = forms_url
-    requests_mock.post(forms_url)
 
     app = create_app()
     app.config["TESTING"] = True
