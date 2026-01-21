@@ -58,7 +58,7 @@ def register_post() -> tuple[str, HTTPStatus]:
             current_app.logger.warning("Registered with mocked forms: %s", url)
             if form.project.data:  # else branch should not happen
                 mock_add(form.project.data)
-        else:  # normal operation
+        else:  # pragma: no cover
             params = {"appid": "reuse-api", **form.data}
             params.pop("csrf_token", None)
             response = post(
