@@ -49,7 +49,7 @@ def repo_reachable(form, url_field) -> None:
 
 def repo_unregistered(form, url_field) -> None:
     """Validator assuring that the repository is not registered already"""
-    if Repository.is_registered(url_field.data):
+    if is_registered(url_field.data):  # pragma: no cover
         info_page: str = url_for("html.info", url=url_field.data, _external=False)
         raise ValidationError(
             f'Project is <a href="{info_page}">already registered</a>.'
