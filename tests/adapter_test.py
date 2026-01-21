@@ -1,11 +1,12 @@
-import pytest
-
 from json import loads
 from os import remove
 from os.path import getsize, isfile
 
+import pytest
+
 from reuse_api import adapter
 from reuse_api.db import is_registered
+
 
 FORMS_CONTENTS: str = """
 [

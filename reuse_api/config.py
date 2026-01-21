@@ -2,6 +2,7 @@
 
 from os import getenv
 
+
 # Flask configuration
 TESTING: bool = bool(getenv("FLASK_TESTING", default="0"))
 SECRET_KEY: str = getenv("SECRET_KEY", default="secret_key")

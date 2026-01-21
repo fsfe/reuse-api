@@ -2,10 +2,9 @@
 # function argumens are used to implement fixture dependencies
 from os.path import isfile
 
-import pytest
+from reuse_api import db
 
 from .conftest import TEST_REPO
-from reuse_api import db
 
 
 def test_name() -> None:
