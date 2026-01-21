@@ -13,7 +13,7 @@ def __tmp_json_file() -> str:
 
 
 @pytest.fixture
-def mocked_app(requests_mock):
+def app(requests_mock):
     """Returns a mocked app with TESTING=True, no CRSF and mocked forms"""
 
     # Mock forms
@@ -36,6 +36,6 @@ def mocked_app(requests_mock):
 
 
 @pytest.fixture
-def client(mocked_app):
+def client(app):
     """A test client for the app."""
-    return mocked_app.test_client()
+    return app.test_client()
