@@ -8,6 +8,29 @@ environ["GIT_TERMINAL_PROMPT"] = "0"
 TEST_REPO: str = "git.fsfe.org/reuse/api"
 
 
+def pytest_configure(config) -> None:
+    config.addinivalue_line("markers", "adapter: Tests involving the Forms->FS adapter")
+    config.addinivalue_line("markers", "db: Tests involving the filesystem database")
+    config.addinivalue_line("markers", "form: Tests involving the registration form")
+    config.addinivalue_line("markers", "views: Tests involving the frontend")
+    config.addinivalue_line("markers", "reg: Tests involving the registration")
+
+
+def pytest_collection_modifyitems(config, items):
+    for item in items:
+        match item.fspath.basename:
+            case "adapter_test.py":
+                item.add_marker(pytest.mark.adapter)
+            case "db_test.py":
+                item.add_marker(pytest.mark.db)
+            case "form_test.py":
+                item.add_marker(pytest.mark.db)
+            case "views_test.py":
+                item.add_marker(pytest.mark.views)
+            case "views_registration_test.py":
+                item.add_marker(pytest.mark.reg)
+
+
 @pytest.fixture
 def tmp_json(tmp_path) -> str:
     """Creates a temporary JSON file and returns it's path."""
