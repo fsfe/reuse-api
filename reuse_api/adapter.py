@@ -32,17 +32,16 @@ from reuse_api.db import register
 from .config import FORMS_FILE
 
 
-# no-cover as it's just stdlib functions
-def __move_and_read() -> list:  # pragma: no cover
+def __move_and_read(forms_file: str) -> list[dict]:
     """Moves the file and reads it into a list of JSONs"""
-    moved: str = FORMS_FILE + "~"
-    rename(FORMS_FILE, moved)
+    moved: str = forms_file + "~"
+    rename(forms_file, moved)
     with open(moved) as f:
-        return f.read()
+        return loads(f.read())
 
 
-def __jsons_to_strings(jsons: list) -> list[str]:
-    """Extracts the project names from the details provided by forms"""
+def __extract_repos(jsons: list[dict]) -> list[str]:
+    """Extracts the project names from the list of JSONs"""
     return [r["include_vars"]["project"] for r in jsons]
 
 
@@ -56,11 +55,10 @@ def __register_repos(urls: list[str]) -> bool:
     return all_good
 
 
-# no-cover as we assume that if the functions work this will also do
-def move_registrations() -> list[str]:  # pragma: no cover
+def move_registrations(forms_file: str) -> list[str]:
     """Adds `~` to the filename, extracts the URLs and registers them.
     If all of the registrations are new returns True."""
-    repos: list[str] = __contents_to_strings(__move_and_read())
+    repos: list[str] = __extract_repos(__move_and_read(forms_file))
     __register_repos(repos)
     return repos
 
