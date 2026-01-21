@@ -25,7 +25,7 @@ def create_app() -> Flask:
     logging.basicConfig(format="[%(asctime)s] %(levelname)s: %(message)s")
 
     # Perform sanity checks
-    if not access(config.FORMS_FILE, R_OK):
+    if not access(config.FORMS_FILE, R_OK):  # pragma: no cover
         raise PermissionError(
             "FORMS_FILE is not readable:", path.abspath(config.FORMS_FILE)
         )
