@@ -4,9 +4,8 @@
 
 from http import HTTPStatus
 
-
 from reuse_api.adapter import move_registrations
-from reuse_api.db import is_registered, register
+from reuse_api.db import is_registered
 
 from .conftest import TEST_REPO
 
