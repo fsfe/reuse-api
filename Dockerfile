@@ -34,8 +34,7 @@ FROM base AS dev
 # Instal linter & testing packages
 RUN apk add --no-cache \
     ruff \
-    py3-pytest-cov \
-    py3-requests-mock
+    py3-pytest-cov
 
 
 # Production

@@ -20,8 +20,15 @@ def test_registration_empty_post(client) -> None:
     assert response.status_code == HTTPStatus.OK
 
 
-def test_registration_without_forms(client, db_empty) -> None:
-    assert not is_registered(TEST_REPO)
+def test_registration_without_forms(app, client, db_empty) -> None:
+    app.config["FORMS_DISABLE"] = True
     response = client.post("/register", data=gendata(TEST_REPO))
     assert response.status_code == HTTPStatus.ACCEPTED
     assert is_registered(TEST_REPO)
+
+
+def test_registration_mocked_forms(app, client, db_empty) -> None:
+    app.config["FORMS_DISABLE"] = False
+    response = client.post("/register", data=gendata(TEST_REPO))
+    assert response.status_code == HTTPStatus.ACCEPTED
+    assert not is_registered(TEST_REPO)
