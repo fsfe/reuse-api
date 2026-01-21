@@ -20,7 +20,7 @@ from reuse_api import db
 from reuse_api.adapter import mock_add
 from reuse_api.form import RegisterForm
 
-from .config import ADMIN_KEY, FORMS_DISABLE, FORMS_URL
+from .config import ADMIN_KEY, FORMS_URL
 from .config import NB_REPOSITORY_BY_PAGINATION as PAGE_SIZE
 
 
@@ -51,7 +51,7 @@ def register_post() -> tuple[str, HTTPStatus]:
 
     if form.validate_on_submit():
         url: str | None = form.project.data
-        if FORMS_DISABLE:
+        if current_app.config.get("FORMS_DISABLE", False):
             current_app.logger.warning("Registered without forms: %s", url)
             db.register(form.project.data)
         elif current_app.config.get("TESTING", False):
