@@ -7,9 +7,15 @@ from .conftest import TEST_REPO
 
 def test_gets(client) -> None:
     """Tests simple GET requests."""
-    for p in ("/", "/projects", "/register"):
+    for p in ("/", "/projects"):
         response = client.get(p)
         assert response.status_code == HTTPStatus.OK, f"GET ON {p} is not OK"
+
+
+def test_register_with_parameter(client) -> None:
+    response = client.get("/register?url=" + TEST_REPO)
+    assert response.status_code == HTTPStatus.OK
+    assert TEST_REPO in response.data.decode()
 
 
 def test_info_and_badge_and_json(client, db_empty) -> None:
