@@ -10,7 +10,6 @@ from os import R_OK, access, environ, makedirs, path
 
 from flask import Flask
 
-from reuse_api import config
 from reuse_api.views import HTML, JSON
 
 from .scheduler import Scheduler
@@ -23,15 +22,15 @@ def create_app() -> Flask:
     # Configure logging format
     logging.basicConfig(format="[%(asctime)s] %(levelname)s: %(message)s")
 
-    # Perform sanity checks
-    if not access(config.FORMS_FILE, R_OK):  # pragma: no cover
-        raise PermissionError(
-            "FORMS_FILE is not readable:", path.abspath(config.FORMS_FILE)
-        )
-
     # Create and configure the app
     app: Flask = Flask(__name__.split(".")[0])
     app.config.from_object(config)  # noqa: F821
+    # Perform sanity checks
+    if not access(app.config.get("FORMS_FILE"), R_OK):  # pragma: no cover
+        raise PermissionError(
+            "FORMS_FILE is not readable:", path.abspath(app.config.get("FORMS_FILE"))
+        )
+
     app.logger.setLevel(logging.DEBUG)
 
     app.register_blueprint(HTML)
@@ -40,7 +39,7 @@ def create_app() -> Flask:
     app.logger.debug("Running config: %s", app.config)
 
     # Initialize database
-    makedirs(config.REUSE_DB_PATH, exist_ok=True)
+    makedirs(app.config.get("REUSE_DB_PATH"), exist_ok=True)
 
     # Initialize scheduler
     app.scheduler = Scheduler(app)
