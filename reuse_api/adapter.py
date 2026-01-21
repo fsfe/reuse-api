@@ -77,7 +77,7 @@ def mock_add(url: str, forms_file: str = FORMS_FILE) -> None:
     with open(forms_file, "r+") as f:
         # Step 2: Read the contents to a list of dicts
         contents: str = f.read()
-        entries: list[dict] = loads(contents) if contents else []
+        entries: list[dict] = list(loads(contents)) if contents else []
 
         # Step 3: Append new entry to the list
         new_entry: dict = {
