@@ -19,6 +19,9 @@ packages = ["reuse_api"]
 include-package-data = true
 
 # Tools config
+[tool.pytest.ini_options]
+addopts = "-v" # see verbose output
+
 [tool.ruff.lint]
 #  See https://docs.astral.sh/ruff/rules/ for information
 select = [
