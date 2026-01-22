@@ -1,5 +1,8 @@
 """This file hosts the functions responsible managing the filesystem database."""
 
+# HACK: This should be removed after the cheduler is implemented
+# ruff: noqa: T201
+
 from enum import StrEnum
 from os import makedirs, mkdir, remove, walk
 from os.path import exists, getmtime, isdir, isfile, join, relpath
