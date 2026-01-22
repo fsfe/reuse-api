@@ -2,7 +2,7 @@ from os import environ
 
 import pytest
 
-from reuse_api import create_app
+from reuse_api import create_app, db
 
 
 environ["GIT_TERMINAL_PROMPT"] = "0"
@@ -61,7 +61,6 @@ def client(app):
 
 
 # Database fixtures
-from reuse_api import db
 
 
 @pytest.fixture
