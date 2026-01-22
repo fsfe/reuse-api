@@ -1,8 +1,9 @@
-from os import environ
+from os import environ, makedirs
 
 import pytest
 
 from reuse_api import create_app, db
+from reuse_api.config import REUSE_DB_PATH
 
 
 environ["GIT_TERMINAL_PROMPT"] = "0"
@@ -10,11 +11,14 @@ TEST_REPO: str = "git.fsfe.org/reuse/api"
 
 
 def pytest_configure(config) -> None:
+    # Set test markers
     config.addinivalue_line("markers", "adapter: Tests involving the Forms->FS adapter")
     config.addinivalue_line("markers", "db: Tests involving the filesystem database")
     config.addinivalue_line("markers", "form: Tests involving the registration form")
     config.addinivalue_line("markers", "views: Tests involving the frontend")
     config.addinivalue_line("markers", "reg: Tests involving the registration")
+    # Create REUSE_DB_PATH
+    makedirs(REUSE_DB_PATH, exist_ok=True)
 
 
 def pytest_collection_modifyitems(config, items) -> None:
