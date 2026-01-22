@@ -21,6 +21,8 @@ RUN apk add --no-cache \
     git \
     # Connection to api-worker
     openssh-client-default \
+    # the REUSE tool itself
+    reuse \
     # For installing the application
     py3-pip py3-setuptools
 # We do not break system packages as this is an original
