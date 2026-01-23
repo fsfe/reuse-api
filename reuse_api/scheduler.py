@@ -61,11 +61,17 @@ class Runner(Thread):
     __app = None
     __queue = None
 
-    def __init__(self, queue, app):
-        if not self.__app:
-            self.__app = app
-        if not self.__queue:
-            self.__queue = queue
+    @classmethod
+    def initialise(cls, app, queue) -> None:
+        """Initialise the static members"""
+        if cls.__app or cls.__queue:
+            raise ValueError("Trying to initialise Runner more than once")
+        cls.__app = app
+        cls.__queue = queue
+
+    def __init__(self):
+        if not (self._app or self.__queue):
+            raise ValueError("Trying to create Runners before initialisation")
         self._running: bool = False
         super().__init__()
 
@@ -167,7 +173,8 @@ class Scheduler:
     def __init__(self, app):
         self._app = app
         self._queue = TaskQueue()
-        self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
+        Runner.initialise(self._app, self._queue)
+        self._runners = [Runner() for _ in range(NB_RUNNER)]
         self._running: bool = False
 
     def __contains__(self, task: Task) -> bool:
