@@ -1,27 +1,25 @@
-from json import dumps as json_dumps
 from os import environ
-from tempfile import NamedTemporaryFile
 
 import pytest
 
 
-def __tmp_json_file() -> str:
+@pytest.fixture
+def tmp_json(tmp_path) -> str:
     """Creates a temporary JSON file and returns it's path."""
-    with NamedTemporaryFile("w", delete=False) as repos:
-        repos.write(json_dumps({}))
-        return repos.name
+    tmpfile = tmp_path / "repos.json"
+    tmpfile.write_text("[]")
+    return str(tmpfile)
 
 
 @pytest.fixture
-def app(requests_mock):
+def app(requests_mock, tmp_json):
     """Returns a mocked app with TESTING=True, no CRSF and mocked forms"""
+    environ["FORMS_FILE"] = tmp_json
 
     # Mock forms
     forms_url: str = "http://totally.forms"
     environ["FORMS_URL"] = forms_url
     requests_mock.post(forms_url)
-
-    environ["FORMS_FILE"] = __tmp_json_file()
 
     from reuse_api import create_app  # noqa: PLC0415
 
