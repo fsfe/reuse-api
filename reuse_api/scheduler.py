@@ -58,12 +58,14 @@ def latest_hash(protocol: str, url: str) -> str:
 class Runner(Thread):
     """Defining one task in the schedule queue"""
 
+    __app = None
     __queue = None
 
     def __init__(self, queue, app):
+        if not self.__app:
+            self.__app = app
         if not self.__queue:
             self.__queue = queue
-        self._app = app
         self._running: bool = False
         super().__init__()
 
@@ -78,7 +80,7 @@ class Runner(Thread):
             except Empty:
                 continue
 
-            self._app.logger.debug("linting '%s'", task.url)
+            self.__app.logger.debug("linting '%s'", task.url)
             try:
                 cmd: list[str] = [
                     "ssh",
@@ -108,9 +110,9 @@ class Runner(Thread):
                     check=False,
                 )
             except subprocess.TimeoutExpired:
-                self._app.logger.warning("linting of '%s' timed out", task.url)
+                self.__app.logger.warning("linting of '%s' timed out", task.url)
             else:
-                self._app.logger.debug(
+                self.__app.logger.debug(
                     "finished linting '%s' return code is %d",
                     task.url,
                     result.returncode,
@@ -121,17 +123,17 @@ class Runner(Thread):
                 # Instead, we write a warning that should be monitored.
                 error_code: int = 255
                 if result.returncode == error_code:
-                    self._app.logger.warning(
+                    self.__app.logger.warning(
                         "SSH connection failed when checking '%s'. Not "
                         "updating database. STDERR was: %s",
                         task.url,
                         result.stderr.decode("UTF-8"),
                     )
                 else:
-                    with self._app.app_context():
+                    with self.__app.app_context():
                         output: str = result.stdout.decode("utf-8")
                         if not output:  # Check if output is not empty
-                            self._app.logger.warning(
+                            self.__app.logger.warning(
                                 "No output from linting command for url %s",
                                 task.url,
                             )
@@ -140,7 +142,9 @@ class Runner(Thread):
                             task.update_db(output)
 
                         except JSONDecodeError as e:
-                            self._app.logger.error("Failed to parse JSON output: %s", e)
+                            self.__app.logger.error(
+                                "Failed to parse JSON output: %s", e
+                            )
             finally:
                 self.__queue.done(task)
 
