@@ -58,8 +58,11 @@ def latest_hash(protocol: str, url: str) -> str:
 class Runner(Thread):
     """Defining one task in the schedule queue"""
 
+    __queue = None
+
     def __init__(self, queue, app):
-        self._queue = queue
+        if not self.__queue:
+            self.__queue = queue
         self._app = app
         self._running: bool = False
         super().__init__()
@@ -71,7 +74,7 @@ class Runner(Thread):
             try:
                 # The timeout allows the thread to check whether it is still
                 # supposed to be running every X seconds.
-                task = self._queue.get(timeout=5)
+                task = self.__queue.get(timeout=5)
             except Empty:
                 continue
 
@@ -139,7 +142,7 @@ class Runner(Thread):
                         except JSONDecodeError as e:
                             self._app.logger.error("Failed to parse JSON output: %s", e)
             finally:
-                self._queue.done(task)
+                self.__queue.done(task)
 
     @override
     def join(self, timeout=None) -> None:
