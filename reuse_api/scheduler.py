@@ -133,7 +133,7 @@ class Runner(Thread):
                         )
 
                     try:  # Update database entry with the results of this check
-                        with self._app.app_context():
+                        with self._app.app_context():  # Needed for the database session
                             task.update_db(output)
 
                     except JSONDecodeError as e:
