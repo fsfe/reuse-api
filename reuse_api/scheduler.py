@@ -161,14 +161,14 @@ class Scheduler:
         self._app = app
         self._queue = TaskQueue()
         self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
-        self._running: bool = False
+        self.__running: bool = False
 
     def __contains__(self, task: Task) -> bool:
         return task in self._queue
 
     def __add_task(self, task: Task) -> None:
         """Add a repository to the check queue"""
-        if not self._running:
+        if not self.__running:
             current_app.logger.warning(
                 "cannot add task to queue when scheduler is not running"
             )
@@ -186,7 +186,7 @@ class Scheduler:
 
     def run(self) -> None:
         """Start scheduler"""
-        self._running = True
+        self.__running = True
         for runner in self._runners:
             runner.start()
 
@@ -194,7 +194,7 @@ class Scheduler:
         self._app.logger.debug("finishing the queue")
         self._queue.join()
         self._app.logger.debug("stopping all threads")
-        self._running = False
+        self.__running = False
         for runner in self._runners:
             runner.join()
         self._app.logger.debug("finished stopping all threads")
