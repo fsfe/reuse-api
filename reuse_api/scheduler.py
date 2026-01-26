@@ -61,13 +61,13 @@ class Runner(Thread):
     def __init__(self, queue, app):
         self._queue = queue
         self._app = app
-        self._running: bool = False
+        self.__running: bool = False
         super().__init__()
 
     @override
     def run(self):
-        self._running = True
-        while self._running:
+        self.__running = True
+        while self.__running:
             try:
                 # The timeout allows the thread to check whether it is still
                 # supposed to be running every X seconds.
@@ -143,7 +143,7 @@ class Runner(Thread):
 
     @override
     def join(self, timeout=None) -> None:
-        self._running = False
+        self.__running = False
         super().join()
 
 
