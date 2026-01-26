@@ -125,19 +125,19 @@ class Runner(Thread):
                         result.stderr.decode("UTF-8"),
                     )
                 else:
-                    with self._app.app_context():
-                        output: str = result.stdout.decode("utf-8")
-                        if not output:  # Check if output is not empty
-                            self._app.logger.warning(
-                                "No output from linting command for url %s",
-                                task.url,
-                            )
+                    output: str = result.stdout.decode("utf-8")
+                    if not output:  # Check if output is not empty
+                        self._app.logger.warning(
+                            "No output from linting command for url %s",
+                            task.url,
+                        )
 
-                        try:  # Update database entry with the results of this check
+                    try:  # Update database entry with the results of this check
+                        with self._app.app_context():
                             task.update_db(output)
 
-                        except JSONDecodeError as e:
-                            self._app.logger.error("Failed to parse JSON output: %s", e)
+                    except JSONDecodeError as e:
+                        self._app.logger.error("Failed to parse JSON output: %s", e)
             finally:
                 self._queue.done(task)
 
