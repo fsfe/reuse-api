@@ -163,9 +163,6 @@ class Scheduler:
         self._runners = [Runner(self._queue, self._app) for _ in range(NB_RUNNER)]
         self.__running: bool = False
 
-    def __contains__(self, task: Task) -> bool:
-        return task in self._queue
-
     def __add_task(self, task: Task) -> None:
         """Add a repository to the check queue"""
         if not self.__running:
@@ -174,7 +171,7 @@ class Scheduler:
             )
             return False
 
-        if task in self:
+        if task in self._queue:
             current_app.logger.debug("Task already enqueued: %s", task.url)
             return False
 
@@ -221,7 +218,7 @@ class Scheduler:
             repository = Repository.create(url=url)
             if repository:
                 self.__add_task(task_of_repository)
-        elif task_of_repository in self:
+        elif task_of_repository in self._queue:
             current_app.logger.debug("Task enqueued: %s", url)
 
         elif force:
