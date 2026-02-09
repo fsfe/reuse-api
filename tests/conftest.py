@@ -55,8 +55,6 @@ def app(tmp_json):
 
     yield app
 
-    app.scheduler.join()
-
 
 @pytest.fixture
 def client(app):

@@ -13,8 +13,6 @@ from flask import Flask
 
 from reuse_api.views import HTML, JSON
 
-from .scheduler import Scheduler
-
 
 def __formsfile_checks(forms_file: str) -> None:
     """Makes sure that FORMS_FILE is there and readable."""
@@ -50,12 +48,5 @@ def create_app() -> Flask:
 
     # Initialize database
     makedirs(str(app.config.get("REUSE_DB_PATH")), exist_ok=True)
-
-    # Initialize scheduler
-    app.scheduler = Scheduler(app)
-    # FIXME: This is ideally only run when the app is fully "started", but I
-    # can't find documentation for this.
-    app.scheduler.run()
-    atexit_register(app.scheduler.join)
 
     return app
