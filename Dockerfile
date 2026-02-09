@@ -19,8 +19,6 @@ RUN apk add --no-cache \
     py3-gunicorn \
     # Obtaining the HEAD
     git \
-    # Connection to api-worker
-    openssh-client-default \
     # the REUSE tool itself
     reuse \
     # For installing the application
