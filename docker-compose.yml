@@ -14,13 +14,10 @@ services:
       FORMS_FILE: "/var/lib/reuse-api/forms/repos.json"
       SECRET_KEY: "${SECRET_KEY}"
       ADMIN_KEY: "${ADMIN_KEY}"
-      SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:${SECRET_KEY}@reuse-db/reuse"
       SSH_PORT: 11122
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/var/lib/reuse-api}"
       - "/srv/forms/reuse-api:/var/lib/reuse-api/forms:ro" # this file gets updated by forms
-    depends_on:
-      - reuse-db
     ports:
       - "6360:8000"
     labels:
@@ -31,16 +28,3 @@ services:
       options:
         max-file: 5
         max-size: 100m
-
-  reuse-db:
-    container_name: reuse-db
-    image: postgres:17-alpine
-    restart: always
-    environment:
-      POSTGRES_USER: fsfe
-      POSTGRES_PASSWORD: "${SECRET_KEY}"
-      POSTGRES_DB: reuse
-    expose:
-      - "5432"
-    volumes:
-      - "/srv/reuse-api/db/data:/var/lib/postgresql/data"

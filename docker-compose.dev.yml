@@ -18,44 +18,15 @@ services:
       REUSE_API: "reuse-api-worker"
       SECRET_KEY: "${SECRET_KEY:-verysecretkey}"
       ADMIN_KEY: "${ADMIN_KEY:-myadminkey}"
-      SQLALCHEMY_DATABASE_URI: "postgresql://fsfe:fsfe@reuse-db/reuse"
-      SSH_PORT: 22
-      SSH_USER: "root"
     volumes:
       - ./reuse_api:/var/lib/reuse-api/reuse_api
-      - ./api-worker/worker-setup/files:/var/lib/reuse-api/.ssh
       - ./forms/store/reuse-api/:/var/lib/reuse-api/forms/:ro
-    depends_on:
-      - reuse-db
     ports:
       - "27000:8000"
     networks:
       - default
       - forms_default
     command: "flask --debug run"
-
-  reuse-db:
-    container_name: reuse-db
-    image: postgres:17-alpine
-    restart: always
-    environment:
-      POSTGRES_USER: fsfe
-      POSTGRES_PASSWORD: fsfe
-      POSTGRES_DB: reuse
-    ports:
-      - "27001:5432"
-
-  reuse-api-worker:
-    container_name: reuse-api-worker
-    image: reuse-api-worker
-    restart: always
-    build:
-      context: api-worker
-    expose:
-      - "22"
-    volumes:
-      # Docker in container uses the host's Docker socket
-      - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
   forms_default:
