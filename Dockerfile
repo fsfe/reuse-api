@@ -11,8 +11,6 @@ COPY . .
 RUN apk add --no-cache \
     # Flask with WTForms & email-validator for it
     py3-flask-wtf py3-email-validator \
-    # ORM wrapper interface & postgres implementation
-    py3-flask-sqlalchemy py3-psycopg2 \
     # HTTP library
     py3-requests \
     # WSGI HTTP server
