@@ -4,6 +4,3 @@
 [submodule "forms"]
 	path = forms
 	url = https://git.fsfe.org/fsfe-system-hackers/forms.git
-[submodule "api-worker"]
-	path = api-worker
-	url = https://git.fsfe.org/reuse/api-worker.git
