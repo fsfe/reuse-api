@@ -11,6 +11,7 @@ from os.path import isfile
 
 from flask import Flask
 
+from reuse_api.manager import Manager, manager
 from reuse_api.views import HTML, JSON
 
 
@@ -48,5 +49,8 @@ def create_app() -> Flask:
 
     # Initialize database
     makedirs(str(app.config.get("REUSE_DB_PATH")), exist_ok=True)
+
+    app.manager: Manager = manager
+    atexit_register(manager.cleanup)
 
     return app

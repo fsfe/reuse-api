@@ -53,7 +53,7 @@ def app(tmp_json):
     app.config["TESTING"] = True
     app.config["WTF_CSRF_ENABLED"] = False
 
-    yield app
+    return app
 
 
 @pytest.fixture

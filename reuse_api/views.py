@@ -103,11 +103,12 @@ def info(url: str) -> tuple[str, HTTPStatus]:
         return render_template("unregistered.html", url=url), HTTPStatus.NOT_FOUND
 
     if not db.is_initialised(url):
-        # WARN: The original scheduled here, I have removed it
+        current_app.manager.handle(url)
         return (
             render_template("uninitialised.html", project_name=db.name(url)),
             HTTPStatus.FAILED_DEPENDENCY,
         )
+    current_app.manager.handle(url)
 
     timestr: str = datetime.fromtimestamp(db.check_date(url)).strftime("%d %b %Y %X")
     # Handle normal records
@@ -143,7 +144,8 @@ def sbom(url: str) -> Response:
     if not db.is_initialised(url):
         return None  # pragma: no cover
 
-    # WARN: The original scheduled here, I have removed it
+    current_app.manager.handle(url)
+
     return send_file(db.spdx_path(url))
 
 
@@ -160,7 +162,8 @@ def status(url: str) -> dict:
     if not db.is_registered(url):
         abort(HTTPStatus.NOT_FOUND)
 
-    # WARN: The original scheduled here, I have removed it
+    current_app.manager.handle(url)
+
     timestr: str = datetime.fromtimestamp(db.check_date(url)).isoformat()
     return {
         "hash": db.head(url),

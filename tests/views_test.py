@@ -41,7 +41,7 @@ def test_info_and_badge_and_json(client, db_empty) -> None:
     response = client.get(url)
     assert (
         response.status_code == HTTPStatus.FAILED_DEPENDENCY
-    ), "Uninitialised info is not FAILED_DEPENDENCY"
+    ), f"Uninitialised's info/ is not FAILED_DEPENDENCY but {response.status_code}"
 
     response = client.get(f"/badge/{TEST_REPO}")
     assert response.status_code == HTTPStatus.OK, "Uninitialised badge is not OK"

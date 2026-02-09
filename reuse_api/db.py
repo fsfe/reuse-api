@@ -212,7 +212,6 @@ def update(repo: str) -> int:
     if not __lock(repo):  # could not lock, another process is doing that
         return 0  # REVIEW: maybe have an enum for this?
     script_name: str = "update-entry.sh"
-    print("LOG: Running")
     proc: CompletedProcess = run(
         [
             "sh",
@@ -223,7 +222,6 @@ def update(repo: str) -> int:
         timeout=UPDATE_TIMEOUT,
         check=False,  # It can fail
     )
-    print("LOG: done")
     __unlock(repo)
     return proc.returncode
 
