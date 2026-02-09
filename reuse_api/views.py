@@ -17,7 +17,7 @@ from requests import post
 from werkzeug.exceptions import HTTPException
 
 from reuse_api import db
-from reuse_api.adapter import mock_add
+from reuse_api.adapter import mock_add, move_registrations
 from reuse_api.form import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
@@ -68,6 +68,7 @@ def register_post() -> tuple[str, HTTPStatus]:
             )
             if not response.ok:
                 return response.text, HTTPStatus(response.status_code)
+            move_registrations(str(current_app.config.get("FORMS_FILE")))
         return (
             render_template("register-success.html", project=url),
             HTTPStatus.ACCEPTED,
