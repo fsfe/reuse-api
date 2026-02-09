@@ -103,6 +103,11 @@ def check_date(repo: str) -> float:  # pragma: no cover
     return getmtime(_path_head(repo))
 
 
+def is_older_than(repo: str, age_in_seconds: int) -> bool:
+    """Checks if the HEAD file is older than age_in_seconds."""
+    return time() - check_date(repo) >= age_in_seconds
+
+
 # wrapper for check_date
 def is_initialised(repo: str) -> bool:
     "Returns True if HEAD exists"
