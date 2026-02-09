@@ -10,16 +10,6 @@ SECRET_KEY: str = getenv("SECRET_KEY", default="secret_key")
 # Admin key for the REUSE API, necessary for some operations
 ADMIN_KEY: str = getenv("ADMIN_KEY", default="admin_key")
 
-# Configuration for the repository storage
-# NOTE: A relative path currently (Flask-SQLAlchemy < 3.0) is relative to the
-# application root, not relative to the current working directory! So we have
-# to define an absolute path.
-# See also https://github.com/pallets/flask-sqlalchemy/issues/462
-SQLALCHEMY_DATABASE_URI: str = getenv(
-    "SQLALCHEMY_DATABASE_URI", default="sqlite:///:memory:"
-)
-SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
-
 # Configuration for the form server used for registration
 FORMS_URL: str = getenv("FORMS_URL", default="https://forms.fsfe.org/email")
 FORMS_FILE: str = getenv("FORMS_FILE", default="repos.json")
