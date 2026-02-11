@@ -33,7 +33,7 @@ def sanitize_url(url: str) -> str:
     """Filter removing schema and extension from an URL"""
     if url:
         if (scheme := url.find("://")) != -1:
-            url = url[scheme + 3 :]  # noqa: E203
+            url = url[scheme + 3 :]
         if url.lower().endswith(".git"):
             url = url[:-4]
     return url

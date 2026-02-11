@@ -49,7 +49,7 @@ select = [
   "Q",     # flake 8 quotes
   "RET",   # Return types
   "RSE",   # Unneeded exception parentheses
-  # "RUF",   # the ruff developer's own rules
+  "RUF",   # the ruff developer's own rules
   "SIM",   # Simplify
   "T20",   # Warn about prints
   "TC",    # Type checking
