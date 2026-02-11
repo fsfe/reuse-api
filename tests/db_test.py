@@ -1,4 +1,3 @@
-# ruff: noqa: ARG001
 # function argumens are used to implement fixture dependencies
 from os.path import isfile
 
