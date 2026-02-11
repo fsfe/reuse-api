@@ -53,10 +53,13 @@ select = [
   "SIM",   # Simplify
   "T20",   # Warn about prints
   "TC",    # Type checking
-  # "TRY",   # Error handling stuff
+  "TRY",   # Error handling stuff
   "UP",    # Update syntax to newer versions
   "W",     # pycodestyle warnings
   "YTT",   # Flake 8 2020
+]
+ignore = [
+  "TRY003", # the messages are useful
 ]
 
 [tool.ruff.lint.per-file-ignores]
