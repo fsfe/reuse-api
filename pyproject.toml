@@ -27,7 +27,7 @@ addopts = "-v" # see verbose output
 [tool.ruff.lint]
 #  See https://docs.astral.sh/ruff/rules/ for information
 select = [
-  # "ANN",   # Flake 8 type annotations
+  "ANN",   # Flake 8 type annotations
   "A",     # prevent using keywords that clobber python builtins
   "ARG",   # Unused arguments
   "ASYNC", # Flake 8 aysnc
@@ -63,7 +63,9 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["ARG001"] # incompatible with pytest style
+"tests/*" = [
+  "ANN", "ARG001", # Fixtures
+]
 
 
 [tool.ruff.lint.isort]
