@@ -131,7 +131,7 @@ def sbom(url: str) -> str:
 
 # Return error messages in JSON format
 @JSON.errorhandler(HTTPException)
-def handle_error(err) -> dict:
+def handle_error(err) -> tuple[dict, int]:
     """Handle HTTP errors, return as JSON"""
     return {"error": err.description}, err.code
 
