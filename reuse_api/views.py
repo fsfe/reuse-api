@@ -143,7 +143,7 @@ def sbom(url: str) -> Response:
     current_app.logger.info("ASKED FOR SBOM: %s", url)
 
     if not db.is_initialised(url):
-        return None  # pragma: no cover
+        return abort(HTTPStatus.NOT_FOUND)  # pragma: no cover
 
     current_app.manager.handle(url)
 
