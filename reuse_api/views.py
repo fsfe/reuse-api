@@ -6,6 +6,7 @@ from http import HTTPStatus
 
 from flask import (
     Blueprint,
+    Response,
     abort,
     current_app,
     render_template,
@@ -66,7 +67,7 @@ def register_post() -> tuple[str, HTTPStatus]:
 
 
 @HTML.get("/badge/<path:url>")
-def badge(url: str) -> str:
+def badge(url: str) -> Response:
     """The SVG badge for a repo"""
 
     result = send_file(f"badges/{db.status(url)}.svg", mimetype="image/svg+xml")
