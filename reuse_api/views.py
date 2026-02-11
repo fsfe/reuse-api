@@ -84,7 +84,7 @@ def badge(url: str) -> str:
 
 
 @HTML.get("/info/<path:url>")
-def info(url: str) -> str:
+def info(url: str) -> tuple[str, HTTPStatus]:
     """General info page for repo"""
 
     # Handle unregistered & uninitialised
@@ -100,19 +100,26 @@ def info(url: str) -> str:
         )
 
     # Handle normal records
-    return render_template(
-        "info.jinja2",
-        url=url,
-        project_name=db.name(url),
-        head_hash=row.hash,
-        compliant=Repository.is_compliant(url),
-        lint_output=row.lint_output,
-        last_access=row.last_access.strftime("%d %b %Y %X"),
-        sbom=url_for("html.sbom", url=url, _external=False),
-        json=url_for("json.status", url=url, _external=False),
-        badge=url_for("html.badge", url=url, _external=False),
-        badge_external=url_for("html.badge", url=url, _external=True, _scheme="https"),
-        info_external=url_for("html.info", url=url, _external=True, _scheme="https"),
+    return (
+        render_template(
+            "info.jinja2",
+            url=url,
+            project_name=db.name(url),
+            head_hash=row.hash,
+            compliant=Repository.is_compliant(url),
+            lint_output=row.lint_output,
+            last_access=row.last_access.strftime("%d %b %Y %X"),
+            sbom=url_for("html.sbom", url=url, _external=False),
+            json=url_for("json.status", url=url, _external=False),
+            badge=url_for("html.badge", url=url, _external=False),
+            badge_external=url_for(
+                "html.badge", url=url, _external=True, _scheme="https"
+            ),
+            info_external=url_for(
+                "html.info", url=url, _external=True, _scheme="https"
+            ),
+        ),
+        HTTPStatus.OK,
     )
 
 
