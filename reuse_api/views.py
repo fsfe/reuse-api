@@ -53,7 +53,8 @@ def register_post() -> tuple[str, HTTPStatus]:
         url: str | None = form.project.data
         if current_app.config.get("FORMS_DISABLE", False):
             current_app.logger.warning("Registered without forms: %s", url)
-            db.register(form.project.data)
+            if form.project.data:  # else branch should not happen
+                db.register(form.project.data)
         elif current_app.config.get("TESTING", False):
             current_app.logger.warning("Registered with mocked forms: %s", url)
             if form.project.data:  # else branch should not happen
