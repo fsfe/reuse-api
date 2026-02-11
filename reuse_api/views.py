@@ -44,7 +44,7 @@ def register_get() -> str:
 
 
 @HTML.post("/register")
-def register_post() -> str:
+def register_post() -> tuple[str, HTTPStatus]:
     """Process the registration form."""
     form = RegisterForm()
 
@@ -57,12 +57,12 @@ def register_post() -> str:
             allow_redirects=False,
         )
         if not response.ok:
-            return response.text, response.status_code
+            return response.text, HTTPStatus(response.status_code)
         return (
             render_template("register-success.jinja2", project=form.project.data),
             HTTPStatus.ACCEPTED,
         )
-    return render_template("register.jinja2", form=form)
+    return render_template("register.jinja2", form=form), HTTPStatus.OK
 
 
 @HTML.get("/badge/<path:url>")
@@ -131,7 +131,7 @@ def sbom(url: str) -> str:
 
 # Return error messages in JSON format
 @JSON.errorhandler(HTTPException)
-def handle_error(err) -> tuple[dict, int]:
+def handle_error(err: Exception) -> tuple[dict, int]:
     """Handle HTTP errors, return as JSON"""
     return {"error": err.description}, err.code
 
