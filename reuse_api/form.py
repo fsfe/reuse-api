@@ -6,9 +6,9 @@
 import subprocess
 
 from flask import url_for
-from flask_wtf import FlaskForm
-from wtforms import BooleanField, StringField, ValidationError
-from wtforms.validators import Email, InputRequired
+from flask_wtf import FlaskForm  # type: ignore
+from wtforms import BooleanField, StringField, ValidationError  # type: ignore
+from wtforms.validators import Email, InputRequired  # type: ignore
 
 from reuse_api.db import is_registered
 

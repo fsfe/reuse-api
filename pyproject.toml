@@ -21,8 +21,9 @@ include-package-data = true
 
 # Tools config
 [tool.pytest.ini_options]
-addopts = "-v" # see verbose output
-
+addopts = "-v --mypy" # see verbose output, use mypy
+[tool.mypy]
+ignore_missing_imports = true
 ## Ruff
 [tool.ruff.lint]
 #  See https://docs.astral.sh/ruff/rules/ for information
