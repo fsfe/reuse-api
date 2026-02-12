@@ -32,7 +32,7 @@ def create_app() -> Flask:
 
     # Create and configure the app
     app: Flask = Flask(__name__.split(".")[0])
-    app.config.from_object(config)  # noqa: F821
+    app.config.from_object(config)
     app.logger.setLevel(logging.DEBUG)
 
     app.register_blueprint(HTML)
