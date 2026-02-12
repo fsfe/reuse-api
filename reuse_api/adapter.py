@@ -1,6 +1,4 @@
-"""
-This file hosts the code responsible for moving the registration
-data from FORMS_FILE to the project's database.
+"""Code responsible for moving the registration data from FORMS_FILE to the database.
 
 It is split into a number of smaller, unit-testable functions that
 can be easily unit-tested.
@@ -33,7 +31,7 @@ from .config import FORMS_FILE
 
 
 def __move_and_read(forms_file: str) -> list[dict]:
-    """Moves the file and reads it into a list of JSONs"""
+    """Move the file and read it into a list of JSONs."""
     moved: str = forms_file + "~"
     rename(forms_file, moved)
     with open(moved) as f:
@@ -41,13 +39,15 @@ def __move_and_read(forms_file: str) -> list[dict]:
 
 
 def __extract_repos(jsons: list[dict]) -> list[str]:
-    """Extracts the project names from the list of JSONs"""
+    """Extract the project names from the list of JSONs."""
     return [r["include_vars"]["project"] for r in jsons]
 
 
 def __register_repos(urls: list[str]) -> bool:
     """Registeres all the urls as repositories.
-    Returns True if none of them were registered"""
+
+    Returns True if none of them were registered.
+    """
     all_good: bool = True
     for repo in urls:
         if not register(repo):
@@ -56,16 +56,14 @@ def __register_repos(urls: list[str]) -> bool:
 
 
 def move_registrations(forms_file: str) -> list[str]:
-    """Adds `~` to the filename, extracts the URLs and registers them.
-    If all of the registrations are new returns True."""
+    """Add `~` to the filename, extract the URLs & register them."""
     repos: list[str] = __extract_repos(__move_and_read(forms_file))
     __register_repos(repos)
     return repos
 
 
 def mock_add(url: str, forms_file: str = FORMS_FILE) -> None:
-    """Mock Forms adding an entry to the file"""  # the file is a list of JSONs
-
+    """Mock Forms adding an entry to the file."""  # the file is a list of JSONs
     # if file is not present, create an empty one
     if not isfile(forms_file):
         with open(forms_file, "w") as f:

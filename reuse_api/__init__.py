@@ -15,7 +15,7 @@ from reuse_api.views import HTML, JSON
 
 
 def __formsfile_checks(forms_file: str) -> None:
-    """Makes sure that FORMS_FILE is there and readable."""
+    """Make sure that FORMS_FILE is there and readable."""
     if isfile(forms_file):
         if not access(forms_file, R_OK):  # pragma: no cover
             raise PermissionError(
@@ -28,6 +28,7 @@ def __formsfile_checks(forms_file: str) -> None:
 
 
 def create_app() -> ReuseApp:
+    """ReuseApp application factory."""
     # Disable git prompt
     environ["GIT_TERMINAL_PROMPT"] = "0"
 

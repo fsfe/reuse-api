@@ -31,6 +31,7 @@ JSON: Blueprint = Blueprint("json", __name__)
 
 @HTML.get("/")
 def index() -> str:
+    """Display the homepage (index)."""
     return render_template("index.html", compliant_repos=len(db.getall()))
 
 
@@ -80,8 +81,7 @@ def register_post() -> tuple[str, HTTPStatus]:
 
 @HTML.get("/badge/<path:url>")
 def badge(url: str) -> Response:
-    """The SVG badge for a repo"""
-
+    """Send the SVG badge for a repo."""
     result = send_file(f"badges/{db.status(url)}.svg", mimetype="image/svg+xml")
 
     # Disable caching for badge files
@@ -98,8 +98,7 @@ def badge(url: str) -> Response:
 
 @HTML.get("/info/<path:url>")
 def info(url: str) -> tuple[str, HTTPStatus]:
-    """General info page for repo"""
-
+    """General info page for repo."""
     # Handle unregistered & uninitialised
     if not db.is_registered(url):
         return render_template("unregistered.html", url=url), HTTPStatus.NOT_FOUND
@@ -139,7 +138,7 @@ def info(url: str) -> tuple[str, HTTPStatus]:
 
 @HTML.get("/sbom/<path:url>.spdx")
 def sbom(url: str) -> Response:
-    """SPDX SBOM in tag:value format"""
+    """SPDX SBOM in tag:value format."""
     # NOTE: This is a temporary measure to see if this feature is used
     current_app.logger.info("ASKED FOR SBOM: %s", url)
 
@@ -153,14 +152,14 @@ def sbom(url: str) -> Response:
 
 @JSON.errorhandler(HTTPException)  # pragma: no cover
 def handle_error(err: HTTPException) -> tuple[dict, HTTPStatus]:
-    """Handle HTTP errors, return as JSON"""
+    """Handle HTTP errors, return as JSON."""
     return {"error": err.description}, HTTPStatus(err.code if err.code else 500)
 
 
 @JSON.get("/status/<path:url>")
 @JSON.get("/status/<path:url>.json")
 def status(url: str) -> dict:
-    """Machine-readable information about a repo in JSON format"""
+    """Machine-readable information about a repo in JSON format."""
     if not db.is_registered(url):
         abort(HTTPStatus.NOT_FOUND)
 
@@ -178,7 +177,7 @@ def status(url: str) -> dict:
 @HTML.get("/projects")
 @HTML.get("/projects/page/<int:page>")
 def projects(page: int = 1) -> str:
-    """Show paginated table of compliant repositories"""
+    """Show paginated table of compliant repositories."""
     repos: list[str] = db.compliant_paged(page)
     has_next: bool = len(repos) == PAGE_SIZE  # HACK: will fail if len(repos)%10
     return render_template(
@@ -192,6 +191,7 @@ def projects(page: int = 1) -> str:
 # ------------------------------------------------------------------------------
 @HTML.post("/admin/reset/<path:url>")
 def reset(url: str) -> str:
+    """Run db.reset on an entry."""
     # Check for valid admin credentials
     if request.form.get("admin_key") != ADMIN_KEY:
         abort(HTTPStatus.UNAUTHORIZED)

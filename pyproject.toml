@@ -34,6 +34,7 @@ select = [
   "ASYNC", # Flake 8 aysnc
   "B",     # bugbear: security warnings
   "C4",    # Comprehensions
+  "D",     # pydocstyle
   "E",     # pycodestyle
   "ERA",   # Commented out code
   "F",     # pyflakes
@@ -61,11 +62,13 @@ select = [
 ]
 ignore = [
   "TRY003", # the messages are useful
+  "D203", # I do not like this
+  "D211", "D213",
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
-  "ANN", "ARG001", # Fixtures
+  "ANN", "ARG001", "D",
 ]
 
 
