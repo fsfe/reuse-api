@@ -1,3 +1,5 @@
+"""ReuseAPP class that inherits from Flask & typed current_app wrapper."""
+
 from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any, cast, override
 
@@ -7,6 +9,7 @@ from reuse_api.db import is_older_than, update
 
 
 class ReuseApp(Flask):
+    """TODO: add this later."""
 
     @override
     def __init__(self, import_name: str, **kwargs: Any) -> None:
@@ -23,8 +26,10 @@ class ReuseApp(Flask):
         self.logger.info("Task finished %s", url)
 
     def handle(self, repo: str, min_age: int = 15) -> None:
-        """Handles the database update with additional logic.
-        Created for putting it in view functions"""
+        """Handle the database update with additional logic.
+
+        Created for putting it in view functions.
+        """
         if not is_older_than(repo, min_age):
             return
         # potentially more conditions
@@ -32,7 +37,7 @@ class ReuseApp(Flask):
         self._update(repo)
 
     def cleanup(self) -> None:  # pragma: no cover
-        """Wrapper for the executor shutdown"""
+        """Shutdown the internal executor."""
         self.__executor.shutdown()
 
 

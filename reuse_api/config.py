@@ -1,4 +1,4 @@
-"""Configuration for the REUSE API service"""
+"""Configuration for the REUSE API service."""
 
 from os import getenv
 

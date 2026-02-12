@@ -14,7 +14,7 @@ from reuse_api.db import is_registered
 
 
 def is_reachable(url: str, timeout: int = 5) -> bool:
-    """Check if the repository is reachable via HTTPS in <timeout> seconds"""
+    """Check if the repository is reachable via HTTPS in <timeout> seconds."""
     protocol = "https"
     try:
         result = subprocess.run(
@@ -30,7 +30,7 @@ def is_reachable(url: str, timeout: int = 5) -> bool:
 
 
 def sanitize_url(url: str) -> str:
-    """Filter removing schema and extension from an URL"""
+    """Filter removing schema and extension from an URL."""
     if url:
         if (scheme := url.find("://")) != -1:
             url = url[scheme + 3 :]
@@ -40,13 +40,13 @@ def sanitize_url(url: str) -> str:
 
 
 def repo_reachable(form, url_field) -> None:  # pragma: no cover
-    """Validator assuring that the repository is reachable"""
+    """Assuring that the repository is reachable."""
     if not is_reachable(url_field.data):
         raise ValidationError("Git repository is not reachable")
 
 
 def repo_unregistered(form, url_field) -> None:
-    """Validator assuring that the repository is not registered already"""
+    """Assure that the repository is not registered already."""
     if is_registered(url_field.data):  # pragma: no cover
         info_page: str = url_for("html.info", url=url_field.data, _external=False)
         raise ValidationError(
@@ -55,7 +55,7 @@ def repo_unregistered(form, url_field) -> None:
 
 
 class RegisterForm(FlaskForm):
-    """Form class for repository registration page"""
+    """Form class for repository registration page."""
 
     name = StringField(label="Your name", validators=[InputRequired()])
     confirm = StringField(

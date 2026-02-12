@@ -1,4 +1,4 @@
-"""This file hosts the functions responsible managing the filesystem database."""
+"""Functions responsible managing the filesystem database."""
 
 from collections.abc import Callable
 from enum import StrEnum
@@ -59,11 +59,13 @@ def _path_lock(repo: str) -> str:
 
 # Content functions
 def lint_rval(repo: str) -> int:
+    """Read the return value of `reuse lint`."""
     with open(_path_rval(repo)) as f:
         return int(f.read())
 
 
 def is_compliant(repo: str) -> bool:  # pragma: no cover
+    """Check if the record is compliant."""
     if not isfile(_path_rval(repo)):
         return False
 
@@ -71,12 +73,13 @@ def is_compliant(repo: str) -> bool:  # pragma: no cover
 
 
 def lint(repo: str) -> str:  # pragma: no cover
-    """Returns the `reuse lint` output"""
+    """Return the `reuse lint` output."""
     with open(_path_lint(repo)) as f:
         return f.read()
 
 
 def head(repo: str) -> str:  # pragma: no cover
+    """Get the HEAD commit hash of a record."""
     with open(_path_head(repo)) as f:
         return f.read()
 
@@ -88,31 +91,34 @@ def name(url: str) -> str:
 
 # registration functions
 def is_registered(repo: str) -> bool:
+    """Check if a repository is registered with us."""
     return isdir(__repopath(repo))
 
 
 # wrapper for mtime
 def check_date(repo: str) -> float:  # pragma: no cover
-    """Returns the checked date if the last check.
-    Will return 0 if the repository is not initialised."""
+    """Return the checked date if the last check.
+
+    Will return 0 if the repository is not initialised.
+    """
     if not isfile(_path_head(repo)):
         return 0
     return getmtime(_path_head(repo))
 
 
 def is_older_than(repo: str, age_in_seconds: int) -> bool:
-    """Checks if the HEAD file is older than age_in_seconds."""
+    """Check if the HEAD file is older than age_in_seconds."""
     return time() - check_date(repo) >= age_in_seconds
 
 
 # wrapper for check_date
 def is_initialised(repo: str) -> bool:
-    "Returns True if HEAD exists"
+    """Return True if HEAD exists."""
     return check_date(repo) != 0
 
 
 def register(repo: str) -> bool:
-    """Register a repository. Returns False if project is already registered."""
+    """Register a repository. Return False if project is already registered."""
     if is_registered(repo):
         return False
     # else is not registered
@@ -121,13 +127,13 @@ def register(repo: str) -> bool:
 
 
 def unregister(repo: str) -> None:
+    """Remove a record from our database."""
     rmtree(__repopath(repo), ignore_errors=True)
 
 
 # Lock functions
 def is_lockable(repo: str, timeout: int = UPDATE_TIMEOUT) -> bool:
-    """Checks if the repo is registered AND
-    if the lock is not there or timed-out."""
+    """Check if the repo is registered AND if the lock is not there or timed-out."""
     if not is_registered(repo):
         return False
     lockfile = _path_lock(repo)
@@ -140,7 +146,7 @@ def is_lockable(repo: str, timeout: int = UPDATE_TIMEOUT) -> bool:
 
 
 def __lock(repo: str) -> bool:
-    """Locks the file if it can. Reports True if suceeeds."""
+    """Lock the file if it can. Reports True if suceeeds."""
     if is_lockable(repo):
         with open(_path_lock(repo), "w"):
             return True
@@ -148,13 +154,13 @@ def __lock(repo: str) -> bool:
 
 
 def __unlock(repo: str) -> None:
-    """Removes the lockfile"""
+    """Remove the lockfile."""
     remove(_repo_file(repo, __LOCKFILE))
 
 
 # Query functions
 def _get_registered_repos(filter_func: Callable) -> list[str]:
-    """Helper function to return repositories based on a given filter."""
+    """Return repositories based on a given filter."""
     return [
         relpath(dirpath, DB_ROOT)
         for dirpath, dirnames, filenames in walk(DB_ROOT)
@@ -164,19 +170,19 @@ def _get_registered_repos(filter_func: Callable) -> list[str]:
 
 
 def getall() -> list[str]:
-    """Returns all the repositories that have been registered to the database."""
+    """Return all the repositories that have been registered to the database."""
     return _get_registered_repos(lambda _, __, ___: True)
 
 
 def compliant() -> list[str]:
-    """Returns all the compliant repositories"""
+    """Return all the compliant repositories."""
     return [r for r in getall() if is_compliant(r)]
 
 
 def compliant_paged(
     page: int, page_size: int = PAGE_SIZE
 ) -> list[str]:  # pragma: no cover
-    """Pages the compliant repositories sorted by check date"""
+    """Pages the compliant repositories sorted by check date."""
     start: int = (page - 1) * page_size
     repos: list[str] = sorted(
         compliant(), reverse=True, key=lambda repo: check_date(repo)
@@ -185,14 +191,14 @@ def compliant_paged(
 
 
 def _not_updated() -> list[str]:
-    """Lists the registered repos that have empty database entries."""
+    """List the registered repos that have empty database entries."""
     return _get_registered_repos(
         lambda _, dirnames, filenames: not (filenames or dirnames)
     )
 
 
 def _outdated(age_in_seconds: int = 24 * 60 * 60) -> list[str]:
-    """Lists the updated repos that are outdated."""
+    """List the updated repos that are outdated."""
     return _get_registered_repos(
         lambda dirpath, _, __: isfile(f"{dirpath}/{__HEAD_FILE}")
         and time() - getmtime(f"{dirpath}/{__HEAD_FILE}") >= age_in_seconds
@@ -200,12 +206,15 @@ def _outdated(age_in_seconds: int = 24 * 60 * 60) -> list[str]:
 
 
 def get_tasks() -> list[str]:  # pragma: no cover
-    """Returns the list of the repositories that should be updated."""
+    """Get the list of the repositories that should be updated."""
     return _not_updated() + _outdated()
 
 
 def update(repo: str) -> int:
-    # Also checks for registration
+    """Update the database record.
+
+    Also checks for registration
+    """
     if not __lock(repo):  # could not lock, another process is doing that
         return 0  # REVIEW: maybe have an enum for this?
     script_name: str = "update-entry.sh"
@@ -224,14 +233,14 @@ def update(repo: str) -> int:
 
 
 def reset(repo: str) -> int:  # pragma: no cover
-    """Convinience function that resets the database state
-    of a repository and updates it again."""
+    """Reset the database state of a repository and update it again."""
     unregister(repo)
     register(repo)
     return update(repo)
 
 
 def drop(really: bool = False) -> None:
+    """Delete the database."""
     if not really:
         return
     rmtree(DB_ROOT)
@@ -241,7 +250,9 @@ def drop(really: bool = False) -> None:
 # Frontend functions
 def spdx_path(repo: str) -> str:
     """Get the path of the SPDX file.
-    Made to be used by flask.send_file."""
+
+    Made to be used by flask.send_file.
+    """
     return _repo_file(repo, __SPDX_OUTPUT)
 
 
