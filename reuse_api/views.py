@@ -13,7 +13,7 @@ from flask import (
     send_file,
     url_for,
 )
-from requests import post
+from requests import post  # type: ignore
 from werkzeug.exceptions import HTTPException
 
 from reuse_api import db
