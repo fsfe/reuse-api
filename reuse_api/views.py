@@ -18,6 +18,7 @@ from werkzeug.exceptions import HTTPException
 
 from reuse_api import db
 from reuse_api.adapter import mock_add, move_registrations
+from reuse_api.app import reuse_app
 from reuse_api.form import RegisterForm
 
 from .config import ADMIN_KEY, FORMS_URL
@@ -104,12 +105,12 @@ def info(url: str) -> tuple[str, HTTPStatus]:
         return render_template("unregistered.html", url=url), HTTPStatus.NOT_FOUND
 
     if not db.is_initialised(url):
-        current_app.manager.handle(url)
+        reuse_app.handle(url)
         return (
             render_template("uninitialised.html", project_name=db.name(url)),
             HTTPStatus.FAILED_DEPENDENCY,
         )
-    current_app.manager.handle(url)
+    reuse_app.handle(url)
 
     timestr: str = datetime.fromtimestamp(db.check_date(url)).strftime("%d %b %Y %X")
     # Handle normal records
@@ -145,7 +146,7 @@ def sbom(url: str) -> Response:
     if not db.is_initialised(url):
         return abort(HTTPStatus.NOT_FOUND)  # pragma: no cover
 
-    current_app.manager.handle(url)
+    reuse_app.handle(url)
 
     return send_file(db.spdx_path(url))
 
@@ -163,7 +164,7 @@ def status(url: str) -> dict:
     if not db.is_registered(url):
         abort(HTTPStatus.NOT_FOUND)
 
-    current_app.manager.handle(url)
+    reuse_app.handle(url)
 
     timestr: str = datetime.fromtimestamp(db.check_date(url)).isoformat()
     return {
