@@ -55,6 +55,7 @@ select = [
   # "TRY",   # Error handling stuff
   "UP",    # Update syntax to newer versions
   "W",     # pycodestyle warnings
+  "YTT",   # Flake 8 2020
 ]
 
 [tool.ruff.lint.per-file-ignores]
