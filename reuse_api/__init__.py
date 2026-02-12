@@ -9,10 +9,8 @@ from atexit import register as atexit_register
 from os import R_OK, access, environ, makedirs, path
 from os.path import isfile
 
-from flask import Flask
-
 from reuse_api import config
-from reuse_api.manager import Manager, manager
+from reuse_api.app import ReuseApp
 from reuse_api.views import HTML, JSON
 
 
@@ -29,7 +27,7 @@ def __formsfile_checks(forms_file: str) -> None:
             f.write("[]")
 
 
-def create_app() -> Flask:
+def create_app() -> ReuseApp:
     # Disable git prompt
     environ["GIT_TERMINAL_PROMPT"] = "0"
 
@@ -37,7 +35,7 @@ def create_app() -> Flask:
     logging.basicConfig(format="[%(asctime)s] %(levelname)s: %(message)s")
 
     # Create and configure the app
-    app: Flask = Flask(__name__.split(".")[0])
+    app: ReuseApp = ReuseApp(__name__.split(".")[0])
     app.config.from_object(config)
     app.logger.setLevel(logging.DEBUG)
     # Perform sanity checks
@@ -51,7 +49,6 @@ def create_app() -> Flask:
     # Initialize database
     makedirs(str(app.config.get("REUSE_DB_PATH")), exist_ok=True)
 
-    app.manager: Manager = manager
-    atexit_register(manager.cleanup)
+    atexit_register(app.cleanup)
 
     return app
