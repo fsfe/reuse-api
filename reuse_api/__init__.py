@@ -11,6 +11,7 @@ from os.path import isfile
 
 from flask import Flask
 
+from reuse_api import config
 from reuse_api.manager import Manager, manager
 from reuse_api.views import HTML, JSON
 
