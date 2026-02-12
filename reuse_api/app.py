@@ -1,25 +1,39 @@
+from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any, cast, override
 
 from flask import Flask, current_app
 
-from reuse_api.manager import Manager, manager
+from reuse_api.db import is_older_than, update
 
 
 class ReuseApp(Flask):
 
     @override
     def __init__(self, import_name: str, **kwargs: Any) -> None:
-        """Flask override with Manager added."""
+        """Flask override with an Executor added."""
         super().__init__(import_name, **kwargs)
-        self.__mgr: Manager = manager
+        self.__executor: ThreadPoolExecutor = ThreadPoolExecutor()
+
+    def _update(self, url: str) -> None:
+        """Async wrapper for db.update with logging."""
+        self.logger.info("Task submitted: %s", url)
+        future: Future = self.__executor.submit(update, url)
+
+        _ = future.result()  # Print after job is done
+        self.logger.info("Task finished %s", url)
 
     def handle(self, repo: str, min_age: int = 15) -> None:
-        """Wrapper for Manager's handle."""
-        self.__mgr.handle(repo, min_age)
+        """Handles the database update with additional logic.
+        Created for putting it in view functions"""
+        if not is_older_than(repo, min_age):
+            return
+        # potentially more conditions
 
-    def cleanup(self) -> None:
-        """Wrapper for Manager's cleanup."""
-        self.__mgr.cleanup()
+        self._update(repo)
+
+    def cleanup(self) -> None:  # pragma: no cover
+        """Wrapper for the executor shutdown"""
+        self.__executor.shutdown()
 
 
 # Typed wrapper for Flask.current_app
