@@ -17,13 +17,13 @@ class ReuseApp(Flask):
         super().__init__(import_name, **kwargs)
         self.__executor: ThreadPoolExecutor = ThreadPoolExecutor()
 
-    def _update(self, url: str) -> None:
+    def _update(self, repo: str) -> None:
         """Async wrapper for db.update with logging."""
-        self.logger.info("Task submitted: %s", url)
-        future: Future = self.__executor.submit(update, url)
+        self.logger.info("Task submitted: %s", repo)
+        future: Future = self.__executor.submit(update, repo)
 
         _ = future.result()  # Print after job is done
-        self.logger.info("Task finished %s", url)
+        self.logger.info("Task finished %s", repo)
 
     def handle(self, repo: str, min_age: int = 15) -> None:
         """Handle the database update with additional logic.
