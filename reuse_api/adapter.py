@@ -43,26 +43,26 @@ def __extract_repos(jsons: list[dict]) -> list[str]:
     return [r["include_vars"]["project"] for r in jsons]
 
 
-def __register_repos(urls: list[str]) -> bool:
-    """Registeres all the urls as repositories.
+def __register_repos(repos: list[str]) -> bool:
+    """Registeres all the repos as repositories.
 
     Returns True if none of them were registered.
     """
     all_good: bool = True
-    for repo in urls:
+    for repo in repos:
         if not register(repo):
             all_good = False
     return all_good
 
 
 def move_registrations(forms_file: str) -> list[str]:
-    """Add `~` to the filename, extract the URLs & register them."""
+    """Add `~` to the filename, extract the repos & register them."""
     repos: list[str] = __extract_repos(__move_and_read(forms_file))
     __register_repos(repos)
     return repos
 
 
-def mock_add(url: str, forms_file: str = FORMS_FILE) -> None:
+def mock_add(repo: str, forms_file: str = FORMS_FILE) -> None:
     """Mock Forms adding an entry to the file."""  # the file is a list of JSONs
     # if file is not present, create an empty one
     if not isfile(forms_file):
@@ -80,7 +80,7 @@ def mock_add(url: str, forms_file: str = FORMS_FILE) -> None:
             "timestamp": 0,
             "include_vars": {
                 "appid": "reuse-api",
-                "project": url,
+                "project": repo,
             },
         }
         entries.append(new_entry)

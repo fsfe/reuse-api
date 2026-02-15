@@ -1,4 +1,17 @@
-"""Functions responsible managing the filesystem database."""
+"""Functions responsible managing the filesystem database.
+
+`repo` parameter name originates from here.
+It is a string containing two slashes of the following format:
+
+    git_hosting_domain/namespace/project
+
+like
+
+    git.fsfe.org/reuse/api
+
+One can say that it is the HTTP(S) URL without the protocol handle.
+The rest of this project should adhere to this rule.
+"""
 
 from collections.abc import Callable
 from enum import StrEnum
@@ -84,9 +97,9 @@ def head(repo: str) -> str:  # pragma: no cover
         return f.read()
 
 
-def name(url: str) -> str:
-    """Cuts out the hosting from the repository url."""
-    return "/".join(url.split("/")[-2:])
+def name(repo: str) -> str:
+    """Cuts out the hosting from the repository repo."""
+    return "/".join(repo.split("/")[-2:])
 
 
 # registration functions
@@ -256,12 +269,12 @@ def spdx_path(repo: str) -> str:
     return _repo_file(repo, __SPDX_OUTPUT)
 
 
-def status(url: str) -> str:  # pragma: no cover
+def status(repo: str) -> str:  # pragma: no cover
     """Return Status codes based on db contents."""
-    if not is_registered(url):
+    if not is_registered(repo):
         return Status.NULL
-    if not is_initialised(url):
+    if not is_initialised(repo):
         return Status.EMPTY
-    if not is_compliant(url):
+    if not is_compliant(repo):
         return Status.BAD
     return Status.OK

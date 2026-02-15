@@ -13,17 +13,17 @@ def test_gets(client) -> None:
 
 
 def test_register_with_parameter(client) -> None:
-    response = client.get("/register?url=" + TEST_REPO)
+    response = client.get("/register?repo=" + TEST_REPO)
     assert response.status_code == HTTPStatus.OK
     assert TEST_REPO in response.data.decode()
 
 
 def test_info_and_badge_and_json(client, db_empty) -> None:
     """General endpoint test"""
-    url: str = f"/info/{TEST_REPO}"
+    relpath: str = f"/info/{TEST_REPO}"
 
     # Unregistered
-    response = client.get(url)
+    response = client.get(relpath)
     assert (
         response.status_code == HTTPStatus.NOT_FOUND
     ), "Unregistered info is not NOT_FOUND"
@@ -38,7 +38,7 @@ def test_info_and_badge_and_json(client, db_empty) -> None:
 
     register(TEST_REPO)  # Uninitialised
 
-    response = client.get(url)
+    response = client.get(relpath)
     assert (
         response.status_code == HTTPStatus.FAILED_DEPENDENCY
     ), f"Uninitialised's info/ is not FAILED_DEPENDENCY but {response.status_code}"
@@ -48,7 +48,7 @@ def test_info_and_badge_and_json(client, db_empty) -> None:
 
     update(TEST_REPO)  # Updated
 
-    response = client.get(url)
+    response = client.get(relpath)
     assert response.status_code == HTTPStatus.OK, "Updated info is not OK"
 
     response = client.get(f"/badge/{TEST_REPO}")

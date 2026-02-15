@@ -18,12 +18,12 @@
       <th>Details</th>
       <th>Repository</th>
     </tr>
-    {%  for url in compliant_list %}
+    {%  for repo in compliant_list %}
       <tr>
-        <td>{{ url }}</td>
-        <td><a href="/info/{{ url }}"><i class="fas fa-info-circle"></i></a></td>
+        <td>{{ repo }}</td>
+        <td><a href="/info/{{ repo }}"><i class="fas fa-info-circle"></i></a></td>
         <td>
-          <a href="https://{{ url }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+          <a href="https://{{ repo }}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
         </td>
       </tr>
     {% endfor %}

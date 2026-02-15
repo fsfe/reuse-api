@@ -40,8 +40,8 @@ def register_get() -> str:
     """Display the registration form."""
     form = RegisterForm()
     # Extract project's url from the request
-    if request.args.get("url"):
-        form.project.data = request.args.get("url")
+    if request.args.get("repo"):
+        form.project.data = request.args.get("repo")
 
     return render_template("register.html", form=form)
 
@@ -52,13 +52,13 @@ def register_post() -> tuple[str, HTTPStatus]:
     form = RegisterForm()
 
     if form.validate_on_submit():
-        url: str | None = form.project.data
+        repo: str | None = form.project.data
         if current_app.config.get("FORMS_DISABLE", False):
-            current_app.logger.warning("Registered without forms: %s", url)
+            current_app.logger.warning("Registered without forms: %s", repo)
             if form.project.data:  # else branch should not happen
                 db.register(form.project.data)
         elif current_app.config.get("TESTING", False):
-            current_app.logger.warning("Registered with mocked forms: %s", url)
+            current_app.logger.warning("Registered with mocked forms: %s", repo)
             if form.project.data:  # else branch should not happen
                 mock_add(form.project.data)
         else:  # pragma: no cover
@@ -73,7 +73,7 @@ def register_post() -> tuple[str, HTTPStatus]:
                 return response.text, HTTPStatus(response.status_code)
             move_registrations(str(current_app.config.get("FORMS_FILE")))
         return (
-            render_template("register-success.html", project=url),
+            render_template("register-success.html", project=repo),
             HTTPStatus.ACCEPTED,
         )
     return render_template("register.html", form=form), HTTPStatus.OK
@@ -81,7 +81,10 @@ def register_post() -> tuple[str, HTTPStatus]:
 
 @HTML.get("/badge/<path:url>")
 def badge(url: str) -> Response:
-    """Send the SVG badge for a repo."""
+    """Send the SVG badge for a repo.
+
+    `url` is our `repo` but flask seems to need to have it this way.
+    """
     result = send_file(f"badges/{db.status(url)}.svg", mimetype="image/svg+xml")
 
     # Disable caching for badge files
@@ -98,10 +101,13 @@ def badge(url: str) -> Response:
 
 @HTML.get("/info/<path:url>")
 def info(url: str) -> tuple[str, HTTPStatus]:
-    """General info page for repo."""
+    """General info page for repo.
+
+    `url` is our `repo` but flask seems to need to have it this way.
+    """
     # Handle unregistered & uninitialised
     if not db.is_registered(url):
-        return render_template("unregistered.html", url=url), HTTPStatus.NOT_FOUND
+        return render_template("unregistered.html", repo=url), HTTPStatus.NOT_FOUND
 
     if not db.is_initialised(url):
         reuse_app.handle(url)
@@ -116,7 +122,7 @@ def info(url: str) -> tuple[str, HTTPStatus]:
     return (
         render_template(
             "info.html",
-            url=url,
+            repo=url,
             project_name=db.name(url),
             head_hash=db.head(url),
             compliant=db.is_compliant(url),
@@ -138,7 +144,10 @@ def info(url: str) -> tuple[str, HTTPStatus]:
 
 @HTML.get("/sbom/<path:url>.spdx")
 def sbom(url: str) -> Response:
-    """SPDX SBOM in tag:value format."""
+    """SPDX SBOM in tag:value format.
+
+    `url` is our `repo` but flask seems to need to have it this way.
+    """
     # NOTE: This is a temporary measure to see if this feature is used
     current_app.logger.info("ASKED FOR SBOM: %s", url)
 
@@ -159,7 +168,10 @@ def handle_error(err: HTTPException) -> tuple[dict, HTTPStatus]:
 @JSON.get("/status/<path:url>")
 @JSON.get("/status/<path:url>.json")
 def status(url: str) -> dict:
-    """Machine-readable information about a repo in JSON format."""
+    """Machine-readable information about a repo in JSON format.
+
+    `url` is our `repo` but flask seems to need to have it this way.
+    """
     if not db.is_registered(url):
         abort(HTTPStatus.NOT_FOUND)
 
@@ -189,16 +201,16 @@ def projects(page: int = 1) -> str:
 # ADMINISTRATIVE FUNCTIONS
 # Only accessible by providing the valid admin key via POST request
 # ------------------------------------------------------------------------------
-@HTML.post("/admin/reset/<path:url>")
-def reset(url: str) -> str:
+@HTML.post("/admin/reset/<path:repo>")
+def reset(repo: str) -> str:
     """Run db.reset on an entry."""
     # Check for valid admin credentials
     if request.form.get("admin_key") != ADMIN_KEY:
         abort(HTTPStatus.UNAUTHORIZED)
 
     # Admin actions are executed immediately
-    rval: int = db.reset(url)
+    rval: int = db.reset(repo)
 
     # REVIEW: this is a bit bare but I do not know how to improve it
     #         and it will not be heavily used
-    return f"Reset {url} rval: {rval}"
+    return f"Reset {repo} rval: {rval}"

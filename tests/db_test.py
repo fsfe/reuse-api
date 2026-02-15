@@ -7,8 +7,8 @@ from .conftest import TEST_REPO
 
 
 def test_name() -> None:
-    url: str = "hosting/user/repo"
-    assert db.name(url) == "user/repo"
+    repo: str = "hosting/user/repo"
+    assert db.name(repo) == "user/repo"
 
 
 def test_registration(db_empty) -> None:

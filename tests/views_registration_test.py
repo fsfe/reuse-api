@@ -10,9 +10,9 @@ from reuse_api.db import is_registered
 from .conftest import TEST_REPO
 
 
-def gendata(url: str, email: str = "my_email@fsfe.org", name="some_name") -> dict:
+def gendata(repo: str, email: str = "my_email@fsfe.org", name="some_name") -> dict:
     """Generates POST data contents for testing."""
-    return {"project": url, "confirm": email, "name": name}
+    return {"project": repo, "confirm": email, "name": name}
 
 
 def test_registration_empty_post(client) -> None:
