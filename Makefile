@@ -39,10 +39,8 @@ gunicorn:  ##@development Run the Gunicorn based web server.
 .PHONY: gunicorn
 
 dev.prep: ##@development Initially build the docker image that the API worker executes
-	@chmod 600 ./api-worker/worker-setup/files/test_ed25519
 	@mkdir -p ./forms/store/reuse-api
 	@[ -e ./forms/store/reuse-api/repos.json ] | echo [] > ./forms/store/reuse-api/repos.json
-	@docker build -f api-worker/docker-image/Dockerfile -t reuse-api-worker-runner api-worker/docker-image
 .PHONY: dev.prep
 
 dev.up: dev.prep ##@development Bring up entire environment with docker compose and detach
@@ -62,5 +60,4 @@ dev.logs: ##@development Get logs of running docker containers
 
 dev.reset: ##@development Prune some configs to test the API from scratch
 	@echo [] > ./forms/store/reuse-api/repos.json
-	@rm -f ./api-worker/worker-setup/files/known_hosts
 .PHONY: dev.reset
