@@ -44,7 +44,7 @@ def __extract_repos(jsons: list[dict]) -> list[str]:
 
 
 def __register_repos(repos: list[str]) -> bool:
-    """Registeres all the repos as repositories.
+    """Register all the repos in the database.
 
     Returns True if none of them were registered.
     """
