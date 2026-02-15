@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Flask application factory."""
+"""Flask application factory using our custom ReuseApp class."""
 
 import logging
 from atexit import register as atexit_register
@@ -28,7 +28,10 @@ def __formsfile_checks(forms_file: str) -> None:
 
 
 def create_app() -> ReuseApp:
-    """ReuseApp application factory."""
+    """ReuseApp application factory.
+
+    Sets the envvars, configures logging, blueprints, REUSE_DB_PATH & cleanup procedure.
+    """
     # Disable git prompt
     environ["GIT_TERMINAL_PROMPT"] = "0"
 
