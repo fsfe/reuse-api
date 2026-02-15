@@ -39,10 +39,6 @@ applyblack:  ##@development Apply source code formatting with black.
 	@black $(QUALITY_TARGETS)
 .PHONY: applyblack
 
-flask:  ##@development Run the Flask built-in web server.
-	@flask run
-.PHONY: flask
-
 gunicorn:  ##@development Run the Gunicorn based web server.
 	@gunicorn --bind localhost:8000 "$$FLASK_APP:create_app()"
 .PHONY: gunicorn
