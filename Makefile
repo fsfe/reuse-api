@@ -66,13 +66,13 @@ dev.prep: ##@development Initially build the docker image that the API worker ex
 
 dev.up: dev.prep ##@development Bring up entire environment with docker compose and detach
 	@docker network create forms_default || echo "Network already present."
-	@$(COMPOSE)	-f forms/docker-compose.dev.yml up --build -d
-	@$(COMPOSE) -f docker-compose.dev.yml up --build -d
+	@$(COMPOSE) -f forms/docker-compose.dev.yml up --build -d
+	@$(COMPOSE) -f docker-compose.dev.yml       up --build -d
 .PHONY: dev.up
 
 dev.down: ##@development Bring down entire environment with docker compose
-	@$(COMPOSE) -f docker-compose.dev.yml down
-	@$(COMPOSE)	-f forms/docker-compose.dev.yml down
+	@$(COMPOSE) -f docker-compose.dev.yml       down
+	@$(COMPOSE) -f forms/docker-compose.dev.yml down
 .PHONY: dev.down
 
 dev.logs: ##@development Get logs of running docker containers
