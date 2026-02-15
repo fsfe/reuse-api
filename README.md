@@ -23,10 +23,6 @@ This repository contains the web part for all user interaction. The
 parts needed for the external server performing the checks are hosted in
 the [api-worker](https://git.fsfe.org/reuse/api-worker) repository.
 
-This service is accessible via
-[api.reuse.software](https://api.reuse.software), but interested users
-can set up their own instance.
-
 
 ## Features
 
