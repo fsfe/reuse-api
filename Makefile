@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-SOURCE_DIR = reuse_api
 # Files/dirs to be checked
 QUALITY_TARGETS = $(SOURCE_DIR) tests/* *.py
 
@@ -40,7 +39,7 @@ applyblack:  ##@development Apply source code formatting with black.
 .PHONY: applyblack
 
 gunicorn:  ##@development Run the Gunicorn based web server.
-	@gunicorn --bind localhost:8000 "$$FLASK_APP:create_app()"
+	@gunicorn --bind localhost:8000 "reuse_api:create_app()"
 .PHONY: gunicorn
 
 black:  ##@quality Check the Python source code formatting with black.
