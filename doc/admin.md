@@ -1,9 +1,3 @@
-<!--
-SPDX-FileCopyrightText: 2023 DB Systel GmbH
-
-SPDX-License-Identifier: CC-BY-SA-4.0
--->
-
 # Typical admin operations
 
 There are some functions that admins of the REUSE API can execute. Instead of

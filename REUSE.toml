@@ -17,6 +17,12 @@ precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Free Software Foundation Europe e.v."
 SPDX-License-Identifier = "GPL-3.0-or-later"
 
+[[annotations]] # Tests
+path = "doc/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Free Software Foundation Europe e.v."
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
 # Assets
 [[annotations]] # Raster branding
 path = "reuse_api/static/img/*"
