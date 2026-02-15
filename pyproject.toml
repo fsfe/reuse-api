@@ -24,6 +24,7 @@ include-package-data = true
 addopts = [
   "-v", # verbose output
   "--cov=reuse_api", # run with testing the coverage
+  "--cov-report=term-missing", # show where test coverage is missing
   "--mypy" # run with mypy
 ]
 [tool.mypy]
