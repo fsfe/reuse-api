@@ -54,7 +54,7 @@ black:  ##@quality Check the Python source code formatting with black.
 .PHONY: black
 
 pytest:  ##@quality Run the functional tests.
-	@pytest --cov=$(SOURCE_DIR) tests
+	@pytest --cov=$(SOURCE_DIR)
 .PHONY: pytest
 
 dev.prep: ##@development Initially build the docker image that the API worker executes
