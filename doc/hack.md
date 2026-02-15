@@ -8,9 +8,7 @@ what image is used.
 
 ## Coding style
 
-reuse-api follows [PEP 8](https://pep8.org/). Additionally, imports are sorted
-alphabetically; you can run `make applyisort` to let
-[isort](https://pypi.org/project/isort/) do that for you.
+reuse-api follows [PEP 8](https://pep8.org/).
 
 ## Testing and debugging environment
 
