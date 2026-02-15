@@ -59,13 +59,6 @@ You are recommended to read the
 [recommendations](https://reuse.software) in full for more details.
 
 
-## Install
-
-Please refer to the [/doc directory of this
-project](https://git.fsfe.org/reuse/api/src/branch/master/doc) for
-information on how to install and configure the REUSE API.
-
-
 ## Maintainers
 
 * Max Mehl ([contact](https://fsfe.org/about/mehl))
