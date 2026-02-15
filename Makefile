@@ -38,10 +38,6 @@ gunicorn:  ##@development Run the Gunicorn based web server.
 	@gunicorn --bind localhost:8000 "reuse_api:create_app()"
 .PHONY: gunicorn
 
-pytest:  ##@quality Run the functional tests.
-	@pytest
-.PHONY: pytest
-
 dev.prep: ##@development Initially build the docker image that the API worker executes
 	@chmod 600 ./api-worker/worker-setup/files/test_ed25519
 	@mkdir -p ./forms/store/reuse-api
@@ -68,6 +64,3 @@ dev.reset: ##@development Prune some configs to test the API from scratch
 	@echo [] > ./forms/store/reuse-api/repos.json
 	@rm -f ./api-worker/worker-setup/files/known_hosts
 .PHONY: dev.reset
-
-quality: pytest  ##@quality Run all quality checks.
-.PHONY: quality
