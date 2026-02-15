@@ -7,7 +7,7 @@
 name = "reuse-api"
 description = "A badge API for REUSE"
 version = "2.0"
-authors = [ {name = "Carmen Bianca Bakker", email = "carmenbianca@fsfe.org"} ]
+authors = [ {name = "Filip Kobierski", email = "fkobi@fsfe.org"} ]
 license = "GPL-3.0-or-later"
 
 # build system config
