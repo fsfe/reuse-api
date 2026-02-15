@@ -34,17 +34,9 @@ help:
 	@perl -e '$(HELPME)' $(MAKEFILE_LIST)
 .PHONY: help
 
-applyblack:  ##@development Apply source code formatting with black.
-	@black $(QUALITY_TARGETS)
-.PHONY: applyblack
-
 gunicorn:  ##@development Run the Gunicorn based web server.
 	@gunicorn --bind localhost:8000 "reuse_api:create_app()"
 .PHONY: gunicorn
-
-black:  ##@quality Check the Python source code formatting with black.
-	@black --check --diff $(QUALITY_TARGETS)
-.PHONY: black
 
 pytest:  ##@quality Run the functional tests.
 	@pytest --cov=$(SOURCE_DIR)
@@ -77,5 +69,5 @@ dev.reset: ##@development Prune some configs to test the API from scratch
 	@rm -f ./api-worker/worker-setup/files/known_hosts
 .PHONY: dev.reset
 
-quality: black pytest  ##@quality Run all quality checks.
+quality: pytest  ##@quality Run all quality checks.
 .PHONY: quality
