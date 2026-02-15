@@ -19,10 +19,6 @@ support developers in making their licensing more clear and simple. This
 API is an additional component and enables other users to see a
 project's REUSE status transparently.
 
-This repository contains the web part for all user interaction. The
-parts needed for the external server performing the checks are hosted in
-the [api-worker](https://git.fsfe.org/reuse/api-worker) repository.
-
 
 ## Features
 
