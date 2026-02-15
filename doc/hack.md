@@ -15,22 +15,14 @@ To see it's config please visit `pyproject.toml`.
 
 Standard `pytest` is used with `coverage` and `mypy` extensions added.
 
-## Testing and debugging environment
+## Runtime environment
 
-reuse-api can be run from the git checkout directory for testing and
-debugging.
-
-Please note that reuse-api requires a running
-[FSFE form server](https://git.fsfe.org/fsfe-system-hackers/forms) and SSH
-access to a [REUSE lint server](https://git.fsfe.org/reuse/api-worker). The
-file `repos.json` of the form server must be available in reuse-api's working
-directory.
-
-When you have set up that, you can run `make flask` to run reuse-api
-with Flask's built-in web server in debug mode. Alternatively, you can run
-`make gunicorn` to use the gunicorn web server, which is the variant used in
-production.
-
+In production the api needs
+[forms](https://git.fsfe.org/fsfe-system-hackers/forms) to confirm
+registrations via email.
+If you do not want to set it up you may run the app with
+`FORMS_DISABLE` envvar to register without confirmation or with
+`FLASK_TESTING` to mock the server.
 
 ## Testing and debugging environment with docker-compose
 
