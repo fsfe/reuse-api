@@ -74,22 +74,3 @@ list](https://lists.fsfe.org/mailman/listinfo/reuse).
 Information on how to develop and hack around with this project can be
 found in the file
 [/doc/hack.md](https://git.fsfe.org/reuse/api/src/branch/master/doc/hack.md).
-
-
-## License
-
-Copyright (C) 2019 Free Software Foundation Europe e.V.
-
-This work is licensed under multiple licences. Because keeping this
-section up-to-date is challenging, here is a brief summary as of
-September 2019:
-
-* All original source code is licensed under GPL-3.0-or-later.
-* All documentation and most graphical files are licensed under
-  CC-BY-SA-4.0.
-* Some borrowed HTML code from the REUSE website is licenses under MIT.
-* Other external web elements like libraries and fonts are licenses
-  under Apache-2.0, MIT, OFL-1.1.
-* Most configuration files are licenses under CC0-1.0. 
-
-For more accurate information, check the individual files.
