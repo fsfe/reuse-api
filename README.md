@@ -51,9 +51,6 @@ As a short summary, the recommendations are threefold:
 2. Add copyright and licensing information to each file
 3. Confirm REUSE compliance
 
-You are recommended to read the
-[recommendations](https://reuse.software) in full for more details.
-
 
 ## Maintainers
 
