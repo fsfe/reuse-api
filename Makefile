@@ -60,7 +60,7 @@ pytest:  ##@quality Run the functional tests.
 dev.prep: ##@development Initially build the docker image that the API worker executes
 	@chmod 600 ./api-worker/worker-setup/files/test_ed25519
 	@mkdir -p ./forms/store/reuse-api
-	@if ! [ -e ./forms/store/reuse-api/repos.json ]; then echo [] > ./forms/store/reuse-api/repos.json; fi
+	@[ -e ./forms/store/reuse-api/repos.json ] | echo [] > ./forms/store/reuse-api/repos.json
 	@docker build -f api-worker/docker-image/Dockerfile -t reuse-api-worker-runner api-worker/docker-image
 .PHONY: dev.prep
 
