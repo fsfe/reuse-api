@@ -39,7 +39,7 @@ gunicorn:  ##@development Run the Gunicorn based web server.
 .PHONY: gunicorn
 
 pytest:  ##@quality Run the functional tests.
-	@pytest --cov=$(SOURCE_DIR)
+	@pytest
 .PHONY: pytest
 
 dev.prep: ##@development Initially build the docker image that the API worker executes
