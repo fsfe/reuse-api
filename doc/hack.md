@@ -11,6 +11,10 @@ what image is used.
 This project is reuse compliant and uses `ruff` as it's technical linter.
 To see it's config please visit `pyproject.toml`.
 
+## Unit tests
+
+Standard `pytest` is used with `coverage` and `mypy` extensions added.
+
 ## Testing and debugging environment
 
 reuse-api can be run from the git checkout directory for testing and
@@ -49,17 +53,3 @@ A number of URLs will have to be replaced manually during the whole register/con
 
 - Check the logs with `make dev.logs`
 - Clean the local files with `make dev.reset` to reset the dev env
-
-## Automatic quality checks
-
-The following commands are available for automatic quality checks:
-
-* `make pytest` to run the functional tests defined in the [tests](../tests)
-  directory. Please note that you may need to delete/rename your `.env`
-  temporarily to avoid tests to fail.
-
-Run these in the virtual environment to use the same versions as everyone else.
-
-All these tests are also run during the deployment process, and updating the
-code on the production server is refused if any of the tests fails, so it is
-strongly recommended that you run `make quality` before committing any change.
