@@ -9,7 +9,6 @@ QUALITY_TARGETS = $(SOURCE_DIR) tests/* *.py
 export FLASK_SKIP_DOTENV = 1
 export FLASK_APP = ${SOURCE_DIR}
 export FLASK_ENV = development
-export FLASK_RUN_PORT = 8000
 
 .DEFAULT_GOAL := help
 
@@ -45,7 +44,7 @@ flask:  ##@development Run the Flask built-in web server.
 .PHONY: flask
 
 gunicorn:  ##@development Run the Gunicorn based web server.
-	@gunicorn --bind localhost:$$FLASK_RUN_PORT "$$FLASK_APP:create_app()"
+	@gunicorn --bind localhost:8000 "$$FLASK_APP:create_app()"
 .PHONY: gunicorn
 
 black:  ##@quality Check the Python source code formatting with black.
