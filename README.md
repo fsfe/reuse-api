@@ -68,5 +68,4 @@ General inquiries can be sent to [the REUSE mailing
 list](https://lists.fsfe.org/mailman/listinfo/reuse).
 
 Information on how to develop and hack around with this project can be
-found in the file
-[/doc/hack.md](https://git.fsfe.org/reuse/api/src/branch/master/doc/hack.md).
+found in the file [doc/hack.md](./doc/hack.md).
