@@ -6,7 +6,7 @@
 [project]
 name = "reuse-api"
 description = "A badge API for REUSE"
-version = "0.1.0"
+version = "2.0"
 authors = [ {name = "Carmen Bianca Bakker", email = "carmenbianca@fsfe.org"} ]
 license = "GPL-3.0-or-later"
 
