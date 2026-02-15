@@ -10,10 +10,7 @@ what image is used.
 
 reuse-api follows [PEP 8](https://pep8.org/). Additionally, imports are sorted
 alphabetically; you can run `make applyisort` to let
-[isort](https://pypi.org/project/isort/) do that for you. Source code is
-formatted with the tool [black](https://pypi.org/project/black/); use `make
-applyblack` to reformat the code before you commit.
-
+[isort](https://pypi.org/project/isort/) do that for you.
 
 ## Testing and debugging environment
 
@@ -59,7 +56,6 @@ A number of URLs will have to be replaced manually during the whole register/con
 The following commands are available for automatic quality checks:
 
 * `make isort` to verify the correct sorting of imports.
-* `make black` to verify the correct formatting of source code.
 * `ruff` to verify the compliance with coding standards.
 * `make pytest` to run the functional tests defined in the [tests](../tests)
   directory. Please note that you may need to delete/rename your `.env`
