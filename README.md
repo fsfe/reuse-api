@@ -26,12 +26,12 @@ the [api-worker](https://git.fsfe.org/reuse/api-worker) repository.
 
 ## Features
 
-* Users can register any public Git repository with this API.
-* The API runs the linter on each registered project.
-* Re-check projects if they have been updated (new commit).
-* Informative information page for each registered project.
-* Offer a live badge indicating the REUSE compliance status.
-* Offer a JSON for parsing the current REUSE status.
+- Users can register any public Git repository with this API.
+- The API runs the linter on each registered project.
+- Re-check projects if they have been updated (new commit).
+- Informative information page for each registered project.
+- Offer a live badge indicating the REUSE compliance status.
+- Offer a JSON for parsing the current REUSE status.
 
 
 ## Background
