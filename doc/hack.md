@@ -6,9 +6,10 @@ Development should be done in the same container that it runs in for
 maximum reproducibility. Please check the `Dockerfile` to find out
 what image is used.
 
-## Coding style
+## Linting
 
-reuse-api follows [PEP 8](https://pep8.org/).
+This project is reuse compliant and uses `ruff` as it's technical linter.
+To see it's config please visit `pyproject.toml`.
 
 ## Testing and debugging environment
 
@@ -53,12 +54,9 @@ A number of URLs will have to be replaced manually during the whole register/con
 
 The following commands are available for automatic quality checks:
 
-* `make isort` to verify the correct sorting of imports.
-* `ruff` to verify the compliance with coding standards.
 * `make pytest` to run the functional tests defined in the [tests](../tests)
   directory. Please note that you may need to delete/rename your `.env`
   temporarily to avoid tests to fail.
-* `make quality` to run all of the above tests.
 
 Run these in the virtual environment to use the same versions as everyone else.
 
