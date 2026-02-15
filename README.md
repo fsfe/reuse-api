@@ -52,11 +52,6 @@ As a short summary, the recommendations are threefold:
 3. Confirm REUSE compliance
 
 
-## Maintainers
-
-* Max Mehl ([contact](https://fsfe.org/about/mehl))
-
-
 ## Contribute
 
 Any pull requests or suggestions are welcome at
