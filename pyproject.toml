@@ -21,7 +21,11 @@ include-package-data = true
 
 # Tools config
 [tool.pytest.ini_options]
-addopts = "-v --mypy" # see verbose output, use mypy
+addopts = [
+  "-v", # verbose output
+  "--cov=reuse_api", # run with testing the coverage
+  "--mypy" # run with mypy
+]
 [tool.mypy]
 ignore_missing_imports = true
 ## Ruff
