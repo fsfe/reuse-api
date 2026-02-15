@@ -41,4 +41,4 @@ FROM base AS prod
 # Run the WSGI server as non-privleged user for security
 EXPOSE 8000
 USER reuse-api
-CMD gunicorn --bind=0.0.0.0:8000 --workers=4 "reuse_api:create_app()"
+CMD gunicorn --bind=0.0.0.0:8000 "reuse_api:create_app()"
