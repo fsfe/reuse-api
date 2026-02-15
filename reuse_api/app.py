@@ -9,7 +9,11 @@ from reuse_api.db import is_older_than, update
 
 
 class ReuseApp(Flask):
-    """TODO: add this later."""
+    """ReuseApp is Flask with an executor.
+
+    It's purpose os to provide a clean and idiomatic way of
+    scheduling tasks with logging and additional logic.
+    """
 
     @override
     def __init__(self, import_name: str, **kwargs: Any) -> None:
