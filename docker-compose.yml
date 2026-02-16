@@ -17,7 +17,7 @@ services:
       SSH_PORT: 11122
     volumes:
       - "${VM_VOLUME_PATH:-/srv/reuse-api}:${CONTAINER_VOLUME_PATH:-/var/lib/reuse-api}"
-      - "/srv/forms/reuse-api:/var/lib/reuse-api/forms:ro" # this file gets updated by forms
+      - "/srv/forms/reuse-api:/var/lib/reuse-api/forms"
     ports:
       - "6360:8000"
     labels:
