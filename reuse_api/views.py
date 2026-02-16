@@ -1,4 +1,32 @@
-"""Request handlers for all endpoints."""
+"""Request handlers for all endpoints.
+
+The webapp has four HTML endpoints:
+1. Index/homepage,
+2. Projects -- lists the compliant projects and allows for browsing them,
+3. Registration,
+4. Repo-specific information.
+
+Index, Projects & Info are read-only while Registration allows interaction
+via web forms and validates the email ownership with our Forms.
+
+The typical use case is as follows:
+1. GET `info/repo`
+   - project is unregistered
+   - user clicks the redirection to register/
+     - URL parameter gets inserted
+2. GET registration/
+   - `repo` gets extracted from the URL
+   - user inputs their username & email
+     - repo & email pass validation
+3. POST registration/
+   a) Real forms: POST request sent to our forms;
+   b) Mocked forms: Entries added to the FORMS_FILE & moved to the databaseg;
+   c) FORMS_DISABLE: Entreis added directly to the database.
+
+Repository checks are also managed by the endpoints.
+# which I do not like
+Info, sbom & json endpoints all trigger rechecks.
+"""
 
 from datetime import datetime
 from http import HTTPStatus
