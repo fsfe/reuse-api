@@ -30,7 +30,7 @@ JSON: Blueprint = Blueprint("json", __name__)
 
 @HTML.get("/")
 def index() -> str:
-    return render_template("index.jinja2", compliant_repos=Repository.projects().total)
+    return render_template("index.html", compliant_repos=Repository.projects().total)
 
 
 @HTML.get("/register")
@@ -41,7 +41,7 @@ def register_get() -> str:
     if request.args.get("url"):
         form.project.data = request.args.get("url")
 
-    return render_template("register.jinja2", form=form)
+    return render_template("register.html", form=form)
 
 
 @HTML.post("/register")
@@ -60,10 +60,10 @@ def register_post() -> tuple[str, HTTPStatus]:
         if not response.ok:
             return response.text, HTTPStatus(response.status_code)
         return (
-            render_template("register-success.jinja2", project=form.project.data),
+            render_template("register-success.html", project=form.project.data),
             HTTPStatus.ACCEPTED,
         )
-    return render_template("register.jinja2", form=form), HTTPStatus.OK
+    return render_template("register.html", form=form), HTTPStatus.OK
 
 
 @HTML.get("/badge/<path:url>")
@@ -90,20 +90,20 @@ def info(url: str) -> tuple[str, HTTPStatus]:
 
     # Handle unregistered & uninitialised
     if not Repository.is_registered(url):
-        return render_template("unregistered.jinja2", url=url), HTTPStatus.NOT_FOUND
+        return render_template("unregistered.html", url=url), HTTPStatus.NOT_FOUND
 
     row = current_app.scheduler.schedule(url)
 
     if not Repository.is_initialised(url):
         return (
-            render_template("uninitialised.jinja2", project_name=db.name(url)),
+            render_template("uninitialised.html", project_name=db.name(url)),
             HTTPStatus.FAILED_DEPENDENCY,
         )
 
     # Handle normal records
     return (
         render_template(
-            "info.jinja2",
+            "info.html",
             url=url,
             project_name=db.name(url),
             head_hash=row.hash,
@@ -165,7 +165,7 @@ def status(url: str) -> dict:
 @HTML.get("/projects/page/<int:page>")
 def projects(page: int = 1) -> str:
     """Show paginated table of compliant repositories"""
-    return render_template("projects.jinja2", compliant_list=Repository.projects(page))
+    return render_template("projects.html", compliant_list=Repository.projects(page))
 
 
 # ------------------------------------------------------------------------------
